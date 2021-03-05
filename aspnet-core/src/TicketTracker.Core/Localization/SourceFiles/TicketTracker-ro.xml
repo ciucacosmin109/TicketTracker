@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<localizationDictionary culture="ro">
+  <texts>
+    <text name="HomePage" value="Pagina principală" />
+    <text name="About" value="Despre" />
+    <text name="WelcomeMessage" value="Bun venit la TicketTracker!" />
+    <text name="FormIsNotValidMessage" value="Formularul nu este valid. Vă rugăm să verificați și să remediați erorile" />
+    <text name="TenantNameCanNotBeEmpty" value="Numele tenant-ului nu poate fi gol" />
+    <text name="InvalidUserNameOrPassword" value="Nume de utilizator sau parola incorecte" />
+    <text name="ThereIsNoTenantDefinedWithName" value="Nu există niciun tenant definit cu numele {0}" />
+    <text name="TenantIsNotActive" value="Tenant-ul {0} nu este activ." />
+    <text name="UserIsNotActiveAndCanNotLogin" value="Utilizatorul {0} nu este activ și nu se poate conecta" />
+    <text name="UserEmailIsNotConfirmedAndCanNotLogin">Adresa dvs. de e-mail nu este confirmată. Nu vă puteți conecta</text>
+    <text name="UserLockedOutMessage">Contul de utilizator a fost blocat. Vă rugăm să încercați din nou mai târziu</text>
+    <text name="PleaseEnterLoginInformation" value="Vă rugăm să introduceți informații de conectare" />
+    <text name="TenancyName" value="Numele tenant-ului" />
+    <text name="UserNameOrEmail" value="Nume de utilizator sau email" />
+    <text name="Password" value="Parolă" />
+    <text name="ResetPassword" value="Resetare parolă" />
+    <text name="UpdatePassword" value="Actualizare parolă" />
+    <text name="RememberMe" value="Tine-mă minte" />
+    <text name="LogIn" value="Autentificare" />
+    <text name="RegisterText" value="Nu ai cont ?" />
+    <text name="LoginFailed" value="Autentificare eșuată!" />
+    <text name="NameSurname" value="Nume complet" />
+    <text name="UserName" value="Nume de utilizator" />
+    <text name="Name" value="Nume" />
+    <text name="Surname" value="Nume de familie" />
+    <text name="EmailAddress" value="Email" />
+    <text name="Tenants" value="Tenants" />
+    <text name="SavedSuccessfully" value="Salvat cu succes" />
+    <text name="CreateNewTenant" value="Creați un nou tenant" />
+    <text name="AdminEmailAddress" value="Email (administrator)" />
+    <text name="AdminPassword" value="Parolă (administrator)" />
+    <text name="Save" value="Salvare" />
+    <text name="Cancel" value="Anulare" />
+    <text name="TenantName_Regex_Description" value="Numele tenant-ului trebuie să aibă cel puțin 2 caractere, să înceapă cu o literă și să continue cu litere, numere, liniuțe sau sublinieri" />
+    <text name="DefaultPasswordIs" value="Parola prestabilita este {0}" />
+    <text name="CanBeEmptyToLoginAsHost" value="Poate fi gol pentru a vă conecta ca HOST" />
+    <text name="Register" value="Inregistrare" />
+    <text name="OrLoginWith" value="Sau autentificați-vă cu" />
+    <text name="WaitingForActivationMessage" value="Contul dvs. așteaptă să fie activat de administratorul de sistem" />
+    <text name="TenantSelection" value="Selectarea tenant-ului" />
+    <text name="TenantSelection_Detail" value="Vă rugăm să selectați unul dintre următorii tenants" />
+    <text name="Logout" value="Deconectați-vă" />
+    <text name="RegisterFormUserNameInvalidMessage">Vă rugăm să nu introduceți o adresă de e-mail pentru numele de utilizator</text>
+    <text name="DatabaseConnectionString" value="Stringul de conectare la baza de date" />
+    <text name="Users" value="Utilizatori" />
+    <text name="IsActive" value="Este activ" />
+    <text name="FullName" value="Nume complet" />
+    <text name="CreateNewUser" value="Crează un utilizator nou" />
+    <text name="Yes" value="Da" />
+    <text name="No" value="Nu" />
+    <text name="Optional" value="Optional" />
+    <text name="LeaveEmptyToSwitchToHost">Lăsați gol pentru a trece la HOST</text>
+    <text name="CurrentTenant">Tenant-ul curent</text>
+    <text name="NotSelected">Nu a fost selectat</text>
+    <text name="Change">Schimbă</text>
+    <text name="ChangeTenant">Schimbă tenant</text>
+    <text name="MultiLevelMenu">Meniu cu mai multe niveluri</text>
+    <text name="Back">Înapoi</text>
+    <text name="SuccessfullyRegistered">Înregistrat cu succes</text>
+    <text name="WaitingForEmailActivation">Email-ul dvs. trebuie activat</text>
+    <text name="Roles">Roluri</text>
+    <text name="DisplayName">Nume afisat</text>
+    <text name="Edit">Editează</text>
+    <text name="Delete">Șterge</text>
+    <text name="CreateNewRole">Creează un nou rol</text>
+    <text name="RoleName">Numele rolului</text>
+    <text name="Actions">Acțiuni</text>
+    <text name="CouldNotCompleteLoginOperation">Nu se poate autentifica. Încercați mai târziu</text>
+    <text name="CouldNotValidateExternalUser">Nu se poate valida utilizatorul extern</text>
+    <text name="EditRole">Editare rol</text>
+    <text name="EditTenant">Editare tenant</text>
+    <text name="EditUser">Editare utilizator</text>
+    <text name="TenantIdIsNotActive{0}">TenantId {0} nu este activ</text>
+    <text name="UnknownTenantId{0}">TenantId necunoscut {0}</text>
+    <text name="ThisFieldIsRequired">Acest câmp este obligatoriu</text>
+    <text name="PleaseWait">Vă rugăm așteptați...</text>
+    <text name="Administration">Administrare</text>
+    <text name="ClearAll">Șterge tot</text>
+    <text name="ClearOthers">Ștegre pentru alții</text>
+    <text name="LabelOptions">Opțiuni taguri</text>
+    <text name="Permissions">Permisiuni</text>
+    <text name="RoleDescription">Descrierea rolului</text>
+    <text name="Refresh">Reînprospătare</text>
+    <text name="Create">Creează</text>
+    <text name="UserDetails">Detalii utilizator</text>
+    <text name="UserRoles">Roluri utilizator</text>
+    <text name="ConfirmPassword">Confirmă parola</text>
+    <text name="Version">Versiune</text>
+    <text name="On">On</text>
+    <text name="Off">Off</text>
+    <text name="AreYouSureWantToDelete">Ești sigur că vrei să ștergi {0}?</text>
+    <text name="SuccessfullyDeleted">Șters cu succes</text>
+    <text name="StartTyping">Începeți să tastați</text>
+    <text name="Skins">Skin-uri</text>
+    <text name="Settings">Setări</text>
+    <text name="Filter">Filtru</text>
+    <text name="CurrentPassword">Parolă curentă</text>
+    <text name="NewPassword">Parolă nouă</text>
+    <text name="ConfirmNewPassword">Confimă noua parolă</text>
+    <text name="PasswordsDoNotMatch">Parolele nu se potrivesc</text>
+    <text name="PasswordsMustBeAtLeast8CharactersContainLowercaseUppercaseNumber">Parolele trebuie să aibă cel puțin 8 caractere, să conțină litere mici, majuscule și numere</text>
+    <text name="UserDeleteWarningMessage">Utilizatorul {0} va fi șters</text>
+    <text name="RoleDeleteWarningMessage">Rolul {0} va fi șters de la toți utilizatorii</text>
+    <text name="TenantDeleteWarningMessage">Tenant-ul {0} va fi șters</text>
+    <text name="SearchWithThreeDot">Caută...</text>
+    <text name="PleaseEnterAtLeastNCharacter">Please enter at least {0} characters</text>
+    <text name="PleaseEnterNoMoreThanNCharacter">Introduceți cel puțin {0} caractere</text>
+    <text name="InvalidEmailAddress">Email invalid</text>
+    <text name="InvalidPattern">Invalid</text>
+    <text name="PairsDoNotMatch">Nu se potriveste</text>
+    <text name="All">Toate</text>
+    <text name="TotalRecordsCount">Total: {0}</text>
+    <text name="Search">Caută</text>
+    <text name="Clear">Șterge</text>
+    <text name="ResetPasswordStepOneInfo">1. Introduceti parola de administrator</text>
+    <text name="ResetPasswordStepTwoInfo">2. Copiați această parolă aleatorie, astfel încât să o puteți trimite utilizatorului</text>
+    <text name="UsersActivation">Activarea utilizatorului</text>
+
+    <text name="AppName">TicketTracker</text>
+    <text name="RoleDetails">Detaliile rolului</text>
+    <text name="RolePermission">Permisiunile rolului</text>
+    <text name="Error">Eroare</text>
+  </texts>
+</localizationDictionary>

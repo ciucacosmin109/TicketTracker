@@ -1,0 +1,47 @@
+﻿// Create appsettings.json file
+// and optionally: appsettings.Production.json, appsettings.Staging.json, appsettings.Development.json
+//
+// Set "Build Action"="Content"
+// Set "Copy to output directory"="Copy if newer"
+//
+// Content: 
+{
+  "ConnectionStrings": {
+    "Default": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AppNameDb;Integrated Security=True;"
+  },
+  "App": {
+    "ServerRootAddress": "http://localhost:21021/",
+    "ClientRootAddress": "http://localhost:3000/",
+    "CorsOrigins": "http://localhost:4200,http://localhost:8080,http://localhost:8081,http://localhost:3000"
+  },
+  "Authentication": {
+    "JwtBearer": {
+      "IsEnabled": "true",
+      "SecurityKey": "AppName_23498",
+      "Issuer": "AppName",
+      "Audience": "AppName"
+    }
+  },
+  "Kestrel": {
+    "Endpoints": {
+      "Http": {
+        "Url": "http://localhost:21021/"
+      }
+    }
+  },
+
+  "DbSeedValues": { 
+    "DefaultLanguage": "en",
+    "Smtp": {
+      "DefaultFromAddress": "user@gmail.com",
+      "DefaultFromDisplayName": "no-reply user",
+
+      "Host": "smtp.gmail.com",
+      "Port": "587",
+      "EnableSsl": "true",
+      "UserName": "user@gmail.com",
+      "Password": "pass",
+      "UseDefaultCredentials": "false"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="DatabaseModel" id="219DE485-917D-F100-DDC4-D9A9866F6FC6" version="3.5">
+<createdBy>Acer</createdBy>
+<createdTime>2021-03-02 11:35:50 UTC</createdTime>
+<ownerDesignName>DatabaseModel</ownerDesignName>
+<capitalNames>false</capitalNames>
+<designId>219DE485-917D-F100-DDC4-D9A9866F6FC6</designId>
+</OSDM_Design>
