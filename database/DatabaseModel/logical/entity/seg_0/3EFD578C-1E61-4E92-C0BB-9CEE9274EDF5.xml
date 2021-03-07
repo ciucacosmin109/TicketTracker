@@ -103,17 +103,6 @@
 <use>0</use>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="*AssignedTickets" id="6D593CB4-F478-F782-B27A-C29B39283075">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 14:16:18 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
 <Attribute name="*Work[]" id="AB50E7F8-AA86-4F9C-FA23-04BAD5F21DB2">
 <createdBy>Acer</createdBy>
 <createdTime>2021-03-02 15:59:35 UTC</createdTime>

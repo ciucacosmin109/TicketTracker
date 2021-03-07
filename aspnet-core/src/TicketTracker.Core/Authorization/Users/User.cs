@@ -2,13 +2,18 @@
 using System.Collections.Generic;
 using Abp.Authorization.Users;
 using Abp.Extensions;
+using TicketTracker.Entities;
 
 namespace TicketTracker.Authorization.Users
 {
-    public class User : AbpUser<User>
-    {
+    public class User : AbpUser<User> {
         public const string DefaultPassword = "123qwe";
 
+        public List<ProjectUser> UserProjects { get; set; }
+        public List<Subscription> Subscriptions { get; set; }
+        public List<Comment> Comments { get; set; }
+
+        // Methods
         public static string CreateRandomPassword()
         {
             return Guid.NewGuid().ToString("N").Truncate(16);
