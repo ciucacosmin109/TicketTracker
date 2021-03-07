@@ -13,13 +13,11 @@ namespace TicketTracker.Entities {
         public string Title { get; set; }
         public string Description { get; set; }
         public short? Priority { get; set; }
+        public Status Status { get; set; }
 
         public Component Component { get; set; }
         public long ComponentId { get; set; }
-
-        public Status Status { get; set; }
-        public long StatusId { get; set; }
-
+         
         public Activity Activity { get; set; }
         public long ActivityId { get; set; }
 
