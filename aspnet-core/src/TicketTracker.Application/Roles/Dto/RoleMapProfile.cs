@@ -3,6 +3,7 @@ using AutoMapper;
 using Abp.Authorization;
 using Abp.Authorization.Roles;
 using TicketTracker.Authorization.Roles;
+using TicketTracker.Entities.ProjectAuthorization;
 
 namespace TicketTracker.Roles.Dto
 {
@@ -12,7 +13,7 @@ namespace TicketTracker.Roles.Dto
         {
             // Role and permission
             CreateMap<Permission, string>().ConvertUsing(r => r.Name);
-            CreateMap<RolePermissionSetting, string>().ConvertUsing(r => r.Name);
+            CreateMap<RolePermissionSetting, string>().ConvertUsing(r => r.Name); 
 
             CreateMap<CreateRoleDto, Role>();
 

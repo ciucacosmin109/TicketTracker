@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TicketTracker.Authorization.Roles;
 using TicketTracker.Authorization.Users;
+using TicketTracker.Entities.ProjectAuthorization;
 
 namespace TicketTracker.Entities {
     public class ProjectUser : FullAuditedEntity<long, User> {
@@ -16,7 +17,7 @@ namespace TicketTracker.Entities {
         public Project Project { get; set; }
         public long ProjectId { get; set; }
 
-        public Role Role { get; set; }
+        public PRole Role { get; set; }
         public int? RoleId { get; set; }
 
         public List<Work> Works { get; set; }

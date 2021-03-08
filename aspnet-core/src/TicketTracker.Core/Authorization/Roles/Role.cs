@@ -3,14 +3,12 @@ using Abp.Authorization.Roles;
 using TicketTracker.Authorization.Users;
 
 namespace TicketTracker.Authorization.Roles
-{
+{ 
     public class Role : AbpRole<User>
     {
         public const int MaxDescriptionLength = 5000;
-
-        public Role()
-        {
-        }
+         
+        public Role() { }
 
         public Role(int? tenantId, string displayName)
             : base(tenantId, displayName)

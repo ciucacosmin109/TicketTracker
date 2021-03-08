@@ -9,9 +9,11 @@ using TicketTracker.Entities;
 namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
     public class DefaultActivityCreator {
         private readonly TicketTrackerDbContext _context;
+        private readonly int _tenantId;
 
-        public DefaultActivityCreator(TicketTrackerDbContext context) {
+        public DefaultActivityCreator(TicketTrackerDbContext context, int tenantId) {
             _context = context;
+            _tenantId = tenantId;
         }
 
         public void Create() {

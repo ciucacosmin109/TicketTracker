@@ -30,7 +30,7 @@ namespace TicketTracker.EntityFrameworkCore.Seed
             new TenantRoleAndUserBuilder(context, 1).Create();
 
             // Initial data
-            new InitialDataBuilder(context).Create();
+            new InitialDataBuilder(context, 1).Create(); 
         }
 
         private static void WithDbContext<TDbContext>(IIocResolver iocResolver, Action<TDbContext> contextAction)

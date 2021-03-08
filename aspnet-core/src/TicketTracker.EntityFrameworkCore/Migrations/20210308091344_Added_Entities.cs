@@ -457,6 +457,34 @@ namespace TicketTracker.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PPermissions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsStatic = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PPermissions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PRoles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsStatic = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AbpDynamicEntityProperties",
                 columns: table => new
                 {
@@ -824,6 +852,30 @@ namespace TicketTracker.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PPermissionPRole",
+                columns: table => new
+                {
+                    PermissionsId = table.Column<int>(type: "int", nullable: false),
+                    RolesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PPermissionPRole", x => new { x.PermissionsId, x.RolesId });
+                    table.ForeignKey(
+                        name: "FK_PPermissionPRole_PPermissions_PermissionsId",
+                        column: x => x.PermissionsId,
+                        principalTable: "PPermissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PPermissionPRole_PRoles_RolesId",
+                        column: x => x.RolesId,
+                        principalTable: "PRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AbpDynamicEntityPropertyValues",
                 columns: table => new
                 {
@@ -994,12 +1046,6 @@ namespace TicketTracker.Migrations
                 {
                     table.PrimaryKey("PK_ProjectUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProjectUsers_AbpRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AbpRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_ProjectUsers_AbpUsers_CreatorUserId",
                         column: x => x.CreatorUserId,
                         principalTable: "AbpUsers",
@@ -1029,6 +1075,12 @@ namespace TicketTracker.Migrations
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectUsers_PRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "PRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -1712,6 +1764,11 @@ namespace TicketTracker.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PPermissionPRole_RolesId",
+                table: "PPermissionPRole",
+                column: "RolesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Projects_CreatorUserId",
                 table: "Projects",
                 column: "CreatorUserId");
@@ -1923,6 +1980,9 @@ namespace TicketTracker.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
+                name: "PPermissionPRole");
+
+            migrationBuilder.DropTable(
                 name: "Subscriptions");
 
             migrationBuilder.DropTable(
@@ -1935,10 +1995,16 @@ namespace TicketTracker.Migrations
                 name: "AbpEntityChanges");
 
             migrationBuilder.DropTable(
+                name: "AbpRoles");
+
+            migrationBuilder.DropTable(
                 name: "AbpEditions");
 
             migrationBuilder.DropTable(
                 name: "AbpWebhookEvents");
+
+            migrationBuilder.DropTable(
+                name: "PPermissions");
 
             migrationBuilder.DropTable(
                 name: "ProjectUsers");
@@ -1953,7 +2019,7 @@ namespace TicketTracker.Migrations
                 name: "AbpEntityChangeSets");
 
             migrationBuilder.DropTable(
-                name: "AbpRoles");
+                name: "PRoles");
 
             migrationBuilder.DropTable(
                 name: "Activities");

@@ -4,6 +4,7 @@ using TicketTracker.Authorization.Roles;
 using TicketTracker.Authorization.Users;
 using TicketTracker.MultiTenancy;
 using TicketTracker.Entities;
+using TicketTracker.Entities.ProjectAuthorization;
 
 namespace TicketTracker.EntityFrameworkCore
 {
@@ -19,6 +20,9 @@ namespace TicketTracker.EntityFrameworkCore
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Work> Works { get; set; }
         public DbSet<Component> Components { get; set; }
+
+        public DbSet<PRole> PRoles { get; set; }
+        public DbSet<PPermission> PPermissions { get; set; }
 
         public TicketTrackerDbContext(DbContextOptions<TicketTrackerDbContext> options)
             : base(options)

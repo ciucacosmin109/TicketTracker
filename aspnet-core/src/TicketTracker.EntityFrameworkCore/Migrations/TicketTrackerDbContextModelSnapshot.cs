@@ -1320,6 +1320,21 @@ namespace TicketTracker.Migrations
                     b.ToTable("AbpWebhookSubscriptions");
                 });
 
+            modelBuilder.Entity("PPermissionPRole", b =>
+                {
+                    b.Property<int>("PermissionsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RolesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PermissionsId", "RolesId");
+
+                    b.HasIndex("RolesId");
+
+                    b.ToTable("PPermissionPRole");
+                });
+
             modelBuilder.Entity("TicketTracker.Authorization.Roles.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -1742,6 +1757,44 @@ namespace TicketTracker.Migrations
                     b.HasIndex("LastModifierUserId");
 
                     b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("TicketTracker.Entities.ProjectAuthorization.PPermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<bool>("IsStatic")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PPermissions");
+                });
+
+            modelBuilder.Entity("TicketTracker.Entities.ProjectAuthorization.PRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<bool>("IsStatic")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PRoles");
                 });
 
             modelBuilder.Entity("TicketTracker.Entities.ProjectUser", b =>
@@ -2210,6 +2263,21 @@ namespace TicketTracker.Migrations
                     b.Navigation("WebhookEvent");
                 });
 
+            modelBuilder.Entity("PPermissionPRole", b =>
+                {
+                    b.HasOne("TicketTracker.Entities.ProjectAuthorization.PPermission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TicketTracker.Entities.ProjectAuthorization.PRole", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TicketTracker.Authorization.Roles.Role", b =>
                 {
                     b.HasOne("TicketTracker.Authorization.Users.User", "CreatorUser")
@@ -2392,8 +2460,8 @@ namespace TicketTracker.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TicketTracker.Authorization.Roles.Role", "Role")
-                        .WithMany()
+                    b.HasOne("TicketTracker.Entities.ProjectAuthorization.PRole", "Role")
+                        .WithMany("ProjectUsers")
                         .HasForeignKey("RoleId");
 
                     b.HasOne("TicketTracker.Authorization.Users.User", "User")
@@ -2644,6 +2712,11 @@ namespace TicketTracker.Migrations
                 {
                     b.Navigation("Components");
 
+                    b.Navigation("ProjectUsers");
+                });
+
+            modelBuilder.Entity("TicketTracker.Entities.ProjectAuthorization.PRole", b =>
+                {
                     b.Navigation("ProjectUsers");
                 });
 
