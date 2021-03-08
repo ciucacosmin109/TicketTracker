@@ -37,17 +37,6 @@
 <use>0</use>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="DisplayName" id="16F6D955-2A7C-D155-0C0E-74BC6668AD6F">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-08 08:47:24 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
 <Attribute name="IsStatic" id="95D2BEDE-CCBC-0EA0-144F-72737BFD0676">
 <createdBy>Acer</createdBy>
 <createdTime>2021-03-08 08:49:05 UTC</createdTime>

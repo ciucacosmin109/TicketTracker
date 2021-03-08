@@ -12,7 +12,7 @@ namespace TicketTracker.EntityFrameworkCore
     {
         /* Define a DbSet for each entity of the application */
         public DbSet<Activity> Activities { get; set; } 
-        public DbSet<Attachment> Atachments { get; set; }
+        public DbSet<File> Atachments { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectUser> ProjectUsers { get; set; }

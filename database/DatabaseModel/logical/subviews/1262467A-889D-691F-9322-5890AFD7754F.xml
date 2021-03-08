@@ -16,7 +16,7 @@
 <objectViews>
 <OView class="oracle.dbtools.crest.swingui.logical.TVEntity" oid="319156EA-9635-0023-8C16-FB484E6AB0FB" otype="Entity" vid="CD703D5E-CF1B-C716-D4C0-65AABE678FAE">
 <hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
-<bounds x="386" y="193" width="103" height="100"/>
+<bounds x="386" y="193" width="103" height="80"/>
 </OView>
 <OView class="oracle.dbtools.crest.swingui.logical.TVEntity" oid="37ED3D09-62B9-9CE7-ED23-210D0F47882D" otype="Entity" vid="95265CFA-3AB6-6E86-7622-B9E98F271DCC">
 <hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
@@ -60,7 +60,7 @@
 </OView>
 <OView class="oracle.dbtools.crest.swingui.logical.TVEntity" oid="FA919DD5-AE28-A24F-C159-21D5088702EA" otype="Entity" vid="4B508274-7826-3F74-ED85-32E16B857CCB">
 <hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
-<bounds x="170" y="349" width="99" height="88"/>
+<bounds x="170" y="349" width="99" height="78"/>
 </OView>
 <OView class="oracle.dbtools.crest.swingui.logical.TVEntity" oid="FD1CE080-25BA-63F5-0BDC-CEB64D228ACB" otype="Entity" vid="E6390AA3-9873-2DEA-1575-29C67F204679">
 <hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
@@ -152,8 +152,8 @@
 <backgroundColor>-16777216</backgroundColor>
 <lineWidth>1</lineWidth>
 <points>
-<point x="386" y="256"/>
-<point x="329" y="256"/>
+<point x="386" y="247"/>
+<point x="329" y="247"/>
 </points>
 </Connector>
 <Connector class="oracle.dbtools.crest.swingui.logical.TVRelation" oid="A8F6A849-BE54-2192-370E-7E512A917987" otype="Relation" vid_source="E6390AA3-9873-2DEA-1575-29C67F204679" vid_target="5BDD9ABC-7784-BD44-3B16-746EB4E5A3D4">
@@ -188,8 +188,8 @@
 <backgroundColor>-16777216</backgroundColor>
 <lineWidth>1</lineWidth>
 <points>
-<point x="269" y="395"/>
-<point x="330" y="395"/>
+<point x="269" y="391"/>
+<point x="330" y="391"/>
 </points>
 </Connector>
 <Connector class="oracle.dbtools.crest.swingui.logical.TVRelation" oid="DAA2D0D7-9169-DC1F-E4C1-15DE7DBD6299" otype="Relation" vid_source="0ACC5EC8-088A-7ABD-F6CA-8A0058908A4C" vid_target="2CC26EF8-E2EE-E295-23A7-D4972C88DB72">

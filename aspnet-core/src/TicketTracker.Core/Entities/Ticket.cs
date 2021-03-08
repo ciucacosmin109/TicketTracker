@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using TicketTracker.Authorization.Users;
 
 namespace TicketTracker.Entities {
-    public class Ticket : FullAuditedEntity<long, User> {
+    public class Ticket : FullAuditedEntity<int, User> {
         [Required]
         public string Title { get; set; }
         public string Description { get; set; }
@@ -17,7 +17,7 @@ namespace TicketTracker.Entities {
         public TicketStatus Status { get; set; }
 
         public Component Component { get; set; }
-        public long ComponentId { get; set; }
+        public int ComponentId { get; set; }
          
         public Activity Activity { get; set; }
         public int ActivityId { get; set; }
@@ -25,6 +25,6 @@ namespace TicketTracker.Entities {
         public Work Work { get; set; }  
         public List<Subscription> Subscriptions { get; set; }  
         public List<Comment> Comments { get; set; }
-        public List<Attachment> Attachments { get; set; }
+        public List<File> Attachments { get; set; }
     }
 }

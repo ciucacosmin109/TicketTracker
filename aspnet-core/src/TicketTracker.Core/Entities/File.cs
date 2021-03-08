@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 using TicketTracker.Authorization.Users;
 
 namespace TicketTracker.Entities {
-    public class Attachment : FullAuditedEntity<long, User> { 
+    public class File : FullAuditedEntity<int, User> { 
         public string Name { get; set; } 
         public byte[] FileBytes { get; set; }
 
         public Ticket Ticket { get; set; }
-        public long? TicketId { get; set; }
+        public int? TicketId { get; set; }
 
         // IFullAudited
         /*public User CreatorUser { get; set; }

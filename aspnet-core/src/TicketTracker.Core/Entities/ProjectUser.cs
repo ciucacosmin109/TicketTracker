@@ -10,12 +10,12 @@ using TicketTracker.Authorization.Users;
 using TicketTracker.Entities.ProjectAuthorization;
 
 namespace TicketTracker.Entities {
-    public class ProjectUser : FullAuditedEntity<long, User> {
+    public class ProjectUser : FullAuditedEntity<int, User> {
         public User User { get; set; } 
         public long UserId { get; set; }
 
         public Project Project { get; set; }
-        public long ProjectId { get; set; }
+        public int ProjectId { get; set; }
 
         public PRole Role { get; set; }
         public int? RoleId { get; set; }

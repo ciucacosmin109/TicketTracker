@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using TicketTracker.Authorization.Users;
 
 namespace TicketTracker.Entities {
-    public class Comment : FullAuditedEntity<long, User> {
+    public class Comment : FullAuditedEntity<int, User> {
         [Required]
         public string Content { get; set; }
 
@@ -17,12 +17,12 @@ namespace TicketTracker.Entities {
         public long UserId { get; set; }
 
         public Ticket Ticket { get; set; }
-        public long TicketId { get; set; }
+        public int TicketId { get; set; }
 
         // Relatie recursiva
-        [ForeignKey("Parinte")]
-        public long? ParinteId { get; set; }
-        public Comment Parinte { get; set; }
+        [ForeignKey("Parent")]
+        public int? ParentId { get; set; }
+        public Comment Parent { get; set; }
 
         public List<Comment> Copii { get; set; }
     }
