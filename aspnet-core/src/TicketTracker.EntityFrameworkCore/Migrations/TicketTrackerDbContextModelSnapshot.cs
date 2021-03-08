@@ -1523,9 +1523,9 @@ namespace TicketTracker.Migrations
 
             modelBuilder.Entity("TicketTracker.Entities.Activity", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .UseIdentityColumn();
 
                     b.Property<string>("Name")
@@ -1854,8 +1854,8 @@ namespace TicketTracker.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<long>("ActivityId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
 
                     b.Property<long>("ComponentId")
                         .HasColumnType("bigint");
@@ -1884,8 +1884,8 @@ namespace TicketTracker.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<short?>("Priority")
-                        .HasColumnType("smallint");
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -1893,6 +1893,9 @@ namespace TicketTracker.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

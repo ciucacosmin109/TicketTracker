@@ -59,6 +59,28 @@
 <use>0</use>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
+<Attribute name="Status" id="ED9AF753-63FA-9A4E-8604-D6FBD32C502D">
+<createdBy>Acer</createdBy>
+<createdTime>2021-03-07 20:22:29 UTC</createdTime>
+<ownerDesignName>DatabaseModel</ownerDesignName>
+<engineerTo>
+<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="Type" id="B4B3B72E-B073-5E40-BC0E-EE020414657C">
+<createdBy>Acer</createdBy>
+<createdTime>2021-03-07 20:23:10 UTC</createdTime>
+<ownerDesignName>DatabaseModel</ownerDesignName>
+<engineerTo>
+<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
 <Attribute name="  " id="0D9E2C9F-0562-6A6B-7D3D-433C5F1C293E">
 <createdBy>Acer</createdBy>
 <createdTime>2021-03-02 13:23:21 UTC</createdTime>
@@ -81,130 +103,9 @@
 <use>0</use>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="StatusId" id="4C268290-1B9A-099E-3E23-F9A75FDBBC08">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 13:23:56 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
 <Attribute name="ActivityId" id="10B2E345-CE38-9206-73EE-C23695E64DC9">
 <createdBy>Acer</createdBy>
 <createdTime>2021-03-03 06:58:17 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="AssignedToId" id="2E25B52B-5345-DD96-44D9-2EB0D05D046A">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 14:15:29 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name=" " id="A18E7F77-5246-12A0-A414-C959AA564745">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 11:40:03 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="*Component" id="75FC1C54-4013-5716-54E4-242EB3655326">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 12:23:45 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="*Status" id="488ECF83-6FA5-88DE-3FF5-3F85302F1A7B">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 13:23:50 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="*Activity" id="B1301B89-C6D7-53E7-8EE5-F67B165E4676">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-03 06:58:25 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="*AssignedTo" id="C46B91F9-B2FE-09CE-1D2E-EBBBEFA6457F">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 14:15:38 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="*Comment[]" id="F8907C91-1733-6807-28D7-36E0BE5C9C14">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 12:28:48 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="*Attachment[]" id="89A4D8DE-8F52-B123-B863-93CBFAAFE415">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 14:11:06 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="*Work" id="F45EBC39-4BBA-7AFA-899E-9338A24EADB2">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 16:00:57 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="*Subscription[]" id="5CD33519-CAEA-F0B4-1D30-AEDB02ADE190">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-03 07:15:12 UTC</createdTime>
 <ownerDesignName>DatabaseModel</ownerDesignName>
 <engineerTo>
 <item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>

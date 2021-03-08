@@ -2,8 +2,8 @@ import { CreateRoleInput } from './dto/createRoleInput';
 import { CreateRoleOutput } from './dto/createRoleOutput';
 import { EntityDto } from '../dto/entityDto';
 import { GetAllRoleOutput } from './dto/getAllRoleOutput';
-import { GetRoleAsyncInput } from './dto/getRolesAsyncInput';
-import GetRoleAsyncOutput from './dto/getRoleAsyncOutput';
+import { GetRolesByPermissionInput } from './dto/getRolesByPermissionInput';
+import GetRolesByPermissionOutput from './dto/getRolesByPermissionOutput';
 import { GetRoleForEditOutput } from './dto/getRoleForEditOutput';
 import { PagedResultDto } from '../dto/pagedResultDto';
 import { PagedRoleResultRequestDto } from './dto/PagedRoleResultRequestDto';
@@ -17,8 +17,8 @@ class RoleService {
     return result.data.result;
   }
 
-  public async getRolesAsync(getRoleAsyncInput: GetRoleAsyncInput): Promise<GetRoleAsyncOutput> {
-    let result = await http.get('api/services/app/Role/GetRolesAsync', { params: getRoleAsyncInput });
+  public async getRolesByPermission(getRoleAsyncInput: GetRolesByPermissionInput): Promise<GetRolesByPermissionOutput> {
+    let result = await http.get('api/services/app/Role/GetRolesByPermission', { params: getRoleAsyncInput });
     return result.data.result;
   }
 

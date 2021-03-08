@@ -70,49 +70,5 @@
 <use>0</use>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="  " id="4BEA2B0F-D329-7482-14F3-D7C49546EB2D">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 13:24:23 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="*Ticket" id="0B6922EB-07BB-E1A9-3EE5-6EC9D2AF48F7">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 12:28:36 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="*User" id="252C64F0-36CC-0C05-76CE-94638F9BFF82">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 12:30:46 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="*Comment[]" id="64B60941-ACFD-0A9D-079B-61470C4E3DC6">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 13:18:52 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
 </attributes>
 </Entity>

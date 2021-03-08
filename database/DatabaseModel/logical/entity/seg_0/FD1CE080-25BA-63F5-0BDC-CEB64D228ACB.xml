@@ -70,38 +70,5 @@
 <use>0</use>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name=" " id="BDDAA571-1CCD-B11C-E4BB-23E06F7ECA74">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 12:23:01 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="*Project" id="887C794B-7EB2-AB23-EADB-520A6E69CD77">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 12:23:03 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
-<Attribute name="*Ticket[]" id="B3751FD4-0E3E-5FB8-7207-21D283BC57C0">
-<createdBy>Acer</createdBy>
-<createdTime>2021-03-02 12:24:02 UTC</createdTime>
-<ownerDesignName>DatabaseModel</ownerDesignName>
-<engineerTo>
-<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
-</engineerTo>
-<nullsAllowed>true</nullsAllowed>
-<use>0</use>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-</Attribute>
 </attributes>
 </Entity>

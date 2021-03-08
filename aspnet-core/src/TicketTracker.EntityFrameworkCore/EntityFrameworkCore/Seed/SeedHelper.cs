@@ -7,6 +7,7 @@ using Abp.EntityFrameworkCore.Uow;
 using Abp.MultiTenancy;
 using TicketTracker.EntityFrameworkCore.Seed.Host;
 using TicketTracker.EntityFrameworkCore.Seed.Tenants;
+using TicketTracker.EntityFrameworkCore.Seed.Entities;
 
 namespace TicketTracker.EntityFrameworkCore.Seed
 {
@@ -29,7 +30,7 @@ namespace TicketTracker.EntityFrameworkCore.Seed
             new TenantRoleAndUserBuilder(context, 1).Create();
 
             // Initial data
-            new InitialHostDbBuilder(context).Create();
+            new InitialDataBuilder(context).Create();
         }
 
         private static void WithDbContext<TDbContext>(IIocResolver iocResolver, Action<TDbContext> contextAction)

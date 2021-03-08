@@ -7,6 +7,6 @@ export interface GetRoleAsyncOutputItem {
   id: number;
 }
 
-export default interface GetRoleAsyncOutput {
+export default interface GetRolesByPermissionOutput {
   items: GetRoleAsyncOutputItem[];
 }

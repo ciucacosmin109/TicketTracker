@@ -4,7 +4,7 @@ import { CreateRoleInput } from '../services/role/dto/createRoleInput';
 import { EntityDto } from '../services/dto/entityDto';
 import { GetAllPermissionsOutput } from '../services/role/dto/getAllPermissionsOutput';
 import { GetAllRoleOutput } from '../services/role/dto/getAllRoleOutput';
-import { GetRoleAsyncInput } from '../services/role/dto/getRolesAsyncInput';
+import { GetRolesByPermissionInput } from '../services/role/dto/getRolesByPermissionInput';
 import { PagedResultDto } from '../services/dto/pagedResultDto';
 import { PagedRoleResultRequestDto } from '../services/role/dto/PagedRoleResultRequestDto';
 import RoleEditModel from '../models/Roles/roleEditModel';
@@ -36,8 +36,8 @@ class RoleStore {
   }
 
   @action
-  async getRolesAsync(getRoleAsyncInput: GetRoleAsyncInput) {
-    await roleService.getRolesAsync(getRoleAsyncInput);
+  async getRolesByPermission(input: GetRolesByPermissionInput) {
+    await roleService.getRolesByPermission(input);
   }
 
   @action

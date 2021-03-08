@@ -124,6 +124,7 @@
     <text name="RolePermission">Role permissions</text>
     <text name="Error">Error</text>
 	
+    <text name="Activities">Activities</text>
     <text name="AccountDetails">Account details</text>
     <text name="ChangePassword">Change password</text>
     <text name="AccountUpdated">Your account was updated</text>

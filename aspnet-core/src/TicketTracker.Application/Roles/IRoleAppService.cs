@@ -11,6 +11,6 @@ namespace TicketTracker.Roles
 
         Task<GetRoleForEditOutput> GetRoleForEdit(EntityDto input);
 
-        Task<ListResultDto<RoleListDto>> GetRolesAsync(GetRolesInput input);
+        Task<ListResultDto<RoleListDto>> GetRolesByPermissionAsync(GetRolesInput input);
     }
 }

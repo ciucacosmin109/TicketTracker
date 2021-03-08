@@ -10,7 +10,7 @@ using TicketTracker.EntityFrameworkCore;
 namespace TicketTracker.Migrations
 {
     [DbContext(typeof(TicketTrackerDbContext))]
-    [Migration("20210307155637_Added_Entities")]
+    [Migration("20210307192959_Added_Entities")]
     partial class Added_Entities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1525,9 +1525,9 @@ namespace TicketTracker.Migrations
 
             modelBuilder.Entity("TicketTracker.Entities.Activity", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .UseIdentityColumn();
 
                     b.Property<string>("Name")
@@ -1800,21 +1800,6 @@ namespace TicketTracker.Migrations
                     b.ToTable("ProjectUsers");
                 });
 
-            modelBuilder.Entity("TicketTracker.Entities.Status", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Statuses");
-                });
-
             modelBuilder.Entity("TicketTracker.Entities.Subscription", b =>
                 {
                     b.Property<long>("Id")
@@ -1871,8 +1856,8 @@ namespace TicketTracker.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<long>("ActivityId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
 
                     b.Property<long>("ComponentId")
                         .HasColumnType("bigint");
@@ -1901,15 +1886,18 @@ namespace TicketTracker.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<short?>("Priority")
-                        .HasColumnType("smallint");
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
 
-                    b.Property<long>("StatusId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1922,8 +1910,6 @@ namespace TicketTracker.Migrations
                     b.HasIndex("DeleterUserId");
 
                     b.HasIndex("LastModifierUserId");
-
-                    b.HasIndex("StatusId");
 
                     b.ToTable("Tickets");
                 });
@@ -2494,12 +2480,6 @@ namespace TicketTracker.Migrations
                         .WithMany()
                         .HasForeignKey("LastModifierUserId");
 
-                    b.HasOne("TicketTracker.Entities.Status", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Activity");
 
                     b.Navigation("Component");
@@ -2509,8 +2489,6 @@ namespace TicketTracker.Migrations
                     b.Navigation("DeleterUser");
 
                     b.Navigation("LastModifierUser");
-
-                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("TicketTracker.Entities.Work", b =>

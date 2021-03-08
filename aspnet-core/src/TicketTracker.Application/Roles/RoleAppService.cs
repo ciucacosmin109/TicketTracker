@@ -49,7 +49,7 @@ namespace TicketTracker.Roles
             return MapToEntityDto(role);
         }
 
-        public async Task<ListResultDto<RoleListDto>> GetRolesAsync(GetRolesInput input)
+        public async Task<ListResultDto<RoleListDto>> GetRolesByPermissionAsync(GetRolesInput input)
         {
             var roles = await _roleManager
                 .Roles

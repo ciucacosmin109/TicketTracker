@@ -12,14 +12,15 @@ namespace TicketTracker.Entities {
         [Required]
         public string Title { get; set; }
         public string Description { get; set; }
-        public short? Priority { get; set; }
-        public Status Status { get; set; }
+        public TicketPriority Priority { get; set; }
+        public TicketType Type { get; set; }
+        public TicketStatus Status { get; set; }
 
         public Component Component { get; set; }
         public long ComponentId { get; set; }
          
         public Activity Activity { get; set; }
-        public long ActivityId { get; set; }
+        public int ActivityId { get; set; }
 
         public Work Work { get; set; }  
         public List<Subscription> Subscriptions { get; set; }  

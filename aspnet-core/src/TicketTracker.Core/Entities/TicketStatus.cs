@@ -1,14 +1,10 @@
 ﻿using Abp.Domain.Entities;
-using Abp.Domain.Entities.Auditing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TicketTracker.Authorization.Users;
 
 namespace TicketTracker.Entities {
-    public class Activity : Entity<int> { 
-        public string Name { get; set; } 
-    }
+    public enum TicketStatus { NEW, IN_DEVELOPMENT, IN_DEVELOPMENT_REOPENED, SOLVED, CLOSED } 
 }

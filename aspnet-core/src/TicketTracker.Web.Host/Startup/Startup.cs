@@ -24,7 +24,7 @@ using Microsoft.AspNetCore.Mvc;
 using Abp.AspNetCore.Mvc.ExceptionHandling;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using MailKit.Net.Smtp;
+using MailKit.Net.Smtp; 
 
 namespace TicketTracker.Web.Host.Startup
 {
@@ -144,8 +144,8 @@ namespace TicketTracker.Web.Host.Startup
             app.UseAuthentication();
 
             app.UseAbpRequestLocalization();
+             
 
-          
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<AbpCommonHub>("/signalr");
@@ -164,7 +164,7 @@ namespace TicketTracker.Web.Host.Startup
                 options.IndexStream = () => Assembly.GetExecutingAssembly()
                     .GetManifestResourceStream("TicketTracker.Web.Host.wwwroot.swagger.ui.index.html");
                 options.DisplayRequestDuration(); // Controls the display of the request duration (in milliseconds) for "Try it out" requests.  
-            }); // URL: /swagger
+            }); // URL: /swagger 
 
             // Remove AbpExceptionFilter :D 
             /*var ops = app.ApplicationServices.GetRequiredService<IOptions<MvcOptions>>().Value;
@@ -172,7 +172,7 @@ namespace TicketTracker.Web.Host.Startup
                 (f as ServiceFilterAttribute)?.ServiceType == typeof(AbpExceptionFilter)
             );
             ops.Filters.Remove(abpExceptionFilter);*/
-             
+
         }
     }
 }
