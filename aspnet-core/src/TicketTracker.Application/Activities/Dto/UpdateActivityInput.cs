@@ -7,10 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TicketTracker.Entities;
 
-namespace TicketTracker.Activities.Dto {
+namespace TicketTracker.Activities.Dto {  
     [AutoMap(typeof(Activity))]
-    public class ActivityDto : EntityDto<int> {
-        public string Name { get; set; }
-        public bool IsStatic { get; set; }
+    public class UpdateActivityInput : EntityDto<int> {
+        public string Name { get; set; } 
     }
 }

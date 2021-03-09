@@ -14,6 +14,6 @@ namespace TicketTracker.Entities.ProjectAuthorization {
         public string Name { get; set; }
         public bool IsStatic { get; set; }
 
-        public List<PRole> Roles { get; set; }
+        public List<PRole> Roles { get; set; } 
     }
 }

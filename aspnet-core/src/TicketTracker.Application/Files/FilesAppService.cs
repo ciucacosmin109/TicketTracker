@@ -57,13 +57,11 @@ namespace TicketTracker.Files {
             Ticket t;
             using (var unitOfWork = _unitOfWorkManager.Begin()) {
                 try {
-                    t = _repoTickets.Get(input.TicketId);
+                    t = _repoTickets.Get(input.TicketId); 
                 }
                 catch (Exception ex) {
-                    throw new UserFriendlyException(ex.ToString());
-                }
-                if (t == null)
                     throw new UserFriendlyException("The ticket was not found");
+                }
 
                 unitOfWork.Complete();
             }

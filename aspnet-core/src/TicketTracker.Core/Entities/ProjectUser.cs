@@ -17,9 +17,7 @@ namespace TicketTracker.Entities {
         public Project Project { get; set; }
         public int ProjectId { get; set; }
 
-        public PRole Role { get; set; }
-        public int? RoleId { get; set; }
-
+        public List<PRole> Roles { get; set; } 
         public List<Work> Works { get; set; }
 
     }

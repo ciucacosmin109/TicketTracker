@@ -15,9 +15,9 @@
 <minVolumes>0</minVolumes>
 <normalForm>Third</normalForm>
 <attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
-<Attribute name="Id" id="3191B5EC-701E-F778-12C3-41180E6B4C5A">
+<Attribute name="Id" id="4456C87A-8156-FC40-14B8-F2038C2F7EA4">
 <createdBy>Acer</createdBy>
-<createdTime>2021-03-02 15:55:07 UTC</createdTime>
+<createdTime>2021-03-09 08:12:37 UTC</createdTime>
 <ownerDesignName>DatabaseModel</ownerDesignName>
 <engineerTo>
 <item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
@@ -26,7 +26,7 @@
 <use>0</use>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
-<Attribute name="UserProjectId" id="942868B7-A788-AB7B-9A8F-CD402E58F975">
+<Attribute name="ProjectUserId" id="942868B7-A788-AB7B-9A8F-CD402E58F975">
 <createdBy>Acer</createdBy>
 <createdTime>2021-03-02 15:59:00 UTC</createdTime>
 <ownerDesignName>DatabaseModel</ownerDesignName>

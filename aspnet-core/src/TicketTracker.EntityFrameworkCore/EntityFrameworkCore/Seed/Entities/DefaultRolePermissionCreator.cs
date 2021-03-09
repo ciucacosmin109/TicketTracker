@@ -22,41 +22,39 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
             var perm = _context.PPermissions.IgnoreQueryFilters().Count();
 
             if (roles == 0 && perm == 0) {
+                // Insert all permissions into the db
+                var allPermissions = new List<PPermission> {
+                    new PPermission { Name = StaticProjectPermissionNames.Project_Edit, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Project_AddUsers, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Project_AddComponents, IsStatic = true },
+
+                    new PPermission { Name = StaticProjectPermissionNames.Component_Edit, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Component_AddTickets, IsStatic = true },
+
+                    new PPermission { Name = StaticProjectPermissionNames.Ticket_Edit, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Ticket_AddComments, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Ticket_AddAttachments, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Ticket_Subscribe, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Ticket_AssignWork, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Ticket_SelfAssignWork, IsStatic = true },
+                };
+                _context.PPermissions.AddRange(allPermissions);
+                _context.SaveChanges();
+
+                // Setup roles 
                 _context.PRoles.Add(new PRole {
                     Name = StaticProjectRoleNames.ProjectManager,
-                    IsStatic = true,
-
-                    Permissions = new List<PPermission> {
-                        new PPermission { Name = StaticProjectPermissionNames.Project_Edit, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Project_AddUsers, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Project_AddComponents, IsStatic = true },
-
-                        new PPermission { Name = StaticProjectPermissionNames.Component_Edit, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Component_AddTickets, IsStatic = true },
-
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_Edit, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_AddComments, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_AddAttachments, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_Subscribe, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_AssignWork, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_SelfAssignWork, IsStatic = true },
-                    }
+                    IsStatic = true, 
+                    Permissions = allPermissions
                 });
                 _context.PRoles.Add(new PRole {
                     Name = StaticProjectRoleNames.Developer,
                     IsStatic = true,
 
                     Permissions = new List<PPermission> {
-                        new PPermission { Name = StaticProjectPermissionNames.Project_AddComponents, IsStatic = true },
-
-                        new PPermission { Name = StaticProjectPermissionNames.Component_Edit, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Component_AddTickets, IsStatic = true },
-
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_Edit, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_AddComments, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_AddAttachments, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_Subscribe, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_SelfAssignWork, IsStatic = true },
+                        allPermissions[2], allPermissions[3], allPermissions[4],
+                        allPermissions[5], allPermissions[6], allPermissions[7],
+                        allPermissions[8], allPermissions[10],
                     }
                 });
                 _context.PRoles.Add(new PRole {
@@ -64,13 +62,9 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
                     IsStatic = true,
 
                     Permissions = new List<PPermission> {
-                        new PPermission { Name = StaticProjectPermissionNames.Component_AddTickets, IsStatic = true },
-
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_Edit, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_AddComments, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_AddAttachments, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_Subscribe, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_SelfAssignWork, IsStatic = true },
+                        allPermissions[4],
+                        allPermissions[5], allPermissions[6], allPermissions[7],
+                        allPermissions[8], allPermissions[10], 
                     }
                 });
                 _context.PRoles.Add(new PRole {
@@ -78,16 +72,13 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
                     IsStatic = true,
 
                     Permissions = new List<PPermission> {
-                        new PPermission { Name = StaticProjectPermissionNames.Component_AddTickets, IsStatic = true },
-
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_Edit, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_AddComments, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_AddAttachments, IsStatic = true },
-                        new PPermission { Name = StaticProjectPermissionNames.Ticket_Subscribe, IsStatic = true }, 
+                        allPermissions[4],
+                        allPermissions[5], allPermissions[6], allPermissions[7],
+                        allPermissions[8], 
                     }
                 });
 
-                _context.SaveChanges();
+                _context.SaveChanges(); 
             }
         }
     }

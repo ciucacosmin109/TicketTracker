@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TicketTracker.Migrations
 {
-    public partial class Added_Entities : Migration
+    public partial class Initial_migration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -449,7 +449,8 @@ namespace TicketTracker.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IsStatic = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -462,7 +463,7 @@ namespace TicketTracker.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsStatic = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -476,7 +477,7 @@ namespace TicketTracker.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsStatic = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -791,7 +792,7 @@ namespace TicketTracker.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -983,11 +984,11 @@ namespace TicketTracker.Migrations
                 name: "Components",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProjectId = table.Column<long>(type: "bigint", nullable: false),
+                    ProjectId = table.Column<int>(type: "int", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1029,11 +1030,10 @@ namespace TicketTracker.Migrations
                 name: "ProjectUsers",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    ProjectId = table.Column<long>(type: "bigint", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: true),
+                    ProjectId = table.Column<int>(type: "int", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1075,26 +1075,20 @@ namespace TicketTracker.Migrations
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProjectUsers_PRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "PRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Tickets",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Priority = table.Column<int>(type: "int", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    ComponentId = table.Column<long>(type: "bigint", nullable: false),
+                    ComponentId = table.Column<int>(type: "int", nullable: false),
                     ActivityId = table.Column<int>(type: "int", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
@@ -1140,14 +1134,38 @@ namespace TicketTracker.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PRoleProjectUser",
+                columns: table => new
+                {
+                    ProjectUsersId = table.Column<int>(type: "int", nullable: false),
+                    RolesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PRoleProjectUser", x => new { x.ProjectUsersId, x.RolesId });
+                    table.ForeignKey(
+                        name: "FK_PRoleProjectUser_ProjectUsers_ProjectUsersId",
+                        column: x => x.ProjectUsersId,
+                        principalTable: "ProjectUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PRoleProjectUser_PRoles_RolesId",
+                        column: x => x.RolesId,
+                        principalTable: "PRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Atachments",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     FileBytes = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    TicketId = table.Column<long>(type: "bigint", nullable: true),
+                    TicketId = table.Column<int>(type: "int", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1189,12 +1207,12 @@ namespace TicketTracker.Migrations
                 name: "Comments",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    TicketId = table.Column<long>(type: "bigint", nullable: false),
-                    ParinteId = table.Column<long>(type: "bigint", nullable: true),
+                    TicketId = table.Column<int>(type: "int", nullable: false),
+                    ParentId = table.Column<int>(type: "int", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1231,8 +1249,8 @@ namespace TicketTracker.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Comments_Comments_ParinteId",
-                        column: x => x.ParinteId,
+                        name: "FK_Comments_Comments_ParentId",
+                        column: x => x.ParentId,
                         principalTable: "Comments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -1248,10 +1266,10 @@ namespace TicketTracker.Migrations
                 name: "Subscriptions",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    TicketId = table.Column<long>(type: "bigint", nullable: false),
+                    TicketId = table.Column<int>(type: "int", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1299,10 +1317,10 @@ namespace TicketTracker.Migrations
                 name: "Works",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectUserId = table.Column<long>(type: "bigint", nullable: false),
-                    TicketId = table.Column<long>(type: "bigint", nullable: false),
+                    ProjectUserId = table.Column<int>(type: "int", nullable: false),
+                    TicketId = table.Column<int>(type: "int", nullable: false),
                     WorkedTime = table.Column<int>(type: "int", nullable: true),
                     EstimatedTime = table.Column<int>(type: "int", nullable: true),
                     Priority = table.Column<short>(type: "smallint", nullable: false),
@@ -1694,6 +1712,13 @@ namespace TicketTracker.Migrations
                 column: "WebhookEventId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Activities_Name",
+                table: "Activities",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Atachments_CreatorUserId",
                 table: "Atachments",
                 column: "CreatorUserId");
@@ -1707,6 +1732,13 @@ namespace TicketTracker.Migrations
                 name: "IX_Atachments_LastModifierUserId",
                 table: "Atachments",
                 column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Atachments_Name_TicketId",
+                table: "Atachments",
+                columns: new[] { "Name", "TicketId" },
+                unique: true,
+                filter: "[Name] IS NOT NULL AND [TicketId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Atachments_TicketId",
@@ -1729,9 +1761,9 @@ namespace TicketTracker.Migrations
                 column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_ParinteId",
+                name: "IX_Comments_ParentId",
                 table: "Comments",
-                column: "ParinteId");
+                column: "ParentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_TicketId",
@@ -1769,6 +1801,12 @@ namespace TicketTracker.Migrations
                 column: "RolesId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PPermissions_Name",
+                table: "PPermissions",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Projects_CreatorUserId",
                 table: "Projects",
                 column: "CreatorUserId");
@@ -1804,14 +1842,21 @@ namespace TicketTracker.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectUsers_RoleId",
+                name: "IX_ProjectUsers_UserId_ProjectId",
                 table: "ProjectUsers",
-                column: "RoleId");
+                columns: new[] { "UserId", "ProjectId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectUsers_UserId",
-                table: "ProjectUsers",
-                column: "UserId");
+                name: "IX_PRoleProjectUser_RolesId",
+                table: "PRoleProjectUser",
+                column: "RolesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PRoles_Name",
+                table: "PRoles",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Subscriptions_CreatorUserId",
@@ -1834,9 +1879,10 @@ namespace TicketTracker.Migrations
                 column: "TicketId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Subscriptions_UserId",
+                name: "IX_Subscriptions_UserId_TicketId",
                 table: "Subscriptions",
-                column: "UserId");
+                columns: new[] { "UserId", "TicketId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_ActivityId",
@@ -1879,9 +1925,10 @@ namespace TicketTracker.Migrations
                 column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Works_ProjectUserId",
+                name: "IX_Works_ProjectUserId_TicketId",
                 table: "Works",
-                column: "ProjectUserId");
+                columns: new[] { "ProjectUserId", "TicketId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Works_TicketId",
@@ -1983,6 +2030,9 @@ namespace TicketTracker.Migrations
                 name: "PPermissionPRole");
 
             migrationBuilder.DropTable(
+                name: "PRoleProjectUser");
+
+            migrationBuilder.DropTable(
                 name: "Subscriptions");
 
             migrationBuilder.DropTable(
@@ -2007,6 +2057,9 @@ namespace TicketTracker.Migrations
                 name: "PPermissions");
 
             migrationBuilder.DropTable(
+                name: "PRoles");
+
+            migrationBuilder.DropTable(
                 name: "ProjectUsers");
 
             migrationBuilder.DropTable(
@@ -2017,9 +2070,6 @@ namespace TicketTracker.Migrations
 
             migrationBuilder.DropTable(
                 name: "AbpEntityChangeSets");
-
-            migrationBuilder.DropTable(
-                name: "PRoles");
 
             migrationBuilder.DropTable(
                 name: "Activities");

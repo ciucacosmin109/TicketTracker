@@ -22,7 +22,7 @@ namespace TicketTracker.EntityFrameworkCore
         public DbSet<Component> Components { get; set; }
 
         public DbSet<PRole> PRoles { get; set; }
-        public DbSet<PPermission> PPermissions { get; set; }
+        public DbSet<PPermission> PPermissions { get; set; } 
 
         public TicketTrackerDbContext(DbContextOptions<TicketTrackerDbContext> options)
             : base(options)
@@ -58,6 +58,27 @@ namespace TicketTracker.EntityFrameworkCore
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<Activity>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
+            modelBuilder.Entity<PRole>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
+            modelBuilder.Entity<PPermission>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
+            modelBuilder.Entity<File>()
+                .HasIndex(x => new { x.Name, x.TicketId })
+                .IsUnique();
+            modelBuilder.Entity<ProjectUser>()
+                .HasIndex(x => new { x.UserId, x.ProjectId })
+                .IsUnique();
+            modelBuilder.Entity<Subscription>()
+                .HasIndex(x => new { x.UserId, x.TicketId })
+                .IsUnique();
+            modelBuilder.Entity<Work>()
+                .HasIndex(x => new { x.ProjectUserId, x.TicketId })
+                .IsUnique();
         }
     }
 }

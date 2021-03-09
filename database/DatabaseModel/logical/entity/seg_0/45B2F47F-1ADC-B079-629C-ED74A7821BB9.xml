@@ -37,5 +37,16 @@
 <use>0</use>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 </Attribute>
+<Attribute name="IsStatic" id="97E1E36D-D23E-98BC-6DC8-649C8E2CFCEE">
+<createdBy>Acer</createdBy>
+<createdTime>2021-03-08 14:03:34 UTC</createdTime>
+<ownerDesignName>DatabaseModel</ownerDesignName>
+<engineerTo>
+<item key="C2DE0AF9-50DF-73EB-540D-F635CB14B93A" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
 </attributes>
 </Entity>
