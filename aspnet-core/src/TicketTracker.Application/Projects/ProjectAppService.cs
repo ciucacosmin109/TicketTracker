@@ -9,49 +9,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TicketTracker.Entities;
-using TicketTracker.Entities.ProjectAuthorization;
+using TicketTracker.Entities.ProjectAuthorization; 
+using TicketTracker.EntityFrameworkCore.Repositories;
+using TicketTracker.Managers;
 using TicketTracker.Projects.Dto;
+using TicketTracker.Projects.Dto.RoleDto;
 
 namespace TicketTracker.Projects {
 
     [AbpAuthorize]
     public class ProjectAppService : AsyncCrudAppService<Project, ProjectDto, int, GetAllProjectsInput, CreateProjectInput, UpdateProjectInput> {
-        private readonly IRepository<ProjectUser> repoPUsers;
-        private readonly IRepository<PRole> repoPRole;
+        private readonly ProjectRepository repoProjects;
+        private readonly ProjectUserRepository repoPUsers;
+        private readonly IRepository<PRole> repoPRoles;
+        private readonly ProjectManager projectManager;
         private readonly IAbpSession session;
 
         public ProjectAppService(
             IRepository<Project> repository,
-            IRepository<ProjectUser> repoPUsers,
-            IRepository<PRole> repoPRole,
+            ProjectRepository repoProjects,
+            ProjectUserRepository repoPUsers,
+            IRepository<PRole> repoPRoles,
+            ProjectManager projectManager,
             IAbpSession session) : base(repository) {
-            
+            this.repoProjects = repoProjects;
             this.repoPUsers = repoPUsers;
-            this.repoPRole = repoPRole;
+            this.repoPRoles = repoPRoles;
+            this.projectManager = projectManager;
             this.session = session;
-        }
-        protected void CheckViewProjectPermission(long? userId, int projectId, bool isProjectPublic) {
-            if (isProjectPublic) {
-                return;
-            }
-
-            var hasPermission = repoPUsers.GetAll().Where(x => x.ProjectId == projectId && x.UserId == userId).Count() > 0;
-            if (!hasPermission) {
-                throw new AbpAuthorizationException("You are not assigned to this project");
-            }
-        }
-        protected void CheckProjectPermission(long? userId, int projectId, string permissionName) { 
-            var hasPermission = repoPUsers.GetAll().Where(x => x.ProjectId == projectId && x.UserId == userId).Count() > 0;
-            if (!hasPermission) {
-                throw new AbpAuthorizationException("You are not assigned to this project");
-            }
         }
 
         public override async Task<ProjectDto> GetAsync(EntityDto<int> input) {
             CheckGetPermission();
 
             var entity = await GetEntityByIdAsync(input.Id);
-            CheckViewProjectPermission(session.UserId, input.Id, entity.IsPublic);
+            projectManager.CheckViewProjectPermission(session.UserId, input.Id, entity.IsPublic);
 
             return MapToEntityDto(entity);
         }
@@ -60,15 +52,70 @@ namespace TicketTracker.Projects {
             return await base.GetAllAsync(input);
         }
         protected override IQueryable<Project> CreateFilteredQuery(GetAllProjectsInput input) {
-            var res = base.CreateFilteredQuery(input).Where(x => x.IsPublic == input.IsPublic);
-
-            if (!input.IsPublic) { 
-                var projectIds = repoPUsers.GetAll().Where(x => x.UserId == session.UserId).Select(x => x.Id);
-                res.Where(x => projectIds.Contains(x.Id));
-            }
-            return res;
+            var res = base.CreateFilteredQuery(input); 
+            return projectManager.FilterQueryByPermission(res, session.UserId, input.IsPublic);
         }
-         
+
+        public async Task<PagedResultDto<ProjectWithRolesDto>> GetAllIncludingRolesAsync(GetAllProjectsInput input) {
+            CheckGetAllPermission();
+
+            var query = repoProjects.GetAllIncludingRoles();
+            var totalCount = await AsyncQueryableExecuter.CountAsync(query);
+
+            query = projectManager.FilterQueryByPermission(query, session.UserId, input.IsPublic);
+            query = ApplySorting(query, input);
+            query = ApplyPaging(query, input);
+
+            List<ProjectWithRolesDto> result = new List<ProjectWithRolesDto>();
+            foreach (Project proj in query) {
+                List<PRole> roles = proj.ProjectUsers
+                    .Where(x=>x.UserId == session.UserId)
+                    .SelectMany(x => x.Roles)
+                    .ToList();
+
+                ProjectWithRolesDto p = ObjectMapper.Map<ProjectWithRolesDto>(proj);
+                p.Roles = ObjectMapper.Map<List<PRoleDto>>(roles);
+
+                result.Add(p);
+            }
+
+            //var entities = await AsyncQueryableExecuter.ToListAsync(query); 
+            return new PagedResultDto<ProjectWithRolesDto>(
+                totalCount, result
+            );
+        }
+        public async Task<PagedResultDto<ProjectWithRolesAndPermissionsDto>> GetAllIncludingRolesAndPermissionsAsync(GetAllProjectsInput input) {
+            CheckGetAllPermission();
+
+            var query = repoProjects.GetAllIncludingRoles();
+            var totalCount = await AsyncQueryableExecuter.CountAsync(query);
+
+            query = projectManager.FilterQueryByPermission(query, session.UserId, input.IsPublic);
+            query = ApplySorting(query, input);
+            query = ApplyPaging(query, input);
+
+            var result = new List<ProjectWithRolesAndPermissionsDto>();
+            foreach (Project proj in query) {
+                List<PRole> roles = proj.ProjectUsers
+                    .Where(x => x.UserId == session.UserId)
+                    .SelectMany(x => x.Roles)
+                    .ToList();
+
+                ProjectWithRolesAndPermissionsDto p = ObjectMapper.Map<ProjectWithRolesAndPermissionsDto>(proj);
+                p.Roles = new List<PRoleWithPermissionsDto>();
+                foreach (PRole role in roles) {
+                    p.Roles.Add(ObjectMapper.Map<PRoleWithPermissionsDto>(role));
+                    p.Roles.Last().PermissionNames = role.Permissions.Select(x => x.Name).ToList();
+                }
+                result.Add(p);
+            }
+
+            //var entities = await AsyncQueryableExecuter.ToListAsync(query); 
+            return new PagedResultDto<ProjectWithRolesAndPermissionsDto>(
+                totalCount, result
+            );
+        }
+
         public override async Task<ProjectDto> CreateAsync(CreateProjectInput input) {
             CheckCreatePermission(); 
             var entity = MapToEntity(input);
@@ -79,7 +126,7 @@ namespace TicketTracker.Projects {
             await repoPUsers.InsertAsync(new ProjectUser {
                 ProjectId = projectId,
                 UserId = session.UserId.Value,
-                Roles = new List<PRole> { repoPRole.FirstOrDefault(x => x.Name == StaticProjectRoleNames.ProjectManager) } 
+                Roles = new List<PRole> { repoPRoles.FirstOrDefault(x => x.Name == StaticProjectRoleNames.ProjectManager) } 
             });
             await CurrentUnitOfWork.SaveChangesAsync();
             
@@ -87,7 +134,15 @@ namespace TicketTracker.Projects {
         }
          
         public override async Task<ProjectDto> UpdateAsync(UpdateProjectInput input) {
+            projectManager.CheckProjectPermission(session.UserId, input.Id, StaticProjectPermissionNames.Project_Edit); 
             return await base.UpdateAsync(input);
         }
+
+        public override async Task DeleteAsync(EntityDto<int> input) {
+            projectManager.CheckProjectPermission(session.UserId, input.Id, StaticProjectPermissionNames.Project_Edit);
+            await base.DeleteAsync(input);
+        }
+
+
     }
 }

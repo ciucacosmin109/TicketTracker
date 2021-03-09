@@ -12,5 +12,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\TicketTracker.Core\TicketTracker.Core.csproj" />
+    <ProjectReference Include="..\TicketTracker.EntityFrameworkCore\TicketTracker.EntityFrameworkCore.csproj" />
   </ItemGroup>
 </Project>

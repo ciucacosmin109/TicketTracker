@@ -1,5 +1,4 @@
-﻿using Abp.Application.Services.Dto;
-using Abp.AutoMapper;
+﻿using Abp.AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,13 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using TicketTracker.Entities;
 
-namespace TicketTracker.Projects.Dto {
-    [AutoMap(typeof(Project))]
-    public class ProjectDto : AuditedEntityDto<int> {
+namespace TicketTracker.Components.Dto {
+    [AutoMap(typeof(Component))]
+    public class CreateComponentInput {
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
-        public bool IsPublic { get; set; }
-          
     }
 }

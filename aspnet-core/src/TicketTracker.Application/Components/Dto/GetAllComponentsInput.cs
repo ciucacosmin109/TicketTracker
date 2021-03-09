@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TicketTracker.Projects.Dto {
-    public class GetAllProjectsInput : PagedAndSortedResultRequestDto {
-        public bool? IsPublic { get; set; }
+namespace TicketTracker.Components.Dto {
+    public class GetAllComponentsInput : PagedAndSortedResultRequestDto {
+        public int ProjectId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Abp.Authorization.Users;
+﻿using Abp.Application.Services.Dto;
+using Abp.Authorization.Users;
 using Abp.AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using TicketTracker.Authorization.Users;
 
 namespace TicketTracker.Authorization.Accounts.Dto {
     [AutoMapFrom(typeof(User))]
-    public class GetAccountOutput {
+    public class GetAccountOutput : EntityDto<long> { 
         public string Name { get; set; } 
         public string Surname { get; set; }
         public string FullName { get; set; }
