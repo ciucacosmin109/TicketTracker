@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using TicketTracker.Authorization.Users;
 
 namespace TicketTracker.Entities {
-    public class File : FullAuditedEntity<int, User> { 
+    public class File : AuditedEntity<int, User> { 
         public string Name { get; set; } 
         public byte[] FileBytes { get; set; }
 

@@ -13,17 +13,14 @@ using TicketTracker.EntityFrameworkCore.Repositories;
 namespace TicketTracker.Managers {
     public class ProjectManager : IDomainService {
         private readonly IRepository<Project> repoProjects;
-        private readonly ProjectUserRepository repoPUsers;
-        private readonly IRepository<PRole> repoPRole;
+        private readonly ProjectUserRepository repoPUsers; 
 
         public ProjectManager(
             IRepository<Project> repoProjects,
-            ProjectUserRepository repoPUsers,
-            IRepository<PRole> repoPRole
+            ProjectUserRepository repoPUsers
         ) {
             this.repoProjects = repoProjects;
-            this.repoPUsers = repoPUsers;
-            this.repoPRole = repoPRole;
+            this.repoPUsers = repoPUsers; 
         }
          
         public IQueryable<Project> FilterQueryByPermission(IQueryable<Project> query, long? userId, bool? isPublic = null ) {
@@ -45,12 +42,18 @@ namespace TicketTracker.Managers {
             return repoPUsers.GetAll().Where(x => x.UserId == userId).Select(x => x.ProjectId).ToList();
         }
 
-        public void CheckViewProjectPermission(long? userId, int projectId, bool isProjectPublic) {
-            if (isProjectPublic) {
-                return;
+        public bool IsProjectCreator(long? userId, int projectId) {
+            return repoPUsers.GetAll().Where(x => x.UserId == userId && x.ProjectId == projectId && x.IsCreator).Count() > 0;
+        } 
+
+        public void CheckViewProjectPermission(long? userId, int projectId, bool? isProjectPublic = null) {
+            if (isProjectPublic == null) {
+                isProjectPublic = repoProjects.Get(projectId).IsPublic;
             }
 
-            CheckProjectPermission(userId, projectId);
+            if (!isProjectPublic.Value) {
+                CheckProjectPermission(userId, projectId);
+            }
         }
 
         public void CheckProjectPermission(long? userId, int projectId, string permissionName = null) {

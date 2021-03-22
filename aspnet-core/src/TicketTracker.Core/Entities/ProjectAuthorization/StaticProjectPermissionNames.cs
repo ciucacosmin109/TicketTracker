@@ -1,23 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TicketTracker.Entities.ProjectAuthorization {
-    public static class StaticProjectPermissionNames {
-        public const string Project_Edit = "Project.Edit";
-        public const string Project_AddUsers = "Project.AddUsers";
+﻿namespace TicketTracker.Entities.ProjectAuthorization {
+    public static class StaticProjectPermissionNames { 
+        public const string Project_ManageUsers = "Project.ManageUsers";
+        public const string Project_ManageRoles = "Project.ManageRoles";
         public const string Project_AddComponents = "Project.AddComponents";
+        public const string Project_ManageComponents = "Project.ManageComponents";
 
-        public const string Component_Edit = "Component.Edit";
         public const string Component_AddTickets = "Component.AddTickets";
+        public const string Component_ManageTickets = "Component.ManageTickets";
 
-        public const string Ticket_Edit = "Ticket.Edit";
-        public const string Ticket_Subscribe = "Ticket.Subscribe";
         public const string Ticket_AddComments = "Ticket.AddComments";
+        public const string Ticket_ManageComments = "Ticket.ManageComments";
         public const string Ticket_AddAttachments = "Ticket.AddAttachments";
+        public const string Ticket_ManageAttachments = "Ticket.ManageAttachments";
+
+        public const string Ticket_Subscribe = "Ticket.Subscribe";
+        public const string Ticket_ManageSubscriptions = "Ticket.ManageSubscriptions";
         public const string Ticket_AssignWork = "Ticket.AssignWork";
-        public const string Ticket_SelfAssignWork = "Ticket.SelfAssignWork";
+        public const string Ticket_SelfAssignWork = "Ticket.SelfAssignWork"; 
     }
 }

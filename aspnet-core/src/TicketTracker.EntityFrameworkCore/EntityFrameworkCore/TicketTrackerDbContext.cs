@@ -11,7 +11,8 @@ namespace TicketTracker.EntityFrameworkCore
     public class TicketTrackerDbContext : AbpZeroDbContext<Tenant, Role, User, TicketTrackerDbContext>
     {
         /* Define a DbSet for each entity of the application */
-        public DbSet<Activity> Activities { get; set; } 
+        public DbSet<Activity> Activities { get; set; }
+        public DbSet<Status> Statuses { get; set; }
         public DbSet<File> Atachments { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Project> Projects { get; set; }
@@ -37,13 +38,7 @@ namespace TicketTracker.EntityFrameworkCore
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId)
                 .IsRequired();
-
-            modelBuilder.Entity<User>()
-                .HasMany(x => x.Comments)
-                .WithOne(x => x.User)
-                .HasForeignKey(x => x.UserId)
-                .IsRequired();
-
+              
             modelBuilder.Entity<User>()
                 .HasMany(x => x.Subscriptions)
                 .WithOne(x => x.User)

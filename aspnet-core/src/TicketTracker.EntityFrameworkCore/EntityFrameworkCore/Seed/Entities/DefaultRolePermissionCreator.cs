@@ -24,17 +24,25 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
             if (roles == 0 && perm == 0) {
                 // Insert all permissions into the db
                 var allPermissions = new List<PPermission> {
-                    new PPermission { Name = StaticProjectPermissionNames.Project_Edit, IsStatic = true },
-                    new PPermission { Name = StaticProjectPermissionNames.Project_AddUsers, IsStatic = true },
+                    //0 
+                    new PPermission { Name = StaticProjectPermissionNames.Project_ManageUsers, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Project_ManageRoles, IsStatic = true },
                     new PPermission { Name = StaticProjectPermissionNames.Project_AddComponents, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Project_ManageComponents, IsStatic = true },
 
-                    new PPermission { Name = StaticProjectPermissionNames.Component_Edit, IsStatic = true },
+                    //5
                     new PPermission { Name = StaticProjectPermissionNames.Component_AddTickets, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Component_ManageTickets, IsStatic = true },
 
-                    new PPermission { Name = StaticProjectPermissionNames.Ticket_Edit, IsStatic = true },
+                    //7
                     new PPermission { Name = StaticProjectPermissionNames.Ticket_AddComments, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Ticket_ManageComments, IsStatic = true },
                     new PPermission { Name = StaticProjectPermissionNames.Ticket_AddAttachments, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Ticket_ManageAttachments, IsStatic = true },
+                    
+                    //11
                     new PPermission { Name = StaticProjectPermissionNames.Ticket_Subscribe, IsStatic = true },
+                    new PPermission { Name = StaticProjectPermissionNames.Ticket_ManageSubscriptions, IsStatic = true },
                     new PPermission { Name = StaticProjectPermissionNames.Ticket_AssignWork, IsStatic = true },
                     new PPermission { Name = StaticProjectPermissionNames.Ticket_SelfAssignWork, IsStatic = true },
                 };
@@ -44,7 +52,7 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
                 // Setup roles 
                 _context.PRoles.Add(new PRole {
                     Name = StaticProjectRoleNames.ProjectManager,
-                    IsStatic = true, 
+                    IsStatic = true,
                     Permissions = allPermissions
                 });
                 _context.PRoles.Add(new PRole {
@@ -52,9 +60,11 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
                     IsStatic = true,
 
                     Permissions = new List<PPermission> {
-                        allPermissions[2], allPermissions[3], allPermissions[4],
-                        allPermissions[5], allPermissions[6], allPermissions[7],
-                        allPermissions[8], allPermissions[10],
+                        allPermissions[2], allPermissions[3], 
+                        allPermissions[4], allPermissions[5], 
+                        allPermissions[6],
+                        allPermissions[8], 
+                        allPermissions[10], allPermissions[13]
                     }
                 });
                 _context.PRoles.Add(new PRole {
@@ -62,9 +72,10 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
                     IsStatic = true,
 
                     Permissions = new List<PPermission> {
-                        allPermissions[4],
-                        allPermissions[5], allPermissions[6], allPermissions[7],
-                        allPermissions[8], allPermissions[10], 
+                        allPermissions[4], allPermissions[5],
+                        allPermissions[6],
+                        allPermissions[8],
+                        allPermissions[10], allPermissions[13]
                     }
                 });
                 _context.PRoles.Add(new PRole {
@@ -73,8 +84,9 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
 
                     Permissions = new List<PPermission> {
                         allPermissions[4],
-                        allPermissions[5], allPermissions[6], allPermissions[7],
-                        allPermissions[8], 
+                        allPermissions[6],
+                        allPermissions[8],
+                        allPermissions[10]
                     }
                 });
 

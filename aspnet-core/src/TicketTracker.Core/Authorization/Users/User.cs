@@ -11,7 +11,6 @@ namespace TicketTracker.Authorization.Users
 
         public List<ProjectUser> UserProjects { get; set; }
         public List<Subscription> Subscriptions { get; set; }
-        public List<Comment> Comments { get; set; }
 
         // Methods
         public static string CreateRandomPassword()

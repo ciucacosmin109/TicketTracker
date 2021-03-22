@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using TicketTracker.Authorization.Users;
 
 namespace TicketTracker.Entities {
-    public class Subscription : FullAuditedEntity<int, User> {
+    public class Subscription : AuditedEntity<int, User> {
         public User User { get; set; }
         public long UserId { get; set; }
 

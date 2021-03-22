@@ -15,6 +15,6 @@ namespace TicketTracker.Files.Dto {
         public int Size { get; set; }
         public int? TicketId { get; set; }
 
-        public FileUserDto CreatorUser { get; set; }
+        public SimpleUserDto CreatorUser { get; set; }
     }
 }

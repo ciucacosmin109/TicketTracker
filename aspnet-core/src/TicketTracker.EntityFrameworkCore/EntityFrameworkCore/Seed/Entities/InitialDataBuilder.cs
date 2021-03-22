@@ -16,6 +16,7 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
 
         public void Create() {
             new DefaultActivityCreator(_context, _tenantId).Create();
+            new DefaultStatusCreator(_context, _tenantId).Create();
             new DefaultRolePermissionCreator(_context, _tenantId).Create();
 
             _context.SaveChanges();

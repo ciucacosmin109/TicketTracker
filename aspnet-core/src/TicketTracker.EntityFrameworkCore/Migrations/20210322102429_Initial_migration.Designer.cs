@@ -10,7 +10,7 @@ using TicketTracker.EntityFrameworkCore;
 namespace TicketTracker.Migrations
 {
     [DbContext(typeof(TicketTrackerDbContext))]
-    [Migration("20210309082042_Initial_migration")]
+    [Migration("20210322102429_Initial_migration")]
     partial class Initial_migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1610,11 +1610,8 @@ namespace TicketTracker.Migrations
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TicketId")
+                    b.Property<int?>("TicketId")
                         .HasColumnType("int");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -1627,8 +1624,6 @@ namespace TicketTracker.Migrations
                     b.HasIndex("ParentId");
 
                     b.HasIndex("TicketId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -1646,17 +1641,8 @@ namespace TicketTracker.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2");
@@ -1674,8 +1660,6 @@ namespace TicketTracker.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("DeleterUserId");
 
                     b.HasIndex("LastModifierUserId");
 
@@ -1697,17 +1681,8 @@ namespace TicketTracker.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<byte[]>("FileBytes")
                         .HasColumnType("varbinary(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2");
@@ -1724,8 +1699,6 @@ namespace TicketTracker.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("DeleterUserId");
 
                     b.HasIndex("LastModifierUserId");
 
@@ -1751,17 +1724,8 @@ namespace TicketTracker.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
@@ -1779,8 +1743,6 @@ namespace TicketTracker.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("DeleterUserId");
 
                     b.HasIndex("LastModifierUserId");
 
@@ -1844,13 +1806,7 @@ namespace TicketTracker.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool>("IsCreator")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModificationTime")
@@ -1869,8 +1825,6 @@ namespace TicketTracker.Migrations
 
                     b.HasIndex("CreatorUserId");
 
-                    b.HasIndex("DeleterUserId");
-
                     b.HasIndex("LastModifierUserId");
 
                     b.HasIndex("ProjectId");
@@ -1879,6 +1833,24 @@ namespace TicketTracker.Migrations
                         .IsUnique();
 
                     b.ToTable("ProjectUsers");
+                });
+
+            modelBuilder.Entity("TicketTracker.Entities.Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<bool>("IsStatic")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("TicketTracker.Entities.Subscription", b =>
@@ -1893,15 +1865,6 @@ namespace TicketTracker.Migrations
 
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2");
@@ -1918,8 +1881,6 @@ namespace TicketTracker.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("DeleterUserId");
 
                     b.HasIndex("LastModifierUserId");
 
@@ -1938,7 +1899,7 @@ namespace TicketTracker.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("ActivityId")
+                    b.Property<int?>("ActivityId")
                         .HasColumnType("int");
 
                     b.Property<int>("ComponentId")
@@ -1950,17 +1911,8 @@ namespace TicketTracker.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2");
@@ -1971,7 +1923,7 @@ namespace TicketTracker.Migrations
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status")
+                    b.Property<int>("StatusId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -1989,9 +1941,9 @@ namespace TicketTracker.Migrations
 
                     b.HasIndex("CreatorUserId");
 
-                    b.HasIndex("DeleterUserId");
-
                     b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("Tickets");
                 });
@@ -2009,17 +1961,8 @@ namespace TicketTracker.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int?>("EstimatedTime")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2");
@@ -2042,8 +1985,6 @@ namespace TicketTracker.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("DeleterUserId");
 
                     b.HasIndex("LastModifierUserId");
 
@@ -2382,20 +2323,12 @@ namespace TicketTracker.Migrations
                         .HasForeignKey("LastModifierUserId");
 
                     b.HasOne("TicketTracker.Entities.Comment", "Parent")
-                        .WithMany("Copii")
+                        .WithMany("Children")
                         .HasForeignKey("ParentId");
 
                     b.HasOne("TicketTracker.Entities.Ticket", "Ticket")
                         .WithMany("Comments")
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TicketTracker.Authorization.Users.User", "User")
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TicketId");
 
                     b.Navigation("CreatorUser");
 
@@ -2406,8 +2339,6 @@ namespace TicketTracker.Migrations
                     b.Navigation("Parent");
 
                     b.Navigation("Ticket");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TicketTracker.Entities.Component", b =>
@@ -2415,10 +2346,6 @@ namespace TicketTracker.Migrations
                     b.HasOne("TicketTracker.Authorization.Users.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId");
-
-                    b.HasOne("TicketTracker.Authorization.Users.User", "DeleterUser")
-                        .WithMany()
-                        .HasForeignKey("DeleterUserId");
 
                     b.HasOne("TicketTracker.Authorization.Users.User", "LastModifierUser")
                         .WithMany()
@@ -2432,8 +2359,6 @@ namespace TicketTracker.Migrations
 
                     b.Navigation("CreatorUser");
 
-                    b.Navigation("DeleterUser");
-
                     b.Navigation("LastModifierUser");
 
                     b.Navigation("Project");
@@ -2445,10 +2370,6 @@ namespace TicketTracker.Migrations
                         .WithMany()
                         .HasForeignKey("CreatorUserId");
 
-                    b.HasOne("TicketTracker.Authorization.Users.User", "DeleterUser")
-                        .WithMany()
-                        .HasForeignKey("DeleterUserId");
-
                     b.HasOne("TicketTracker.Authorization.Users.User", "LastModifierUser")
                         .WithMany()
                         .HasForeignKey("LastModifierUserId");
@@ -2458,8 +2379,6 @@ namespace TicketTracker.Migrations
                         .HasForeignKey("TicketId");
 
                     b.Navigation("CreatorUser");
-
-                    b.Navigation("DeleterUser");
 
                     b.Navigation("LastModifierUser");
 
@@ -2472,17 +2391,11 @@ namespace TicketTracker.Migrations
                         .WithMany()
                         .HasForeignKey("CreatorUserId");
 
-                    b.HasOne("TicketTracker.Authorization.Users.User", "DeleterUser")
-                        .WithMany()
-                        .HasForeignKey("DeleterUserId");
-
                     b.HasOne("TicketTracker.Authorization.Users.User", "LastModifierUser")
                         .WithMany()
                         .HasForeignKey("LastModifierUserId");
 
                     b.Navigation("CreatorUser");
-
-                    b.Navigation("DeleterUser");
 
                     b.Navigation("LastModifierUser");
                 });
@@ -2492,10 +2405,6 @@ namespace TicketTracker.Migrations
                     b.HasOne("TicketTracker.Authorization.Users.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId");
-
-                    b.HasOne("TicketTracker.Authorization.Users.User", "DeleterUser")
-                        .WithMany()
-                        .HasForeignKey("DeleterUserId");
 
                     b.HasOne("TicketTracker.Authorization.Users.User", "LastModifierUser")
                         .WithMany()
@@ -2515,8 +2424,6 @@ namespace TicketTracker.Migrations
 
                     b.Navigation("CreatorUser");
 
-                    b.Navigation("DeleterUser");
-
                     b.Navigation("LastModifierUser");
 
                     b.Navigation("Project");
@@ -2529,10 +2436,6 @@ namespace TicketTracker.Migrations
                     b.HasOne("TicketTracker.Authorization.Users.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId");
-
-                    b.HasOne("TicketTracker.Authorization.Users.User", "DeleterUser")
-                        .WithMany()
-                        .HasForeignKey("DeleterUserId");
 
                     b.HasOne("TicketTracker.Authorization.Users.User", "LastModifierUser")
                         .WithMany()
@@ -2552,8 +2455,6 @@ namespace TicketTracker.Migrations
 
                     b.Navigation("CreatorUser");
 
-                    b.Navigation("DeleterUser");
-
                     b.Navigation("LastModifierUser");
 
                     b.Navigation("Ticket");
@@ -2565,9 +2466,7 @@ namespace TicketTracker.Migrations
                 {
                     b.HasOne("TicketTracker.Entities.Activity", "Activity")
                         .WithMany()
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ActivityId");
 
                     b.HasOne("TicketTracker.Entities.Component", "Component")
                         .WithMany("Tickets")
@@ -2579,13 +2478,15 @@ namespace TicketTracker.Migrations
                         .WithMany()
                         .HasForeignKey("CreatorUserId");
 
-                    b.HasOne("TicketTracker.Authorization.Users.User", "DeleterUser")
-                        .WithMany()
-                        .HasForeignKey("DeleterUserId");
-
                     b.HasOne("TicketTracker.Authorization.Users.User", "LastModifierUser")
                         .WithMany()
                         .HasForeignKey("LastModifierUserId");
+
+                    b.HasOne("TicketTracker.Entities.Activity", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Activity");
 
@@ -2593,9 +2494,9 @@ namespace TicketTracker.Migrations
 
                     b.Navigation("CreatorUser");
 
-                    b.Navigation("DeleterUser");
-
                     b.Navigation("LastModifierUser");
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("TicketTracker.Entities.Work", b =>
@@ -2603,10 +2504,6 @@ namespace TicketTracker.Migrations
                     b.HasOne("TicketTracker.Authorization.Users.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId");
-
-                    b.HasOne("TicketTracker.Authorization.Users.User", "DeleterUser")
-                        .WithMany()
-                        .HasForeignKey("DeleterUserId");
 
                     b.HasOne("TicketTracker.Authorization.Users.User", "LastModifierUser")
                         .WithMany()
@@ -2625,8 +2522,6 @@ namespace TicketTracker.Migrations
                         .IsRequired();
 
                     b.Navigation("CreatorUser");
-
-                    b.Navigation("DeleterUser");
 
                     b.Navigation("LastModifierUser");
 
@@ -2722,8 +2617,6 @@ namespace TicketTracker.Migrations
                 {
                     b.Navigation("Claims");
 
-                    b.Navigation("Comments");
-
                     b.Navigation("Logins");
 
                     b.Navigation("Permissions");
@@ -2741,7 +2634,7 @@ namespace TicketTracker.Migrations
 
             modelBuilder.Entity("TicketTracker.Entities.Comment", b =>
                 {
-                    b.Navigation("Copii");
+                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("TicketTracker.Entities.Component", b =>

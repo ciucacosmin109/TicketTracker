@@ -6,5 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TicketTracker.Entities {
-    public enum TicketStatus { NEW, IN_DEVELOPMENT, IN_DEVELOPMENT_REOPENED, SOLVED, CLOSED } 
+    public class Status : Entity<int> {
+        public string Name { get; set; }
+        public bool IsStatic { get; set; }
+    }
 }

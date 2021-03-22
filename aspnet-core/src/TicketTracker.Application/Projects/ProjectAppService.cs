@@ -3,6 +3,7 @@ using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Runtime.Session;
+using Abp.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -134,12 +135,18 @@ namespace TicketTracker.Projects {
         }
          
         public override async Task<ProjectDto> UpdateAsync(UpdateProjectInput input) {
-            projectManager.CheckProjectPermission(session.UserId, input.Id, StaticProjectPermissionNames.Project_Edit); 
+            long? creatorId = (await Repository.GetAsync(input.Id)).CreatorUserId;
+            if (session.UserId != creatorId)
+                throw new UserFriendlyException("You are not the creator of this project");
+
             return await base.UpdateAsync(input);
         }
 
         public override async Task DeleteAsync(EntityDto<int> input) {
-            projectManager.CheckProjectPermission(session.UserId, input.Id, StaticProjectPermissionNames.Project_Edit);
+            long? creatorId = (await Repository.GetAsync(input.Id)).CreatorUserId;
+            if (session.UserId != creatorId)
+                throw new UserFriendlyException("You are not the creator of this project");
+
             await base.DeleteAsync(input);
         }
 

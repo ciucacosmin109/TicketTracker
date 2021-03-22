@@ -1,14 +1,16 @@
-﻿using Abp.Domain.Entities.Auditing;
+﻿using Abp.Application.Services.Dto;
+using Abp.AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TicketTracker.Authorization.Users;
+using TicketTracker.Entities;
 
-namespace TicketTracker.Entities {
-    public class Ticket : AuditedEntity<int, User> {
+namespace TicketTracker.Tickets.Dto {
+    [AutoMap(typeof(Ticket))]
+    public class TicketDto : EntityDto<int> {
         [Required]
         public string Title { get; set; }
         public string Description { get; set; }
@@ -18,14 +20,14 @@ namespace TicketTracker.Entities {
         public Component Component { get; set; }
         public int ComponentId { get; set; }
 
-        public Activity Status { get; set; }
+        public Status Status { get; set; }
         public int StatusId { get; set; }
 
         public Activity Activity { get; set; }
         public int? ActivityId { get; set; }
 
-        public Work Work { get; set; }  
-        public List<Subscription> Subscriptions { get; set; }  
+        public Work Work { get; set; }
+        public List<Subscription> Subscriptions { get; set; }
         public List<Comment> Comments { get; set; }
         public List<File> Attachments { get; set; }
     }
