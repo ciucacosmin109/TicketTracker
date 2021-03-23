@@ -48,13 +48,13 @@ namespace TicketTracker.Works {
             this.session = session;
         }
 
-        public async Task<WorkDto> GetWorkAsync(Entity<int> input) {
+        public async Task<WorkDto> GetAsync(Entity<int> input) {
             var entity = await repoWork.GetIncludingInfoAsync(input.Id);
             var dto = mapper.Map<WorkDto>(entity);
             workManager.PopulateWorkDtoWithUser(dto, entity.ProjectUserId);
             return dto;
         }
-        public async Task<WorkDto> CreateWorkAsync(CreateWorkInput input) {
+        public async Task<WorkDto> CreateAsync(CreateWorkInput input) {
             ProjectUser pUser;
             try { pUser = await repoPUsers.GetAsync(input.ProjectUserId); }
             catch { throw new UserFriendlyException("There is no project user with id=" + input.ProjectUserId.ToString()); }
@@ -79,7 +79,7 @@ namespace TicketTracker.Works {
             var dto = mapper.Map<WorkDto>(entity);
             return dto;
         }
-        public async Task<WorkDto> UpdateWorkAsync(UpdateWorkInput input) { 
+        public async Task<WorkDto> UpdateAsync(UpdateWorkInput input) { 
             ProjectUser pUser;
             try {
                 int pUserId = (await repoWork.GetAsync(input.Id)).ProjectUserId;
@@ -94,7 +94,7 @@ namespace TicketTracker.Works {
 
             return mapper.Map<WorkDto>(entity);
         }
-        public async Task DeleteWorkAsync(Entity<int> input) {
+        public async Task DeleteAsync(Entity<int> input) {
             bool isCreator = (await repoWork.GetAsync(input.Id)).CreatorUserId == session.UserId;
             if (!isCreator) {
                 workManager.CheckWorkPermission(session.UserId, input.Id, StaticProjectPermissionNames.Ticket_AssignWork);

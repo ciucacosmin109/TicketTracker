@@ -56,7 +56,7 @@ namespace TicketTracker.Files {
 
 
         [UnitOfWork(IsDisabled = true)]
-        public FileDto PostFile([FromForm] PostFileInput input) {
+        public FileDto Post([FromForm] PostFileInput input) {
             // FromForm are Content-Type: multipart/form-data sau application/x-www-form-urlencoded
             _ticketManager.CheckTicketPermission(_abpSession.UserId, input.TicketId, StaticProjectPermissionNames.Ticket_AddAttachments);
 
@@ -98,7 +98,7 @@ namespace TicketTracker.Files {
                 return result; 
             }
         }
-        public async Task DeleteFile(EntityDto<int> input) { 
+        public async Task Delete(EntityDto<int> input) { 
             long? creatorId = (await _repoFiles.GetAsync(input.Id)).CreatorUserId;
             if (_abpSession.UserId != creatorId) { 
                 _ticketManager.CheckTicketPermission(_abpSession.UserId, input.Id, StaticProjectPermissionNames.Ticket_ManageAttachments);
@@ -108,7 +108,7 @@ namespace TicketTracker.Files {
         }
 
         [DontWrapResult]
-        public IActionResult DownloadFile(DownloadFileInput input) {
+        public IActionResult Download(DownloadFileInput input) {
             try {
                 if (_repoTickets.Get(input.TicketId) == null || _repoFiles.Count(x => x.TicketId == input.TicketId) == 0)
                     return new NotFoundResult();
@@ -170,7 +170,7 @@ namespace TicketTracker.Files {
             }
 
         }
-        public GetFilesInfoOutput GetDocumentFilesInfo(GetFilesInfoInput input) { 
+        public GetFilesInfoOutput GetInfo(GetFilesInfoInput input) { 
             List<File> fisiere = _repoFiles.GetAllIncluding(x => x.CreatorUser).Where(x => x.TicketId == input.TicketId).ToList();
             List<FileDto> res = _mapper.Map<List<FileDto>>(fisiere);
 

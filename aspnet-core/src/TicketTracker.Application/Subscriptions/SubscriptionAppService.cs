@@ -48,20 +48,20 @@ namespace TicketTracker.Subscriptions {
             this.session = session;
         }
 
-        public async Task<SubscriptionDto> GetSubscriptionAsync(Entity<int> input) {
+        public async Task<SubscriptionDto> GetAsync(Entity<int> input) {
             var entity = await repoSubs.GetIncludingInfoAsync(input.Id);
             if (entity.CreatorUserId != session.UserId) {
                 ticketManager.CheckTicketPermission(session.UserId, entity.TicketId, StaticProjectPermissionNames.Ticket_ManageSubscriptions);
             }
             return mapper.Map<SubscriptionDto>(entity);
         }
-        public async Task<bool> CheckSubscriptionAsync(CheckSubscriptionInput input) {
+        public async Task<bool> CheckAsync(CheckSubscriptionInput input) {
             try { 
                 await repoSubs.GetAll().FirstAsync(x => x.UserId == input.UserId && x.TicketId == input.TicketId);
                 return true;
             } catch { return false; } 
         }
-        public async Task<SubscriptionDto> CreateWorkAsync(CreateSubscriptionInput input) { 
+        public async Task<SubscriptionDto> CreateAsync(CreateSubscriptionInput input) { 
             try { await repoTickets.GetAsync(input.TicketId); }
             catch { throw new UserFriendlyException("There is no ticket with id=" + input.TicketId.ToString()); }
 
@@ -82,7 +82,7 @@ namespace TicketTracker.Subscriptions {
 
             return mapper.Map<SubscriptionDto>(entity); 
         }
-        public async Task DeleteWorkAsync(DeleteSubscriptionInput input) {
+        public async Task DeleteAsync(DeleteSubscriptionInput input) {
             bool isCreator = (await repoSubs.GetAll().FirstAsync(x => x.TicketId == input.TicketId && x.UserId == input.UserId)).CreatorUserId == session.UserId;
             if (!isCreator) {
                 ticketManager.CheckTicketPermission(session.UserId, input.TicketId, StaticProjectPermissionNames.Ticket_ManageSubscriptions);
