@@ -10,7 +10,7 @@ using TicketTracker.EntityFrameworkCore;
 namespace TicketTracker.Migrations
 {
     [DbContext(typeof(TicketTrackerDbContext))]
-    [Migration("20210322102429_Initial_migration")]
+    [Migration("20210322172502_Initial_migration")]
     partial class Initial_migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1970,9 +1970,6 @@ namespace TicketTracker.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<short>("Priority")
-                        .HasColumnType("smallint");
-
                     b.Property<int>("ProjectUserId")
                         .HasColumnType("int");
 
@@ -2482,7 +2479,7 @@ namespace TicketTracker.Migrations
                         .WithMany()
                         .HasForeignKey("LastModifierUserId");
 
-                    b.HasOne("TicketTracker.Entities.Activity", "Status")
+                    b.HasOne("TicketTracker.Entities.Status", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)

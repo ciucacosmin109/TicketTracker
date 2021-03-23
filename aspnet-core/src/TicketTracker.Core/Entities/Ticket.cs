@@ -18,7 +18,7 @@ namespace TicketTracker.Entities {
         public Component Component { get; set; }
         public int ComponentId { get; set; }
 
-        public Activity Status { get; set; }
+        public Status Status { get; set; }
         public int StatusId { get; set; }
 
         public Activity Activity { get; set; }

@@ -1968,9 +1968,6 @@ namespace TicketTracker.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<short>("Priority")
-                        .HasColumnType("smallint");
-
                     b.Property<int>("ProjectUserId")
                         .HasColumnType("int");
 
@@ -2480,7 +2477,7 @@ namespace TicketTracker.Migrations
                         .WithMany()
                         .HasForeignKey("LastModifierUserId");
 
-                    b.HasOne("TicketTracker.Entities.Activity", "Status")
+                    b.HasOne("TicketTracker.Entities.Status", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)

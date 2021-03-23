@@ -13,12 +13,15 @@ namespace TicketTracker.EntityFrameworkCore.Repositories {
         public ProjectRepository(IDbContextProvider<TicketTrackerDbContext> dbContextProvider) 
             : base(dbContextProvider) {
         }
-         
+
         public IQueryable<Project> GetAllIncludingRoles() {
             return Context.Projects
                 .Include(x => x.ProjectUsers)
-                .ThenInclude(x => x.Roles)
-                .ThenInclude(x => x.Permissions);
+                    .ThenInclude(x => x.Roles)
+                        .ThenInclude(x => x.Permissions);
         }
+        public Project GetIncludingRoles(int id) {
+            return GetAllIncludingRoles().First(x => x.Id == id);
+        } 
     }
 }

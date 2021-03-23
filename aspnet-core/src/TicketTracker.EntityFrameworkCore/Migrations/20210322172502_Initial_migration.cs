@@ -1105,15 +1105,15 @@ namespace TicketTracker.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Tickets_Activities_StatusId",
-                        column: x => x.StatusId,
-                        principalTable: "Activities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Tickets_Components_ComponentId",
                         column: x => x.ComponentId,
                         principalTable: "Components",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tickets_Statuses_StatusId",
+                        column: x => x.StatusId,
+                        principalTable: "Statuses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1283,7 +1283,6 @@ namespace TicketTracker.Migrations
                     TicketId = table.Column<int>(type: "int", nullable: false),
                     WorkedTime = table.Column<int>(type: "int", nullable: true),
                     EstimatedTime = table.Column<int>(type: "int", nullable: true),
-                    Priority = table.Column<short>(type: "smallint", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1949,9 +1948,6 @@ namespace TicketTracker.Migrations
                 name: "PRoleProjectUser");
 
             migrationBuilder.DropTable(
-                name: "Statuses");
-
-            migrationBuilder.DropTable(
                 name: "Subscriptions");
 
             migrationBuilder.DropTable(
@@ -1995,6 +1991,9 @@ namespace TicketTracker.Migrations
 
             migrationBuilder.DropTable(
                 name: "Components");
+
+            migrationBuilder.DropTable(
+                name: "Statuses");
 
             migrationBuilder.DropTable(
                 name: "Projects");
