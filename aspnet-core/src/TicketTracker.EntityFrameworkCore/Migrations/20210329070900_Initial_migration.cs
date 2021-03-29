@@ -1030,7 +1030,6 @@ namespace TicketTracker.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     ProjectId = table.Column<int>(type: "int", nullable: false),
-                    IsCreator = table.Column<bool>(type: "bit", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),

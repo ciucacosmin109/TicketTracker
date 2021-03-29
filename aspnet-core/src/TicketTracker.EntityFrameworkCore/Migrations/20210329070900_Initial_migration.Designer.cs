@@ -10,7 +10,7 @@ using TicketTracker.EntityFrameworkCore;
 namespace TicketTracker.Migrations
 {
     [DbContext(typeof(TicketTrackerDbContext))]
-    [Migration("20210322172502_Initial_migration")]
+    [Migration("20210329070900_Initial_migration")]
     partial class Initial_migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1805,9 +1805,6 @@ namespace TicketTracker.Migrations
 
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
-
-                    b.Property<bool>("IsCreator")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2");

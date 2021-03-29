@@ -10,7 +10,7 @@ import AccountStore from '../../stores/accountStore';
 import AuthenticationStore from '../../stores/authenticationStore';
 import { FormInstance } from 'antd/lib/form';
 import { L } from '../../lib/abpUtility';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import SessionStore from '../../stores/sessionStore';
 import Stores from '../../stores/storeIdentifier';
 import TenantAvailabilityState from '../../services/account/dto/tenantAvailabilityState';
@@ -148,9 +148,9 @@ class Login extends React.Component<ILoginProps> {
                
               <Row style={{ margin: '0px 0px 10px 0px' }}>
                 <Col span={12}> 
-                  <a href="/user/register">
+                  <Link to="/user/register">
                     <Button type="dashed" danger icon={<UserAddOutlined />}>{L('Register')}</Button>
-                  </a>
+                  </Link>
                 </Col>
                  
                 <Col span={12}>

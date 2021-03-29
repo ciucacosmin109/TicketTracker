@@ -5,14 +5,14 @@ import { EntityDto } from '../services/dto/entityDto';
 import { GetAllPermissionsOutput } from '../services/role/dto/getAllPermissionsOutput';
 import { GetAllRoleOutput } from '../services/role/dto/getAllRoleOutput';
 import { GetRolesByPermissionInput } from '../services/role/dto/getRolesByPermissionInput';
-import { PagedResultDto } from '../services/dto/pagedResultDto';
+import { PagedResult } from '../services/dto/pagedResult';
 import { PagedRoleResultRequestDto } from '../services/role/dto/PagedRoleResultRequestDto';
 import RoleEditModel from '../models/Roles/roleEditModel';
 import { UpdateRoleInput } from '../services/role/dto/updateRoleInput';
 import roleService from '../services/role/roleService';
 
 class RoleStore {
-  @observable roles!: PagedResultDto<GetAllRoleOutput>;
+  @observable roles!: PagedResult<GetAllRoleOutput>;
   @observable roleEdit: RoleEditModel = new RoleEditModel();
   @observable allPermissions: GetAllPermissionsOutput[] = [];
 
@@ -77,8 +77,8 @@ class RoleStore {
   }
 
   @action
-  async getAll(pagedFilterAndSortedRequest: PagedRoleResultRequestDto) {
-    let result = await roleService.getAll(pagedFilterAndSortedRequest);
+  async getAll(pagedAndSortedRequest: PagedRoleResultRequestDto) {
+    let result = await roleService.getAll(pagedAndSortedRequest);
     this.roles = result;
   }
 }

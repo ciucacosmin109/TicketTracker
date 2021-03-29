@@ -70,12 +70,12 @@ namespace TicketTracker.Projects {
             List<ProjectWithRolesDto> result = new List<ProjectWithRolesDto>();
             foreach (Project proj in query) {
                 List<PRole> roles = proj.ProjectUsers
-                    .Where(x=>x.UserId == session.UserId)
+                    .Where(x => x.UserId == session.UserId)
                     .SelectMany(x => x.Roles)
                     .ToList();
 
                 ProjectWithRolesDto p = ObjectMapper.Map<ProjectWithRolesDto>(proj);
-                p.Roles = ObjectMapper.Map<List<PRoleDto>>(roles);
+                p.Roles = ObjectMapper.Map<List<PRoleDto>>(roles); 
 
                 result.Add(p);
             }
@@ -96,7 +96,7 @@ namespace TicketTracker.Projects {
             query = ApplyPaging(query, input);
 
             var result = new List<ProjectWithRolesAndPermissionsDto>();
-            foreach (Project proj in query) {
+            foreach (Project proj in query) { 
                 List<PRole> roles = proj.ProjectUsers
                     .Where(x => x.UserId == session.UserId)
                     .SelectMany(x => x.Roles)
@@ -107,7 +107,8 @@ namespace TicketTracker.Projects {
                 foreach (PRole role in roles) {
                     p.Roles.Add(ObjectMapper.Map<PRoleWithPermissionsDto>(role));
                     p.Roles.Last().PermissionNames = role.Permissions.Select(x => x.Name).ToList();
-                }
+                } 
+
                 result.Add(p);
             }
 

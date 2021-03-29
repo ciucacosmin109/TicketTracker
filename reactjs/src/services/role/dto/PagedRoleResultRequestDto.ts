@@ -1,5 +1,5 @@
-import { PagedFilterAndSortedRequest } from '../../dto/pagedFilterAndSortedRequest';
+import { PagedAndSortedRequest } from '../../dto/pagedAndSortedRequest';
 
-export interface PagedRoleResultRequestDto extends PagedFilterAndSortedRequest  {
+export interface PagedRoleResultRequestDto extends PagedAndSortedRequest  {
     keyword: string
 }

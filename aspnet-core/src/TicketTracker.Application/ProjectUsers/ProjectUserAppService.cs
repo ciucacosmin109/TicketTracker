@@ -114,7 +114,7 @@ namespace TicketTracker.ProjectUsers {
                 throw new UserFriendlyException("Can't change the roles of the project creator");
             }
 
-            var pUsers = await repository.GetAllListAsync(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId);
+            var pUsers = repository.GetAllIncluding(x => x.Roles).Where(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId);
             bool exists = pUsers.Count() > 0;
             if (!exists) {
                 throw new UserFriendlyException("The user with with id=" + input.UserId.ToString() + " is not added to the project with id=" + input.ProjectId.ToString());

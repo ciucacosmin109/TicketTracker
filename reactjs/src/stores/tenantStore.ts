@@ -3,14 +3,14 @@ import { action, observable } from 'mobx';
 import CreateTenantInput from '../services/tenant/dto/createTenantInput';
 import { EntityDto } from '../services/dto/entityDto';
 import { GetAllTenantOutput } from '../services/tenant/dto/getAllTenantOutput';
-import { PagedResultDto } from '../services/dto/pagedResultDto';
+import { PagedResult } from '../services/dto/pagedResult';
 import { PagedTenantResultRequestDto } from '../services/tenant/dto/PagedTenantResultRequestDto';
 import TenantModel from '../models/Tenants/TenantModel';
 import UpdateTenantInput from '../services/tenant/dto/updateTenantInput';
 import tenantService from '../services/tenant/tenantService';
 
 class TenantStore {
-  @observable tenants!: PagedResultDto<GetAllTenantOutput>;
+  @observable tenants!: PagedResult<GetAllTenantOutput>;
   @observable tenantModel: TenantModel = new TenantModel();
 
   @action
@@ -51,8 +51,8 @@ class TenantStore {
   }
 
   @action
-  async getAll(pagedFilterAndSortedRequest: PagedTenantResultRequestDto) {
-    let result = await tenantService.getAll(pagedFilterAndSortedRequest);
+  async getAll(pagedAndSortedRequest: PagedTenantResultRequestDto) {
+    let result = await tenantService.getAll(pagedAndSortedRequest);
     this.tenants = result;
   }
 }

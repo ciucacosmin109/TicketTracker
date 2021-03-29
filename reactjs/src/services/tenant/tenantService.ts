@@ -3,7 +3,7 @@ import CreateTenantOutput from './dto/createTenantOutput';
 import { EntityDto } from '../../services/dto/entityDto';
 import { GetAllTenantOutput } from './dto/getAllTenantOutput';
 import GetTenantOutput from './dto/getTenantOutput';
-import { PagedResultDto } from '../../services/dto/pagedResultDto';
+import { PagedResult } from '../../services/dto/pagedResult';
 import {PagedTenantResultRequestDto} from './dto/PagedTenantResultRequestDto';
 import UpdateTenantInput from './dto/updateTenantInput';
 import UpdateTenantOutput from './dto/updateTenantOutput';
@@ -25,8 +25,8 @@ class TenantService {
     return result.data.result;
   }
 
-  public async getAll(pagedFilterAndSortedRequest: PagedTenantResultRequestDto): Promise<PagedResultDto<GetAllTenantOutput>> {
-    let result = await http.get('api/services/app/Tenant/GetAll', { params: pagedFilterAndSortedRequest });
+  public async getAll(pagedAndSortedRequest: PagedTenantResultRequestDto): Promise<PagedResult<GetAllTenantOutput>> {
+    let result = await http.get('api/services/app/Tenant/GetAll', { params: pagedAndSortedRequest });
     return result.data.result;
   }
 

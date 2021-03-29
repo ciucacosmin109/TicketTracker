@@ -4,13 +4,13 @@ import { CreateOrUpdateUserInput } from '../services/user/dto/createOrUpdateUser
 import { EntityDto } from '../services/dto/entityDto';
 import { GetRoles } from '../services/user/dto/getRolesOuput';
 import { GetUserOutput } from '../services/user/dto/getUserOutput';
-import { PagedResultDto } from '../services/dto/pagedResultDto';
+import { PagedResult } from '../services/dto/pagedResult';
 import { PagedUserResultRequestDto } from '../services/user/dto/PagedUserResultRequestDto';
 import { UpdateUserInput } from '../services/user/dto/updateUserInput';
 import userService from '../services/user/userService';
 
 class UserStore {
-  @observable users!: PagedResultDto<GetUserOutput>;
+  @observable users!: PagedResult<GetUserOutput>;
   @observable editUser!: CreateOrUpdateUserInput;
   @observable roles: GetRoles[] = [];
 
@@ -63,8 +63,8 @@ class UserStore {
   }
 
   @action
-  async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
-    let result = await userService.getAll(pagedFilterAndSortedRequest);
+  async getAll(pagedAndSortedRequest: PagedUserResultRequestDto) {
+    let result = await userService.getAll(pagedAndSortedRequest);
     this.users = result;
   }
 

@@ -1,5 +1,5 @@
 import LoadableComponent from './../Loadable/index';
-import { HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { FundProjectionScreenOutlined, HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 export const userRouter: any = [
   {
@@ -105,6 +105,15 @@ export const appRouters: any = [
     icon: InfoCircleOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/About')),
+  }, 
+  {
+    path: '/projects',
+    permission: '',
+    title: 'Projects',
+    name: 'projects',
+    icon: FundProjectionScreenOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/Projects')),
   },  
 ];
 

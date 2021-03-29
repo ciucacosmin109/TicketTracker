@@ -42,8 +42,8 @@ namespace TicketTracker.Managers {
             return repoPUsers.GetAll().Where(x => x.UserId == userId).Select(x => x.ProjectId).ToList();
         }
 
-        public bool IsProjectCreator(long? userId, int projectId) {
-            return repoPUsers.GetAll().Where(x => x.UserId == userId && x.ProjectId == projectId && x.IsCreator).Count() > 0;
+        public bool IsProjectCreator(long? userId, int projectId) { 
+            return repoProjects.Get(projectId).CreatorUserId == userId;
         } 
 
         public void CheckViewProjectPermission(long? userId, int projectId, bool? isProjectPublic = null) {
@@ -57,7 +57,7 @@ namespace TicketTracker.Managers {
         }
 
         public void CheckProjectPermission(long? userId, int projectId, string permissionName = null) {
-            var isAssigned = repoPUsers.GetAll().Where(x => x.ProjectId == projectId && x.UserId == userId).Count() > 0;
+            var isAssigned = repoPUsers.GetAll().Where(x => x.ProjectId == projectId && x.UserId == userId).Any();
             if (!isAssigned) {
                 throw new AbpAuthorizationException("You are not assigned to this project");
             }
