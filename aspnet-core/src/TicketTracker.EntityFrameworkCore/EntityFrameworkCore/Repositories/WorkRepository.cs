@@ -21,10 +21,14 @@ namespace TicketTracker.EntityFrameworkCore.Repositories {
                 .Include(x => x.Ticket);
         }
         public Work GetIncludingInfo(int id) {
-            return GetAllIncludingInfo().First(x => x.Id == id);
+            return GetAllIncludingInfo().FirstOrDefault(x => x.Id == id);
         }
         public async Task<Work> GetIncludingInfoAsync(int id) {
-            return await GetAllIncludingInfo().FirstAsync(x => x.Id == id);
+            return await GetAllIncludingInfo().FirstOrDefaultAsync(x => x.Id == id);
         }
+        public async Task SetIsWorkingFalse(int ticketId) { 
+            await Context.Database.ExecuteSqlRawAsync("UPDATE Works SET IsWorking='false' WHERE TicketId={0}", ticketId); 
+        }
+
     }
 }

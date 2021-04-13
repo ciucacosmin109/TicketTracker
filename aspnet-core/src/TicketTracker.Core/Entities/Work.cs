@@ -14,6 +14,7 @@ namespace TicketTracker.Entities {
         public Ticket Ticket { get; set; }
         public int TicketId { get; set; }
 
+        public bool IsWorking { get; set; }
         public ushort? WorkedTime { get; set; }
         public ushort? EstimatedTime { get; set; } 
 

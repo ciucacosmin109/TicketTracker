@@ -14,12 +14,10 @@ using TicketTracker.Users.Dto;
 namespace TicketTracker.Works.Dto {
     [AutoMap(typeof(Work))]
     public class WorkDto : AuditedEntityDto<int>, IHasSimpleUserDto {
-        public int ProjectUserId { get; set; } 
-        public int TicketId { get; set; }
-
         public SimpleUserDto User { get; set; }
         public SimpleTicketDto Ticket { get; set; }
 
+        public bool IsWorking { get; set; }
         public ushort? WorkedTime { get; set; }
         public ushort? EstimatedTime { get; set; } 
     }

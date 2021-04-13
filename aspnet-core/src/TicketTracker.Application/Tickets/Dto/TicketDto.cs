@@ -14,7 +14,7 @@ using TicketTracker.Works.Dto;
 
 namespace TicketTracker.Tickets.Dto {
     [AutoMap(typeof(Ticket))]
-    public class TicketDto : EntityDto<int> {
+    public class TicketDto : AuditedEntityDto<int> {
         [Required]
         public string Title { get; set; }
         public string Description { get; set; }
@@ -23,6 +23,6 @@ namespace TicketTracker.Tickets.Dto {
          
         public SimpleStatusDto Status { get; set; }
         public SimpleActivityDto Activity { get; set; }
-        public SimpleWorkDto Work { get; set; }
+        public List<SimpleWorkDto> Works { get; set; }
     }
 }

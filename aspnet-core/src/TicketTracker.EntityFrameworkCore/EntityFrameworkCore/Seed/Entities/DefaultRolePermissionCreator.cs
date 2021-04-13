@@ -67,7 +67,7 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
                         allPermissions[10], allPermissions[13]
                     }
                 });
-                _context.PRoles.Add(new PRole {
+                /*_context.PRoles.Add(new PRole {
                     Name = StaticProjectRoleNames.Tester,
                     IsStatic = true,
 
@@ -77,7 +77,7 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
                         allPermissions[8],
                         allPermissions[10], allPermissions[13]
                     }
-                });
+                });*/
                 _context.PRoles.Add(new PRole {
                     Name = StaticProjectRoleNames.TicketSubmitter,
                     IsStatic = true,

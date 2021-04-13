@@ -13,6 +13,7 @@ using TicketTracker.Authorization;
 using TicketTracker.Entities;
 
 namespace TicketTracker.Statuses {
+    [AbpAuthorize]
     public class StatusAppService : AsyncCrudAppService<Status, StatusDto, int, PagedAndSortedResultRequestDto, CreateStatusInput, UpdateStatusInput> {
         public StatusAppService(IRepository<Status> repository) 
             : base(repository) {

@@ -35,7 +35,7 @@ namespace TicketTracker.Managers {
             this.mapper = mapper;
         }
 
-        public void CheckViewTicketPermission(long? userId, int ticketId) {
+        public void CheckVisibility(long? userId, int ticketId) {
             CheckTicketPermission(userId, ticketId, null);
         }
         public void CheckTicketPermission(long? userId, int ticketId, string permissionName = null) {

@@ -44,7 +44,8 @@ namespace TicketTracker.Projects {
             CheckGetPermission();
 
             var entity = await GetEntityByIdAsync(input.Id);
-            projectManager.CheckViewProjectPermission(session.UserId, input.Id, entity.IsPublic);
+            if(!entity.IsPublic)
+                projectManager.CheckVisibility(session.UserId, input.Id);
 
             return MapToEntityDto(entity);
         }
@@ -54,7 +55,7 @@ namespace TicketTracker.Projects {
         }
         protected override IQueryable<Project> CreateFilteredQuery(GetAllProjectsInput input) {
             var res = base.CreateFilteredQuery(input); 
-            return projectManager.FilterQueryByPermission(res, session.UserId, input.IsPublic);
+            return projectManager.FilterProjectsByVisibility(res, session.UserId, input.IsPublic);
         }
 
         public async Task<PagedResultDto<ProjectWithRolesDto>> GetAllIncludingRolesAsync(GetAllProjectsInput input) {
@@ -63,7 +64,7 @@ namespace TicketTracker.Projects {
             var query = repoProjects.GetAllIncludingRoles();
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
 
-            query = projectManager.FilterQueryByPermission(query, session.UserId, input.IsPublic);
+            query = projectManager.FilterProjectsByVisibility(query, session.UserId, input.IsPublic);
             query = ApplySorting(query, input);
             query = ApplyPaging(query, input);
 
@@ -91,7 +92,7 @@ namespace TicketTracker.Projects {
             var query = repoProjects.GetAllIncludingRoles();
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
 
-            query = projectManager.FilterQueryByPermission(query, session.UserId, input.IsPublic);
+            query = projectManager.FilterProjectsByVisibility(query, session.UserId, input.IsPublic);
             query = ApplySorting(query, input);
             query = ApplyPaging(query, input);
 

@@ -115,7 +115,7 @@ namespace TicketTracker.Files {
             } catch { return new NotFoundResult(); }
 
             try {
-                _ticketManager.CheckViewTicketPermission(_abpSession.UserId, input.TicketId);
+                _ticketManager.CheckVisibility(_abpSession.UserId, input.TicketId);
             } catch { return new UnauthorizedResult(); }
 
             try {

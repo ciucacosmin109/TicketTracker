@@ -51,7 +51,7 @@ namespace TicketTracker.ProjectUsers {
         }
 
         public GetProjectUserOutput GetUsersOfProjectAsync(GetProjectUserInput input) {
-            projectManager.CheckViewProjectPermission(session.UserId, input.ProjectId);
+            projectManager.CheckVisibility(session.UserId, input.ProjectId);
 
             var projectUsers = repository.GetAllIncluding(x => x.User, x => x.Roles).Where(x => x.ProjectId == input.ProjectId);
             var users = projectUsers.Select(x => x.User);
@@ -96,7 +96,7 @@ namespace TicketTracker.ProjectUsers {
         }
 
         public RolesOfUserDto GetRolesOfUserOfProject(GetRolesOfUserInput input) {
-            projectManager.CheckViewProjectPermission(session.UserId, input.ProjectId); 
+            projectManager.CheckVisibility(session.UserId, input.ProjectId); 
 
             var pUsers = repository.GetAllIncluding(x=>x.Roles).Where(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId); 
             if (pUsers.Count() <= 0) {

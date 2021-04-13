@@ -24,7 +24,7 @@ namespace TicketTracker.Entities {
         public Activity Activity { get; set; }
         public int? ActivityId { get; set; }
 
-        public Work Work { get; set; }  
+        public List<Work> Works { get; set; }  
         public List<Subscription> Subscriptions { get; set; }  
         public List<Comment> Comments { get; set; }
         public List<File> Attachments { get; set; }

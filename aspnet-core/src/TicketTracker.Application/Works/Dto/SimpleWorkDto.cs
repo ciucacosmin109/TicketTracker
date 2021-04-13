@@ -11,8 +11,9 @@ using TicketTracker.Users.Dto;
 namespace TicketTracker.Works.Dto { 
     [AutoMap(typeof(Work))]
     public class SimpleWorkDto : EntityDto<int>, IHasSimpleUserDto {
-        public SimpleUserDto User { get; set; } 
+        public SimpleUserDto User { get; set; }
 
+        public bool IsWorking { get; set; }
         public ushort? WorkedTime { get; set; }
         public ushort? EstimatedTime { get; set; }
     }

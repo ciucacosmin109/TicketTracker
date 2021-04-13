@@ -10,9 +10,10 @@ using TicketTracker.Entities;
 namespace TicketTracker.Works.Dto {
     [AutoMap(typeof(Work))]
     public class CreateWorkInput {
-        public int ProjectUserId { get; set; }
+        public int UserId { get; set; }
         public int TicketId { get; set; }
-     
+
+        public bool IsWorking { get; set; }
         public ushort? WorkedTime { get; set; }
         public ushort? EstimatedTime { get; set; }
     }

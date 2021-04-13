@@ -42,13 +42,13 @@ namespace TicketTracker.Comments {
             CheckGetPermission();
 
             var entity = await GetEntityByIdAsync(input.Id);
-            commentManager.CheckViewCommentPermission(session.UserId, input.Id);
+            commentManager.CheckVisibility(session.UserId, input.Id);
 
             return MapToEntityDto(entity);
         }
 
         public override async Task<PagedResultDto<CommentDto>> GetAllAsync(GetAllCommentsInput input) {
-            ticketManager.CheckViewTicketPermission(session.UserId, input.TicketId);
+            ticketManager.CheckVisibility(session.UserId, input.TicketId);
             return await base.GetAllAsync(input);
         }
         protected override IQueryable<Comment> CreateFilteredQuery(GetAllCommentsInput input) { 
@@ -59,9 +59,9 @@ namespace TicketTracker.Comments {
             commentManager.CheckCommentPermission(session.UserId, input.TicketId.Value, StaticProjectPermissionNames.Ticket_AddComments);
 
             if(input.TicketId != null)
-                ticketManager.CheckViewTicketPermission(session.UserId, input.TicketId.Value);
+                ticketManager.CheckVisibility(session.UserId, input.TicketId.Value);
             else if(input.ParentId != null)
-                commentManager.CheckViewCommentPermission(session.UserId, input.ParentId.Value);
+                commentManager.CheckVisibility(session.UserId, input.ParentId.Value);
 
             return await base.CreateAsync(input);
         }

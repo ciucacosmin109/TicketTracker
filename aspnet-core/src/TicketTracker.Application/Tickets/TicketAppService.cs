@@ -46,7 +46,7 @@ namespace TicketTracker.Tickets {
             CheckGetPermission();
 
             var entity = await repoTickets.GetIncludingInfoAsync(input.Id);
-            ticketManager.CheckViewTicketPermission(session.UserId, input.Id);
+            ticketManager.CheckVisibility(session.UserId, input.Id);
              
             return ticketManager.MapToDto(entity);
         }
@@ -54,7 +54,7 @@ namespace TicketTracker.Tickets {
         public override async Task<PagedResultDto<TicketDto>> GetAllAsync(GetAllTicketsInput input) {
             CheckGetAllPermission(); 
             int projectId = (await repoComponents.GetAsync(input.ComponentId)).ProjectId;
-            projectManager.CheckViewProjectPermission(session.UserId, projectId);
+            projectManager.CheckVisibility(session.UserId, projectId);
              
             var query = CreateFilteredQuery(input); 
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);

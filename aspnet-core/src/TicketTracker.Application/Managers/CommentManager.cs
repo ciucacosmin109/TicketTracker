@@ -29,7 +29,7 @@ namespace TicketTracker.Managers {
             this.repoComponents = repoComponents;
         }
 
-        public void CheckViewCommentPermission(long? userId, int commentId) {
+        public void CheckVisibility(long? userId, int commentId) {
             CheckCommentPermission(userId, commentId);
         } 
         public void CheckCommentPermission(long? userId, int commentId, string permissionName = null) {

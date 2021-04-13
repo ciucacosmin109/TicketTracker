@@ -23,15 +23,15 @@ namespace TicketTracker.Managers {
             this.repoPUsers = repoPUsers; 
         }
          
-        public IQueryable<Project> FilterQueryByPermission(IQueryable<Project> query, long? userId, bool? isPublic = null ) {
+        public IQueryable<Project> FilterProjectsByVisibility(IQueryable<Project> query, long? userId, bool? showPublics = null ) {
             List<int> projectIds = this.GetAssignedProjectIds(userId);
 
-            if (isPublic == null) {
+            if (showPublics == null) {
                 return query.Where(x => x.IsPublic || projectIds.Contains(x.Id));
             }
 
-            query = query.Where(x => x.IsPublic == isPublic);
-            if (!isPublic.Value) {
+            query = query.Where(x => x.IsPublic == showPublics);
+            if (!showPublics.Value) {
                 query = query.Where(x => projectIds.Contains(x.Id));
             }
 
@@ -46,12 +46,9 @@ namespace TicketTracker.Managers {
             return repoProjects.Get(projectId).CreatorUserId == userId;
         } 
 
-        public void CheckViewProjectPermission(long? userId, int projectId, bool? isProjectPublic = null) {
-            if (isProjectPublic == null) {
-                isProjectPublic = repoProjects.Get(projectId).IsPublic;
-            }
-
-            if (!isProjectPublic.Value) {
+        public void CheckVisibility(long? userId, int projectId) {
+            Project project = repoProjects.Get(projectId);
+            if (!project.IsPublic) {
                 CheckProjectPermission(userId, projectId);
             }
         }

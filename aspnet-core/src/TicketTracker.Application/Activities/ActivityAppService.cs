@@ -13,13 +13,14 @@ using TicketTracker.Authorization;
 using TicketTracker.Entities;
 
 namespace TicketTracker.Activities {
+    [AbpAuthorize]
     public class ActivityAppService : AsyncCrudAppService<Activity, ActivityDto, int, PagedAndSortedResultRequestDto, CreateActivityInput, UpdateActivityInput> {
         public ActivityAppService(IRepository<Activity> repository) 
             : base(repository) {
 
         }
         protected void CheckStaticEntity(int id) {
-            if (Repository.FirstOrDefault(id).IsStatic) {
+            if (Repository.FirstOrDefault(id).IsStatic) { 
                 throw new UserFriendlyException("The entity can not be modified because it is marked as static");
             }
         }

@@ -28,7 +28,7 @@ namespace TicketTracker.EntityFrameworkCore.Repositories {
 
         public IQueryable<Ticket> GetAllIncludingInfo() {
             return GetAllIncludingBasicInfo()
-                .Include(x => x.Work)
+                .Include(x => x.Works)
                     .ThenInclude(x => x.ProjectUser)
                         .ThenInclude(x => x.User);
         }

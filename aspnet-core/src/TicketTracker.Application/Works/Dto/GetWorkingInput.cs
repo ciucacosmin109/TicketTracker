@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TicketTracker.Works.Dto {
-    public class GetUserWorkInput {
+    public class GetWorkingInput {
+        public int TicketId { get; set; }
     }
 }

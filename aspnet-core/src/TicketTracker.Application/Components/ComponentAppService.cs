@@ -34,13 +34,13 @@ namespace TicketTracker.Components {
             CheckGetPermission();
 
             var entity = await GetEntityByIdAsync(input.Id);
-            projectManager.CheckViewProjectPermission(session.UserId, input.Id);
+            projectManager.CheckVisibility(session.UserId, input.Id);
 
             return MapToEntityDto(entity);
         }
 
         public override async Task<PagedResultDto<ComponentDto>> GetAllAsync(GetAllComponentsInput input) {
-            projectManager.CheckViewProjectPermission(session.UserId, input.ProjectId);
+            projectManager.CheckVisibility(session.UserId, input.ProjectId);
             return await base.GetAllAsync(input);
         }
         protected override IQueryable<Component> CreateFilteredQuery(GetAllComponentsInput input) {
