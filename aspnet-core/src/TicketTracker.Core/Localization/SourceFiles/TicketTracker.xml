@@ -129,5 +129,12 @@
     <text name="ChangePassword">Change password</text>
     <text name="AccountUpdated">Your account was updated</text>
     <text name="UnknownError">Unknown error</text>
+    
+    <text name="AssignedProjects">Assigned projects</text>
+    <text name="PublicProjects">Public projects</text>
+    <text name="NewProject">New project</text>
+    <text name="ProjectDetails">Project details</text>
+    <text name="Description">Description</text>
+    <text name="IsPublic">Is public</text>
   </texts>
 </localizationDictionary>

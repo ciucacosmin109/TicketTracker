@@ -115,6 +115,31 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Projects')),
   },  
+  {
+    path: '/myprojects',
+    permission: '',
+    title: 'My projects',
+    name: 'myprojects',
+    icon: FundProjectionScreenOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/MyProjects')),
+  }, 
+  {
+    path: '/myprojects/new',
+    permission: '',
+    title: 'New project',
+    name: 'newproject', 
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../scenes/EditProject')),
+  },
+  {
+    path: '/myprojects/edit/:id',
+    permission: '',
+    title: 'Edit project',
+    name: 'editproject', 
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../scenes/EditProject')),
+  },  
 ];
 
 export const routers = [...userRouter, ...appRouters];

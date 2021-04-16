@@ -35,7 +35,7 @@ class ProjectService {
         return result.data.result;
     }
     
-    public async delete(input: UpdateProjectInput) { 
+    public async delete(input: EntityDto) { 
         let result = await http.delete('api/services/app/Project/Update', { params: input });
         return result.data;
     }

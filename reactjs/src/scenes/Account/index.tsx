@@ -1,14 +1,14 @@
 import * as React from 'react';
 import './index.less'
 
-import { Button, Card,  Col,  Form,  Input, message, Row } from 'antd';
+import { Button, Card,  Col,  Form,  Input, message, Row, Space } from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase'; 
 import { L } from '../../lib/abpUtility';
 import Stores from '../../stores/storeIdentifier';
 import AccountStore from '../../stores/accountStore'; 
-import { LockOutlined, MailOutlined, SaveOutlined, UserOutlined } from '@ant-design/icons'; 
+import { KeyOutlined, LockOutlined, MailOutlined, SaveOutlined, UserOutlined } from '@ant-design/icons'; 
 
 import rules from './index.validation'
 import { FormInstance, Rule } from 'antd/lib/form';
@@ -52,7 +52,7 @@ class Account extends AppComponentBase<IAccountProps, IAccountState> {
             <Form initialValues={account} onFinish={this.onAccountUpdate} layout="vertical"> 
               <Row>
                 <Col flex="auto"> 
-                  <h2>{L('AccountDetails')}</h2>
+                  <h2><Space><UserOutlined />{L('AccountDetails')}</Space></h2>  
                 </Col>
                 <Col flex="none">
                   <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
@@ -83,7 +83,7 @@ class Account extends AppComponentBase<IAccountProps, IAccountState> {
             <Form ref={this.changePassForm} onFinish={this.onPasswordUpdate} layout="vertical">  
               <Row>
                 <Col flex="auto"> 
-                  <h2>{L('ChangePassword')}</h2>
+                  <h2><Space><KeyOutlined />{L('ChangePassword')}</Space></h2>  
                 </Col>
                 <Col flex="none">
                   <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
