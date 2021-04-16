@@ -50,13 +50,13 @@ namespace TicketTracker.ProjectUsers {
             this.session = session;
         }
 
-        public GetProjectUserOutput GetUsersOfProjectAsync(GetProjectUserInput input) {
+        public GetProjectUsersOutput GetUsersOfProjectAsync(GetProjectUsersInput input) {
             projectManager.CheckVisibility(session.UserId, input.ProjectId);
 
             var projectUsers = repository.GetAllIncluding(x => x.User, x => x.Roles).Where(x => x.ProjectId == input.ProjectId);
             var users = projectUsers.Select(x => x.User);
 
-            GetProjectUserOutput result = new GetProjectUserOutput();
+            GetProjectUsersOutput result = new GetProjectUsersOutput();
             result.ProjectId = input.ProjectId;
             result.Users = mapper.Map<List<SimpleUserWithRolesDto>>(users);
             foreach (var usr in result.Users) {
@@ -80,6 +80,7 @@ namespace TicketTracker.ProjectUsers {
             }
 
             ProjectUser entity = mapper.Map<ProjectUser>(input);
+            entity.Roles = await repoPRoles.GetAllListAsync(x => input.RoleNames.Contains(x.Name));
             await repository.InsertAsync(entity);
             await uowManager.Current.SaveChangesAsync();
 
@@ -121,7 +122,7 @@ namespace TicketTracker.ProjectUsers {
             }
 
             ProjectUser pUser = pUsers.First();
-            pUser.Roles = await repoPRoles.GetAllListAsync(x => input.RoleNames.Contains(x.Name)); ;
+            pUser.Roles = await repoPRoles.GetAllListAsync(x => input.RoleNames.Contains(x.Name));
             await repository.UpdateAsync(pUser);
             await uowManager.Current.SaveChangesAsync();
 

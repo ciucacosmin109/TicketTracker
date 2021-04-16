@@ -11,5 +11,7 @@ namespace TicketTracker.ProjectUsers.Dto {
     public class CreateProjectUserInput {
         public long UserId { get; set; }
         public int ProjectId { get; set; }
+
+        public List<string> RoleNames { get; set; }
     }
 }

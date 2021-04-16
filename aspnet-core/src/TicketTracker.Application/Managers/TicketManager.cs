@@ -47,18 +47,18 @@ namespace TicketTracker.Managers {
 
         public TicketDto MapToDto(Ticket entity) {
             TicketDto dto = mapper.Map<TicketDto>(entity);
-            if (entity.Work != null) {
-                workManager.PopulateWorkDtoWithUser(dto.Work, entity.Work.ProjectUser.User);
+            if (entity.Works != null) {
+                for (int i = 0; i < entity.Works.Count; i++) {
+                    workManager.PopulateWorkDtoWithUser(dto.Works[i], entity.Works[i].ProjectUser.User);
+                }
             }
             return dto;
         }
         public List<TicketDto> MapToDto(List<Ticket> entities) {
-            List<TicketDto> entityDtos = mapper.Map<List<TicketDto>>(entities); //entities.Select(MapToEntityDto).ToList();
+            List<TicketDto> entityDtos = new List<TicketDto>(); // mapper.Map<List<TicketDto>>(entities); //entities.Select(MapToEntityDto).ToList();
 
-            for (int i = 0; i < entityDtos.Count; i++) {
-                if (entities[i].Work != null) {
-                    workManager.PopulateWorkDtoWithUser(entityDtos[i].Work, entities[i].Work.ProjectUser.User);
-                }
+            for (int i = 0; i < entities.Count; i++) {
+                entityDtos.Add(MapToDto(entities[i]));
             }
             return entityDtos;
         }

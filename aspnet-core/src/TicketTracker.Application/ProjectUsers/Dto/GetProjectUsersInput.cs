@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TicketTracker.ProjectUsers.Dto {
-    public class GetProjectUserInput {
+    public class GetProjectUsersInput {
         public int ProjectId { get; set; }
     }
 }

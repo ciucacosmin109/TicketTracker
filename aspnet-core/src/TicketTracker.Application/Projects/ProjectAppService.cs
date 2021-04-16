@@ -55,7 +55,7 @@ namespace TicketTracker.Projects {
         }
         protected override IQueryable<Project> CreateFilteredQuery(GetAllProjectsInput input) {
             var res = base.CreateFilteredQuery(input); 
-            return projectManager.FilterProjectsByVisibility(res, session.UserId, input.IsPublic);
+            return projectManager.FilterProjectsByVisibility(res, session.UserId, input.IsPublic, input.IsAssigned);
         }
 
         public async Task<PagedResultDto<ProjectWithRolesDto>> GetAllIncludingRolesAsync(GetAllProjectsInput input) {
@@ -64,7 +64,7 @@ namespace TicketTracker.Projects {
             var query = repoProjects.GetAllIncludingRoles();
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
 
-            query = projectManager.FilterProjectsByVisibility(query, session.UserId, input.IsPublic);
+            query = projectManager.FilterProjectsByVisibility(query, session.UserId, input.IsPublic, input.IsAssigned);
             query = ApplySorting(query, input);
             query = ApplyPaging(query, input);
 
@@ -92,7 +92,7 @@ namespace TicketTracker.Projects {
             var query = repoProjects.GetAllIncludingRoles();
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
 
-            query = projectManager.FilterProjectsByVisibility(query, session.UserId, input.IsPublic);
+            query = projectManager.FilterProjectsByVisibility(query, session.UserId, input.IsPublic, input.IsAssigned);
             query = ApplySorting(query, input);
             query = ApplyPaging(query, input);
 
@@ -132,7 +132,14 @@ namespace TicketTracker.Projects {
                 Roles = new List<PRole> { repoPRoles.FirstOrDefault(x => x.Name == StaticProjectRoleNames.ProjectManager) } 
             });
             await CurrentUnitOfWork.SaveChangesAsync();
-            
+
+            // Assign users
+            foreach (var user in input.Users) {
+                ProjectUser pu = new ProjectUser { ProjectId=entity.Id, UserId=user.Id };
+                pu.Roles = await repoPRoles.GetAllListAsync(x => user.RoleNames.Contains(x.Name));
+                await repoPUsers.InsertAsync(pu); 
+            } 
+
             return MapToEntityDto(entity);
         }
          

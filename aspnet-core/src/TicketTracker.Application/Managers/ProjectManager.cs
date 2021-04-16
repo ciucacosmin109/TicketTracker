@@ -13,26 +13,32 @@ using TicketTracker.EntityFrameworkCore.Repositories;
 namespace TicketTracker.Managers {
     public class ProjectManager : IDomainService {
         private readonly IRepository<Project> repoProjects;
-        private readonly ProjectUserRepository repoPUsers; 
+        private readonly ProjectUserRepository repoPUsers;
 
         public ProjectManager(
             IRepository<Project> repoProjects,
             ProjectUserRepository repoPUsers
         ) {
             this.repoProjects = repoProjects;
-            this.repoPUsers = repoPUsers; 
+            this.repoPUsers = repoPUsers;
         }
-         
-        public IQueryable<Project> FilterProjectsByVisibility(IQueryable<Project> query, long? userId, bool? showPublics = null ) {
-            List<int> projectIds = this.GetAssignedProjectIds(userId);
 
-            if (showPublics == null) {
-                return query.Where(x => x.IsPublic || projectIds.Contains(x.Id));
+        public IQueryable<Project> FilterProjectsByVisibility(IQueryable<Project> query, long? userId, bool? arePublic = null, bool? areAssigned = null) {
+            List<int> projectIds = this.GetAssignedProjectIds(userId); 
+            query = query.Where(x => x.IsPublic || projectIds.Contains(x.Id));
+
+            if (arePublic != null) {
+                query = query.Where(x => x.IsPublic == arePublic);
+                if (!arePublic.Value) {
+                    query = query.Where(x => projectIds.Contains(x.Id));
+                }
             }
 
-            query = query.Where(x => x.IsPublic == showPublics);
-            if (!showPublics.Value) {
-                query = query.Where(x => projectIds.Contains(x.Id));
+            if (areAssigned != null) { 
+                if(areAssigned.Value)
+                    query = query.Where(x => projectIds.Contains(x.Id));
+                else
+                    query = query.Where(x => !projectIds.Contains(x.Id));
             }
 
             return query;

@@ -8,5 +8,6 @@ using System.Threading.Tasks;
 namespace TicketTracker.Projects.Dto {
     public class GetAllProjectsInput : PagedAndSortedResultRequestDto {
         public bool? IsPublic { get; set; }
+        public bool? IsAssigned { get; set; }
     }
 }

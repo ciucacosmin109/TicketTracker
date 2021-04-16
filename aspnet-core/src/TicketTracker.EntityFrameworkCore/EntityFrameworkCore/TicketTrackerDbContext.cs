@@ -47,9 +47,9 @@ namespace TicketTracker.EntityFrameworkCore
 
             // Ticket - Work
             modelBuilder.Entity<Ticket>()
-                .HasOne(x => x.Work)
+                .HasMany(x => x.Works)
                 .WithOne(x => x.Ticket)
-                .HasForeignKey<Work>(x => x.TicketId)
+                .HasForeignKey(x => x.TicketId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
