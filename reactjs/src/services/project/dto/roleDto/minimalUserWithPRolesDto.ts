@@ -1,5 +1,5 @@
 import { EntityDto } from "../../../dto/entityDto";
 
-export class UserWithPRolesDto extends EntityDto{
+export class MinimalUserWithPRolesDto extends EntityDto{
     roleNames?: string[];
 }

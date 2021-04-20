@@ -6,6 +6,7 @@ using Abp.Domain.Uow;
 using Abp.ObjectMapping;
 using Abp.Runtime.Session;
 using Abp.UI;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,7 +67,7 @@ namespace TicketTracker.ProjectUsers {
             return result;
         }
         public async Task<ProjectUserDto> AddUserToProjectAsync(CreateProjectUserInput input) {
-            projectManager.CheckProjectPermission(session.UserId, input.ProjectId, StaticProjectPermissionNames.Project_ManageUsers);
+            projectManager.CheckProjectPermission(session.UserId, input.ProjectId, StaticProjectPermissionNames.Project_Edit);
 
             try { await repoUsers.GetAsync(input.UserId); }
             catch { throw new UserFriendlyException("There is no user with id=" + input.UserId.ToString()); }
@@ -88,7 +89,7 @@ namespace TicketTracker.ProjectUsers {
         }
         public async Task RemoveUserFromProject(DeleteProjectUserInput input) {
             if (session.UserId != input.UserId) {
-                projectManager.CheckProjectPermission(session.UserId, input.ProjectId, StaticProjectPermissionNames.Project_ManageUsers);
+                projectManager.CheckProjectPermission(session.UserId, input.ProjectId, StaticProjectPermissionNames.Project_Edit);
             }
             if (projectManager.IsProjectCreator(input.UserId, input.ProjectId)) {
                 throw new UserFriendlyException("Can't remove the project creator");
@@ -110,22 +111,33 @@ namespace TicketTracker.ProjectUsers {
             return result;
         }
         public async Task<RolesOfUserDto> UpdateRolesOfUserOfProject(UpdateRolesOfUserInput input) {
-            projectManager.CheckProjectPermission(session.UserId, input.ProjectId, StaticProjectPermissionNames.Project_ManageRoles);
+            projectManager.CheckProjectPermission(session.UserId, input.ProjectId, StaticProjectPermissionNames.Project_Edit);
             if (projectManager.IsProjectCreator(input.UserId, input.ProjectId)) {
                 throw new UserFriendlyException("Can't change the roles of the project creator");
             }
 
-            var pUsers = repository.GetAllIncluding(x => x.Roles).Where(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId);
-            bool exists = pUsers.Count() > 0;
-            if (!exists) {
+            var pUser = await repository.GetAllIncluding(x => x.Roles).FirstAsync(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId);
+            if (pUser == null) {
                 throw new UserFriendlyException("The user with with id=" + input.UserId.ToString() + " is not added to the project with id=" + input.ProjectId.ToString());
             }
 
-            ProjectUser pUser = pUsers.First();
-            pUser.Roles = await repoPRoles.GetAllListAsync(x => input.RoleNames.Contains(x.Name));
+            if(input.RoleNames == null) {
+                input.RoleNames = new List<string>();
+            }
+
+            // The creator will always have the ProjectManager role
+            long? projectCreatorId = (await repoProjects.GetAsync(pUser.ProjectId)).CreatorUserId;
+            if(input.UserId == projectCreatorId && !input.RoleNames.Contains(StaticProjectRoleNames.ProjectManager)) {
+                input.RoleNames.Add(StaticProjectRoleNames.ProjectManager);
+            }
+
+            // Update
+            if (input.RoleNames != null)
+                pUser.Roles = await repoPRoles.GetAllListAsync(x => input.RoleNames.Contains(x.Name));
             await repository.UpdateAsync(pUser);
             await uowManager.Current.SaveChangesAsync();
 
+            // Return
             var result = mapper.Map<RolesOfUserDto>(pUser);
             result.RoleNames = pUser.Roles.Select(x => x.Name).ToList();
             return result;

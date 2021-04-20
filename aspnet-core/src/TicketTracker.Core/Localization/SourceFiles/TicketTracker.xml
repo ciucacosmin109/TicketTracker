@@ -123,12 +123,22 @@
     <text name="RoleDetails">Role details</text>
     <text name="RolePermission">Role permissions</text>
     <text name="Error">Error</text>
-	
+
+    <text name="Loading">Loading</text>
     <text name="Activities">Activities</text>
     <text name="AccountDetails">Account details</text>
     <text name="ChangePassword">Change password</text>
     <text name="AccountUpdated">Your account was updated</text>
     <text name="UnknownError">Unknown error</text>
+    <text name="BackToHome">Back to home</text>
+    <text name="Error404">Sorry, the page you visited does not exist</text>
+    <text name="Error401">Sorry, you dont have access to this page</text>
+    <text name="Error500">Sorry, the server is reporting an error</text>
+
+    <text name="ProjectManager">Project manager</text>
+    <text name="Developer">Developer</text>
+    <text name="Tester">Tester</text> 
+    <text name="TicketSubmitter">Ticket submitter</text>
     
     <text name="AssignedProjects">Assigned projects</text>
     <text name="PublicProjects">Public projects</text>
@@ -136,5 +146,23 @@
     <text name="ProjectDetails">Project details</text>
     <text name="Description">Description</text>
     <text name="IsPublic">Is public</text>
+    <text name="ProjectCreated">Project created</text>
+    <text name="AddUser">Add user</text>
+    <text name="AddUsers">Add users</text>
+    <text name="SearchUser">Search user</text>
+    <text name="SearchUsers">Search users</text>
+    <text name="SearchByNameUserNameEmail">Search users by name, username or email</text>
+    <text name="Keyword">Keyword</text>
+    <text name="SearchResults">Search results</text>
+    <text name="SelectedUsers">Selected users</text>
+    <text name="NoResultsFound">No results found</text>
+    <text name="LoadMore">LoadMore</text>
+    <text name="ThisFieldMustHaveAtLeast3Chr">This field must have at least 3 characters</text>
+    <text name="SelectRoles">Select roles</text>
+    <text name="NoOtherUsersAdded">No other users added</text>
+    <text name="You">You</text>
+    <text name="Creator">Creator</text>
+    <text name="TheCreatorWillAlwaysHaveProjectManager">The creator will always have the Project manager role, even if you delete it</text>
+
   </texts>
 </localizationDictionary>

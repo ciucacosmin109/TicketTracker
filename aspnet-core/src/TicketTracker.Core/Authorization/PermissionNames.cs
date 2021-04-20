@@ -7,7 +7,7 @@
 
         public const string Pages_Activities = "Pages.Activities";
         public const string Pages_Statuses = "Pages.Statuses";
-        public const string Pages_PRoles = "Pages.PRoles";
-        public const string Pages_PRoles_PPermissions = "Pages.PRoles.PPermissions";
+        //public const string Pages_PRoles = "Pages.PRoles";
+        //public const string Pages_PRoles_PPermissions = "Pages.PRoles.PPermissions";
     }
 }

@@ -16,6 +16,6 @@ namespace TicketTracker.Projects.Dto {
         public string Description { get; set; }
         public bool IsPublic { get; set; }
 
-        public List<UserWithPRolesDto> Users { get; set; }
+        public List<MinimalUserWithPRolesDto> Users { get; set; }
     }
 }

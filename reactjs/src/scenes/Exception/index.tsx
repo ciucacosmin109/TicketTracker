@@ -8,17 +8,24 @@ import { Link } from 'react-router-dom';
 import error401 from '../../images/401.png';
 import error404 from '../../images/404.png';
 import error500 from '../../images/500.png';
+import { L } from '../../lib/abpUtility';
 
 class Exception extends React.Component<any, any> {
   public render() {
     const exception = [
-      { errorCode: '404', errorImg: error404, errorDescription: 'Sorry, the page you visited does not exist' },
+      { 
+        errorCode: '404', 
+        errorImg: error404, 
+        errorDescription: L('Error404') },
       {
         errorCode: '401',
         errorImg: error401,
-        errorDescription: 'Sorry, you dont have access to this page',
+        errorDescription: L('Error401'),
       },
-      { errorCode: '500', errorImg: error500, errorDescription: 'Sorry, the server is reporting an error' },
+      { 
+        errorCode: '500', 
+        errorImg: error500, 
+        errorDescription: L('Error500') },
     ];
 
     let params = new URLSearchParams(this.props.match.params.type);
@@ -79,13 +86,7 @@ class Exception extends React.Component<any, any> {
             xxl={{ span: 24, offset: 0 }}
           >
             <Button type={'primary'}>
-              <Link
-                to={{
-                  pathname: '/',
-                }}
-              >
-                Back to Home
-              </Link>
+              <Link to={{ pathname: '/' }} >{L('BackToHome')}</Link>
             </Button>
           </Col>
         </Col>

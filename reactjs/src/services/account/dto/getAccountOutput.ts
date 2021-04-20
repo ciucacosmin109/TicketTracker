@@ -1,10 +1,12 @@
-export class GetAccountOutput {
-    name!: string;
-    surname!: string;
-    fullName!: string;
+import { EntityDto } from "../../dto/entityDto";
 
-    userName!: string;
-    emailAddress!: string;
+export class GetAccountOutput extends EntityDto {
+  name!: string;
+  surname!: string;
+  fullName!: string;
 
-    creationTime!: Date; 
-  }
+  userName!: string;
+  emailAddress!: string;
+
+  creationTime!: Date; 
+}

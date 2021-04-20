@@ -47,6 +47,9 @@ namespace TicketTracker.Managers {
         public List<int> GetAssignedProjectIds(long? userId) {
             return repoPUsers.GetAll().Where(x => x.UserId == userId).Select(x => x.ProjectId).ToList();
         }
+        public List<long> GetAssignedUserIds(long? projectId) {
+            return repoPUsers.GetAll().Where(x => x.ProjectId == projectId).Select(x => x.UserId).ToList();
+        }
 
         public bool IsProjectCreator(long? userId, int projectId) { 
             return repoProjects.Get(projectId).CreatorUserId == userId;
@@ -78,7 +81,6 @@ namespace TicketTracker.Managers {
                     .Any(x =>
                         x.Permissions.Any(y => y.Name == permissionName)
                     );*/
-
                 bool ok = repoPUsers.GetAllIncludingRoles()
                     .Where(x => x.ProjectId == projectId && x.UserId == userId)
                     .Any(x =>

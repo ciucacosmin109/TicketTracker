@@ -10,15 +10,15 @@ import http from '../httpService';
 
 class ProjectUserService { 
     public async getUsersOfProject(input: GetProjectUsersInput) : Promise<GetProjectUsersOutput> { 
-        let result = await http.get('api​/services​/app​/ProjectUser​/GetUsersOfProject', { params: input });
+        let result = await http.get('api/services/app/ProjectUser/GetUsersOfProject', { params: input });
         return result.data.result;
     } 
     public async addUserToProject(input: CreateProjectUserInput) : Promise<ProjectUserDto> { 
-        let result = await http.post('/api/services/app/ProjectUser/AddUserToProject', input);
+        let result = await http.post('api/services/app/ProjectUser/AddUserToProject', input);
         return result.data.result;
     }
     public async removeUserFromProject(input: DeleteProjectUserInput) { 
-        let result = await http.get('/api/services/app/ProjectUser/RemoveUserFromProject', { params: input });
+        let result = await http.get('api/services/app/ProjectUser/RemoveUserFromProject', { params: input });
         return result.data.result;
     }
 
@@ -26,7 +26,7 @@ class ProjectUserService {
         let result = await http.get('api/services/app/ProjectUser/GetRolesOfUserOfProject', { params: input });
         return result.data.result;
     }
-    public async UpdateRolesOfUserOfProject(input: UpdateRolesOfUserInput) : Promise<RolesOfUserDto> { 
+    public async updateRolesOfUserOfProject(input: UpdateRolesOfUserInput) : Promise<RolesOfUserDto> { 
         let result = await http.put('api/services/app/ProjectUser/UpdateRolesOfUserOfProject', input);
         return result.data.result;
     } 

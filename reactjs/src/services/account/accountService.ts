@@ -8,6 +8,9 @@ import { ChangePasswordInput } from './dto/changePasswordInput';
 import { GetAccountOutput } from './dto/getAccountOutput';
 import { UpdateAccountInput } from './dto/updateAccountInput';
 import { UpdateAccountOutput } from './dto/updateAccountOutput';
+import { PagedResultDto } from '../dto/pagedResultDto';
+import { SearchAccountsInput } from './dto/searchAccountsInput';
+import { SearchAccountOutput } from './dto/searchAccountOutput';
 
 class AccountService {
   public async isTenantAvailable(isTenantAvaibleInput: IsTenantAvaibleInput): Promise<IsTenantAvaibleOutput> {
@@ -36,6 +39,10 @@ class AccountService {
     let result = await http.put('api/services/app/Account/Update', input);
     return result.data.result;
   }
+  public async searchAccounts(input: SearchAccountsInput) : Promise<PagedResultDto<SearchAccountOutput>> {
+    let result = await http.get('api/services/app/Account/SearchAccounts', {params: input});
+    return result.data.result;
+  } 
 }
 
 export default new AccountService();

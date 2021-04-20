@@ -7,4 +7,5 @@ export default class Stores {
   static AccountStore: string = 'accountStore';
 
   static ProjectStore: string = 'projectStore';
+  static ProjectRoleStore: string = 'projectRoleStore';
 }

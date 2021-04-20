@@ -1,80 +1,292 @@
-import * as React from 'react';
+import React from 'react';
 import './index.less'
 
-import { Button, Card, Col, Form, Input, Row, Space, Switch } from 'antd';
-//import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
+import Stores from '../../stores/storeIdentifier';
+import AccountStore from '../../stores/accountStore'; 
 
 import AppComponentBase from '../../components/AppComponentBase'; 
 import { L } from '../../lib/abpUtility';
-//import Stores from '../../stores/storeIdentifier';
-//import AccountStore from '../../stores/accountStore'; 
-import { FileTextOutlined, FundProjectionScreenOutlined, SaveOutlined, UserOutlined } from '@ant-design/icons'; 
+import { Button, Card, Col, Empty, Form, Input, message, Row, Select, Space, Spin, Switch, Table, Tooltip } from 'antd';
+import { DeleteOutlined, FileTextOutlined, FundProjectionScreenOutlined, LoadingOutlined, SaveOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'; 
 
 import rules from './index.validation'
-//import { FormInstance, Rule } from 'antd/lib/form'; 
+import { FormInstance } from 'antd/lib/form'; 
 import { CreateProjectInput } from '../../services/project/dto/createProjectInput';
 import Avatar from 'antd/lib/avatar/avatar'; 
+import { MinimalUserWithPRolesDto } from '../../services/project/dto/roleDto/minimalUserWithPRolesDto';
+import SearchAccount from './components/searchUsers';
+import { SearchAccountOutput } from '../../services/account/dto/searchAccountOutput';
+import ProjectRoleStore from '../../stores/projectRoleStore';
+import projectService from '../../services/project/projectService';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { appRouters } from '../../components/Router/router.config';
+import { ProjectDto } from '../../services/project/dto/projectDto';
+import projectUserService from '../../services/projectUser/projectUserService';
+import { GetProjectUsersInput } from '../../services/projectUser/dto/getProjectUsersInput'; 
+import { UpdateProjectInput } from '../../services/project/dto/updateProjectInput';
 
-export interface IEditProjectProps{
-
+export interface IEditProjectParams{
+    id: string | undefined; 
 }
-export interface IEditProjectState{
-    project: CreateProjectInput;
+export interface IEditProjectProps extends RouteComponentProps<IEditProjectParams>{
+    accountStore?: AccountStore;
+    projectRoleStore?: ProjectRoleStore;
+}
+export interface IEditProjectState{ 
+    selectedUsers: SearchAccountOutput[]; // used for details (name, username)
+    userRoles: MinimalUserWithPRolesDto[]; // used for id and roles
+    creatorId: number; // used to display a warning about the creator of the project
+
+    searchVisible: boolean;
+    loading: boolean;
 }
  
-export default class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState> {
-    state={
-        project: {name: "proj 234", description:"hmm", isPublic: true}
+@inject(Stores.AccountStore, Stores.ProjectRoleStore)
+@observer
+class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState> {
+    form = React.createRef<FormInstance>();
+    state = { 
+        selectedUsers: [] as SearchAccountOutput[], 
+        userRoles: [] as MinimalUserWithPRolesDto[], 
+        creatorId: 0,
+
+        searchVisible: false,
+        loading: true,
     }
 
-    onProjectUpdate = async (values: any) => {
-        console.log(values);
+    // User management
+    onUsersAdded = (users: SearchAccountOutput[]) => {
+        const newUsers = users.filter(x => !this.state.selectedUsers.some(y => y.id === x.id));
+        const selectedUsers = [...this.state.selectedUsers, ...newUsers];
+        const projectUsers = [
+            ...this.state.userRoles, 
+            ...newUsers.map(x => ({id: x.id} as MinimalUserWithPRolesDto))
+        ]
+
+        this.setState({
+            searchVisible: false,
+            selectedUsers: selectedUsers, 
+            userRoles: projectUsers 
+        });
     }
-    
-    render(){
-        const proj = {
-            name: "proj 234", description:"hmm", isPublic: true
+    onUserRemoved = (index: number) => {
+        this.setState({  
+            userRoles: this.state.userRoles?.filter((x, i) => i !== index), 
+            selectedUsers: this.state.selectedUsers.filter((x, i) => i !== index),
+        }); 
+    }
+
+    // Component logic
+    setModal = (visible: boolean) => {
+        this.setState({searchVisible: visible});
+    }
+    clearFields = () => {
+        this.form.current?.resetFields();
+        const currentUser = this.props.accountStore?.account;
+        this.setState({
+            selectedUsers: [currentUser] as SearchAccountOutput[],
+            userRoles: [{...currentUser, roleNames:["ProjectManager"]}] as MinimalUserWithPRolesDto[],
+        }); 
+    }
+    onProjectUpdate = async (formValues: any) => {
+        const id = this.props.match.params.id;
+        if(id != null){
+            this.update(parseInt(id), formValues);
+        }else{
+            this.create(formValues);
+        }
+    }
+    create = async (formValues: any) => {
+        const project : CreateProjectInput = {
+            name: formValues.name,
+            description: formValues.description,
+            isPublic: formValues.isPublic,
+            users: this.state.userRoles
         };
-        return ( 
-            <Card className="edit-project">
-                <Form initialValues={proj} onFinish={this.onProjectUpdate} layout="vertical"> 
-                    <Row>
-                        <Col flex="auto"> 
-                            <h2><Space><FundProjectionScreenOutlined />{L('ProjectDetails')}</Space></h2> 
-                        </Col>
-                        <Col flex="none">
-                            <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
-                        </Col>
-                    </Row>  
+
+        const res = await projectService.create(project);
+        this.clearFields();
+        this.goToProject(res.id);
+    }
+    update = async (id: number, formValues: any) => {
+        const project : UpdateProjectInput = {
+            id: id,
+            name: formValues.name,
+            description: formValues.description,
+            isPublic: formValues.isPublic, 
+            users: this.state.userRoles
+        };
+
+        await projectService.update(project);  
+        this.goToProject(id);
+    }
+    goToProject = (id: number) => {
+        const projectPath : string = appRouters.find((x : any) => x.name === 'project')?.path.replace('/:id', `/${id}`); 
+        this.props.history.push(projectPath); 
+
+        message.success(L("SavedSuccessfully")); 
+    }
+
+    // Role select handlers
+    getUserRoles(index: number) : string[] | undefined{ 
+        if(this.state.userRoles == null){
+            return undefined;
+        }
+
+        const user = this.state.userRoles[index];
+        return user?.roleNames;
+    }
+    setUserRoles(index: number, roles: string[]){ 
+        if(this.state.userRoles == null){
+            return;
+        }
         
-                    <Form.Item label={L('Name')} name={'name'} rules={rules.name}>
-                        <Input placeholder={L('Name')} prefix={<FileTextOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
-                    </Form.Item> 
+        const user = this.state.userRoles[index];
+        user.roleNames = roles;
+        this.forceUpdate();
+    }
+    isTooltipVisible = (userId: number) : boolean => {
+        const id = this.props.match.params.id;
+        if(id != null){ // update
+            return userId === this.state.creatorId;
+        }else{ // create
+            const currentUserId = this.props.accountStore?.account.id;
+            return userId === currentUserId;
+        }
+    }
     
-                    <Form.Item label={L('Description')} name={'description'}>
-                        <Input.TextArea placeholder={L('Description')} />
-                    </Form.Item> 
+    // Load the project details in case of an update
+    async componentDidMount() {
+        await this.props.projectRoleStore?.getAllWithPermissions();
+
+        const id = this.props.match.params.id;
+        if(id != null){ // update
+            const intId = parseInt(id);
+
+            // Get project details
+            const project : ProjectDto = await projectService.get({id: intId});
+            this.form.current?.setFieldsValue(project);
+
+            // Get project users
+            const users = (await projectUserService.getUsersOfProject({projectId: intId} as GetProjectUsersInput)).users;  
+            this.setState({
+                selectedUsers: users as SearchAccountOutput[],
+                userRoles: users as MinimalUserWithPRolesDto[],
+                creatorId: project.creatorUserId ?? 0,
+                loading: false,
+            });
+        }else{ // create
+            const currentUser = this.props.accountStore?.account;
+            this.setState({
+                selectedUsers: [currentUser] as SearchAccountOutput[],
+                userRoles: [{...currentUser, roleNames:["ProjectManager"]}] as MinimalUserWithPRolesDto[],
+                loading: false,
+            });
+        }
+    }
+    render(){  
+        const roles = this.props.projectRoleStore?.rolesWithPermissions?.items
+                        .map(x => ({value: x.name, label: L(x.name)}));
+        
+        // Table config
+        const noDataLocale = { 
+            emptyText: (
+                <Empty 
+                    image={Empty.PRESENTED_IMAGE_SIMPLE} 
+                    description={L('NoOtherUsersAdded')}/>
+            )
+        }; 
+        const columns = [ 
+            { title: 'User', key:'user', render: (text: any, record: SearchAccountOutput, index: number) =>
+                <Space key={index}>
+                    <Avatar icon={<UserOutlined />}/>
+                    {`
+                        ${record.name} ${record.surname}
+                        ${record.id === this.props.accountStore?.account.id ? `(${L('You')})` : ""} 
+                        ${this.isTooltipVisible(record.id) ? `(${L('Creator')})` : ""} 
+                    `}  
+                </Space>
+            },
+            { title: 'Roles', key:'roles', width:'40%', render: (text: any, record: SearchAccountOutput, index: number) =>
+                <Tooltip mouseEnterDelay={this.isTooltipVisible(record.id) ? 0.1 : 9000} placement="top" title={L('TheCreatorWillAlwaysHaveProjectManager')}>
+                    <Select key={index}
+                        mode='multiple'
+                        style={{float:'right'}}
+                        placeholder={L('SelectRoles')}
+                        options={roles}
+                        value={this.getUserRoles(index)}
+                        onChange={roles => this.setUserRoles(index, roles)}
+                    />
+                </Tooltip>
+            },
+            { title: 'Actions', key:'actions', width:'1%', render: (text: any, record: SearchAccountOutput, index: number) =>
+                <Button key={index} 
+                    disabled={false && this.isTooltipVisible(record.id)}
+                    onClick={() => this.onUserRemoved(index)} 
+                    icon={<DeleteOutlined style={{
+                        color: this.isTooltipVisible(record.id) ? 'orange' : 'red'
+                    }} />}
+                />
+            },
+        ];
+
+        // Component content
+        const content = ( 
+            <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}> 
+                <Card className="edit-project"> 
+                    <Form ref={this.form} onFinish={this.onProjectUpdate} layout="vertical"> 
+                        <Row>
+                            <Col flex="auto"> 
+                                <h2><Space><FundProjectionScreenOutlined />{L('ProjectDetails')}</Space></h2> 
+                            </Col>
+                            <Col flex="none">
+                                <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
+                            </Col>
+                        </Row> 
+            
+                        <Form.Item label={L('Name')} name={'name'} rules={rules.name}>
+                            <Input placeholder={L('Name')} prefix={<FileTextOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
+                        </Form.Item> 
+        
+                        <Form.Item label={L('Description')} name={'description'}>
+                            <Input.TextArea placeholder={L('Description')} />
+                        </Form.Item> 
+                            
+                        <Form.Item label={L('IsPublic')} name={'isPublic'} valuePropName='checked'> 
+                            <Switch /> 
+                        </Form.Item> 
+
+                        <Form.Item label={L('Users')}> 
+                            <Table size='small' 
+                                showHeader={false} 
+                                rowKey={x=>x.id} 
+                                pagination={{
+                                    hideOnSinglePage: true
+                                }}
+                                scroll={{x: true}}
+                                locale={noDataLocale} 
+                                dataSource={this.state.selectedUsers} 
+                                columns={columns} 
+                                footer={() =>
+                                    <Button 
+                                        type='dashed'
+                                        style={{width: '100%'}}
+                                        onClick={()=>this.setModal(true)} 
+                                        icon={<UserAddOutlined />}>
+                                        
+                                        {L('AddUsers')}
+                                    </Button> 
+                                }/>
                         
-                    <Form.Item label={L('IsPublic')} name={'isPublic'} valuePropName='checked'> 
-                        <Switch /> 
-                    </Form.Item>
- 
-                    <Form.Item label={L('Users')} name={'users'}>
-                        <ul> 
-                            <li key={1} className="user">
-                                <Avatar icon={<UserOutlined />} />
-                                Demo user 1 - Project manager
-                            </li> 
-                            <li key={2} className="user">
-                                <Avatar icon={<UserOutlined />} />
-                                Demo user 2 - Developer
-                            </li> 
-                        </ul>
-                    </Form.Item>
-         
-                </Form>  
-            </Card> 
+                        </Form.Item>
+                    </Form>  
+                    <SearchAccount visible={this.state.searchVisible} onOk={this.onUsersAdded} onCancel={()=>this.setModal(false)}/> 
+                </Card>
+            </Spin>  
         );
+        return content;
     }
 }
  
+export default withRouter(EditProject);

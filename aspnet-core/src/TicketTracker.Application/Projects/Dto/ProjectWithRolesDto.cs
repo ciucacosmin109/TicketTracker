@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TicketTracker.Entities;
+using TicketTracker.ProjectRoles.Dto;
 using TicketTracker.Projects.Dto.RoleDto;
 
 namespace TicketTracker.Projects.Dto {

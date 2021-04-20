@@ -5,6 +5,7 @@ import SessionStore from './sessionStore';
 import AuthenticationStore from './authenticationStore';
 import AccountStore from './accountStore';
 import ProjectStore from './projectStore';
+import ProjectRoleStore from './projectRoleStore';
 
 export default function initializeStores() {
   return {
@@ -16,5 +17,6 @@ export default function initializeStores() {
     accountStore: new AccountStore(),
 
     projectStore: new ProjectStore(), 
+    projectRoleStore: new ProjectRoleStore(), 
   };
 }

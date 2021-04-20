@@ -5,10 +5,8 @@ using Abp.Authorization.Users;
 using Abp.Extensions;
 using TicketTracker.Validation;
 
-namespace TicketTracker.Authorization.Accounts.Dto
-{
-    public class RegisterInput : IValidatableObject
-    {
+namespace TicketTracker.Authorization.Accounts.Dto {
+    public class RegisterInput : IValidatableObject {
         [Required]
         [StringLength(AbpUserBase.MaxNameLength)]
         public string Name { get; set; }
@@ -27,21 +25,17 @@ namespace TicketTracker.Authorization.Accounts.Dto
         public string EmailAddress { get; set; }
 
         [Required]
-        [StringLength(AbpUserBase.MaxPlainPasswordLength)]
-        [DisableAuditing]
+        [StringLength(AbpUserBase.MaxPlainPasswordLength)] 
         public string Password { get; set; }
-
-        [DisableAuditing]
+         
         public string CaptchaResponse { get; set; }
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            if (!UserName.IsNullOrEmpty())
-            {
-                if (!UserName.Equals(EmailAddress) && ValidationHelper.IsEmail(UserName))
-                {
-                    yield return new ValidationResult("Username cannot be an email address");// unless it's the same as your email address!"); // ?
-                }
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext) {
+            if (!UserName.IsNullOrEmpty() && !UserName.Equals(EmailAddress) && ValidationHelper.IsEmail(UserName)) {
+                yield return new ValidationResult("Username cannot be an email address");// unless it's the same as your email address!"); // ?
+            }
+            if (!ValidationHelper.IsEmail(EmailAddress)) {
+                yield return new ValidationResult("The email is not valid");
             }
         }
     }

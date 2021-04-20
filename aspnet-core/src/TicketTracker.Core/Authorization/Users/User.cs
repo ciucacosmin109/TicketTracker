@@ -13,15 +13,18 @@ namespace TicketTracker.Authorization.Users
         public List<Subscription> Subscriptions { get; set; }
 
         // Methods
-        public static string CreateRandomPassword()
-        {
+        public override void SetNormalizedNames() {
+            if (UserName != null)
+                NormalizedUserName = UserName.ToUpperInvariant();
+            if (EmailAddress != null)
+                NormalizedEmailAddress = EmailAddress.ToUpperInvariant();
+        }
+        public static string CreateRandomPassword() {
             return Guid.NewGuid().ToString("N").Truncate(16);
         }
 
-        public static User CreateTenantAdminUser(int tenantId, string emailAddress)
-        {
-            var user = new User
-            {
+        public static User CreateTenantAdminUser(int tenantId, string emailAddress) {
+            var user = new User {
                 TenantId = tenantId,
                 UserName = AdminUserName,
                 Name = AdminUserName,
@@ -33,13 +36,6 @@ namespace TicketTracker.Authorization.Users
             user.SetNormalizedNames();
 
             return user;
-        }
-
-        public override void SetNormalizedNames() {
-            if(UserName != null)
-                NormalizedUserName = UserName.ToUpperInvariant();
-            if (EmailAddress != null)
-                NormalizedEmailAddress = EmailAddress.ToUpperInvariant();
-        }
+        } 
     }
 }

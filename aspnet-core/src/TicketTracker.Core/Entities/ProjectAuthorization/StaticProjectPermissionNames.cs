@@ -1,7 +1,6 @@
 ﻿namespace TicketTracker.Entities.ProjectAuthorization {
     public static class StaticProjectPermissionNames { 
-        public const string Project_ManageUsers = "Project.ManageUsers";
-        public const string Project_ManageRoles = "Project.ManageRoles";
+        public const string Project_Edit = "Project.Edit"; 
         public const string Project_AddComponents = "Project.AddComponents";
         public const string Project_ManageComponents = "Project.ManageComponents";
 

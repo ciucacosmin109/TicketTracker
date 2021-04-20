@@ -8,6 +8,7 @@ import { L } from '../../../lib/abpUtility';
 import { ProjectWithRolesDto } from '../../../services/project/dto/projectWithRolesDto';
 import ProjectStore from '../../../stores/projectStore';
 import Stores from '../../../stores/storeIdentifier';  
+import { appRouters } from '../../../components/Router/router.config';
 
 import './projectList.less';
 
@@ -30,6 +31,9 @@ export default class ProjectList extends AppComponentBase<IProjectListProps, IPr
         await this.props.projectStore?.getAll(); 
     }
     render() {
+        const newProjectPath = appRouters.find((x : any) => x.name === 'newproject')?.path;
+        const projectPath : string = appRouters.find((x : any) => x.name === 'project')?.path.replace('/:id', '/'); 
+
         const projects = this.props.category === ProjectCategory.ASSIGNED
             ? this.props.projectStore?.assignedProjects 
             : this.props.projectStore?.publicProjects;
@@ -44,7 +48,7 @@ export default class ProjectList extends AppComponentBase<IProjectListProps, IPr
                 </Col>
                 {this.props.showNewProjectButton ?
                     <Col flex="none">
-                        <Link to="/projects/new">
+                        <Link to={newProjectPath}>
                             <Button type="primary" icon={<PlusOutlined />}>{L('NewProject')}</Button>
                         </Link>
                     </Col> : <></>
@@ -57,16 +61,16 @@ export default class ProjectList extends AppComponentBase<IProjectListProps, IPr
                         <Card type="inner" size="small" loading></Card>
                     </Col>
                 :<></>}
-                {projects?.items.map((x : ProjectWithRolesDto) =>
-                    <Col flex="1 1 200px" className="project">
-                        <Link to={"/project/"+x.id}>
+                {projects?.items.map((x : ProjectWithRolesDto, index: number) =>
+                    <Col flex="1 1 200px" className="project" key={index}>
+                        <Link to={projectPath + x.id}>
                             <Card type="inner" 
                                 size="small" 
                                 title={
                                     <Space>
                                         {x.isPublic 
                                             ? <ProjectOutlined style={{color:"#1da57a"}}/> 
-                                            : <LockOutlined style={{color:"yellow"}}/> }  
+                                            : <LockOutlined style={{color:"orange"}}/> }  
                                         {x.name} 
                                     </Space>
                                 } 

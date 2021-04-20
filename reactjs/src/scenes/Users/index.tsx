@@ -118,7 +118,7 @@ class User extends AppComponentBase<IUserProps, IUserState> {
         title: L('IsActive'),
         dataIndex: 'isActive',
         key: 'isActive',
-        width: 150,
+        width: '1%',
         render: (text: boolean) => (text === true ? <Tag color="#2db7f5">{L('Yes')}</Tag> : <Tag color="red">{L('No')}</Tag>),
       },
       {

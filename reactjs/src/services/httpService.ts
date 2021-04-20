@@ -45,7 +45,7 @@ http.interceptors.response.use(
       });
     } else if (!!error.response && !!error.response.data.error && !!error.response.data.error.message) {
       Modal.error({
-        title: L('LoginFailed'),
+        title: L('Error'),
         content: error.response.data.error.message,
       });
     } else if (!error.response) {

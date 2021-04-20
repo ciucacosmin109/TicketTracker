@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
@@ -15,18 +17,16 @@ using Abp.Runtime.Validation;
 using Abp.UI;
 using Abp.Zero.Configuration;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TicketTracker.Authorization.Accounts.Dto;
 using TicketTracker.Authorization.Users;
+using TicketTracker.Validation;
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 
-namespace TicketTracker.Authorization.Accounts
-{
-    public class AccountAppService : TicketTrackerAppServiceBase, IAccountAppService
-    {
-        // from: http://regexlib.com/REDetails.aspx?regexp_id=1923
-        public const string PasswordRegex = "(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\\s)[0-9a-zA-Z!@#$%^&*()]*$";
-
+namespace TicketTracker.Authorization.Accounts {
+    public class AccountAppService : TicketTrackerAppServiceBase, IAccountAppService {
         private readonly UserRegistrationManager _userRegistrationManager;
         private readonly LogInManager _logInManager;
         private readonly UserManager _userManager;
@@ -73,8 +73,7 @@ namespace TicketTracker.Authorization.Accounts
             return new IsTenantAvailableOutput(TenantAvailabilityState.Available, tenant.Id);
         }
 
-        public async Task<RegisterOutput> Register(RegisterInput input)
-        {
+        public async Task<RegisterOutput> Register(RegisterInput input) { 
             var user = await _userRegistrationManager.RegisterAsync(
                 input.Name,
                 input.Surname,
@@ -85,17 +84,15 @@ namespace TicketTracker.Authorization.Accounts
             );
 
             var isEmailConfirmationRequiredForLogin = await SettingManager.GetSettingValueAsync<bool>(AbpZeroSettingNames.UserManagement.IsEmailConfirmationRequiredForLogin);
-
-            return new RegisterOutput
-            {
+            return new RegisterOutput {
                 CanLogin = user.IsActive && (user.IsEmailConfirmed || !isEmailConfirmationRequiredForLogin)
             };
         }
 
-        public void ExceptionTest() {
+        private void ExceptionTest() {
             throw new UserFriendlyException(222, "Message", "Details");
         }
-        public void EmailTest() { 
+        private void EmailTest() { 
             _emailSender.Send(
                 //from: "tickettracker99@gmail.com",
                 to: "ciucacosmin109@gmail.com",
@@ -103,34 +100,22 @@ namespace TicketTracker.Authorization.Accounts
                 body: $"Email test using <b>HTML body</b>",
                 isBodyHtml: true
             );
-            /*using (MailMessage mail = new MailMessage()) {
-                mail.From = new MailAddress("tickettracker99@gmail.com");
-                mail.To.Add("ciucacosmin109@gmail.com");
-                mail.Subject = "Hello World 222222";
-                mail.Body = "<h1>Hello</h1>";
-                mail.IsBodyHtml = true;
-
-                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)) {
-                    smtp.Credentials = new NetworkCredential("tickettracker99@gmail.com", "T1MtT@109");
-                    smtp.EnableSsl = true;
-                    smtp.Send(mail); 
-                   }
-            }*/
         }  
 
         // For logged in users
         [AbpAuthorize]
         public async Task<bool> ChangePassword(ChangePasswordDto input) {
             if (_abpSession.UserId == null) {
-                throw new UserFriendlyException("Please log in before attemping to change password.");
+                throw new UserFriendlyException("Please log in before attemping to change your password.");
             }
             long userId = _abpSession.UserId.Value;
             var user = await _userManager.GetUserByIdAsync(userId);
             var loginAsync = await _logInManager.LoginAsync(user.UserName, input.CurrentPassword, shouldLockout: false);
             if (loginAsync.Result != AbpLoginResultType.Success) {
-                throw new UserFriendlyException("Your 'Existing Password' did not match the one on record.  Please try again or contact an administrator for assistance in resetting your password.");
+                throw new UserFriendlyException("Your 'Existing Password' did not match the one on record. Please try again or contact an administrator for assistance in resetting your password.");
             }
-            if (!new Regex(AccountAppService.PasswordRegex).IsMatch(input.NewPassword)) {
+
+            if (!ValidationHelper.IsPassword(input.NewPassword)) {
                 throw new UserFriendlyException("Passwords must be at least 8 characters, contain a lowercase, uppercase, and number.");
             }
             user.Password = _passwordHasher.HashPassword(user, input.NewPassword);
@@ -147,17 +132,33 @@ namespace TicketTracker.Authorization.Accounts
             );
         }
 
+        [AbpAuthorize, HttpGet]
+        public async Task<PagedResultDto<SearchAccountOutput>> SearchAccounts(SearchAccountsInput input) {
+            string keyword = input.Keyword.ToUpper().Replace(" ", "");
+
+            var users = await _userRepo.GetAll().Where(x => 
+                x.Name.ToUpper().Replace(" ", "").Contains(keyword) || 
+                x.Surname.ToUpper().Replace(" ", "").Contains(keyword) ||
+                x.NormalizedUserName.Contains(keyword) || 
+                x.NormalizedEmailAddress.Contains(keyword)).ToListAsync();
+              
+            return new PagedResultDto<SearchAccountOutput> {
+                TotalCount = users.Count,
+                Items = _objectMapper.Map<List<SearchAccountOutput>>(users)
+            };
+        }
+
         // 'C'RUD for 'User' 
         [AbpAuthorize] 
         public async Task<GetAccountOutput> GetAsync() { 
-            long id = AbpSession.UserId ?? 0; 
+            long id = AbpSession.UserId.Value; 
             User user = await _userManager.GetUserByIdAsync(id);
             return _objectMapper.Map<GetAccountOutput>(user); 
         }
 
         [AbpAuthorize]
         public async Task<UpdateAccountOutput> UpdateAsync(UpdateAccountInput input) {
-            long id = AbpSession.UserId ?? 0;
+            long id = AbpSession.UserId.Value;
              
             User user = await _userManager.GetUserByIdAsync(id);  
             _objectMapper.Map(input, user); // UpdateInstance(input, user);
@@ -178,7 +179,7 @@ namespace TicketTracker.Authorization.Accounts
         }
 
         [AbpAuthorize]
-        public async Task DeleteAsync() {
+        private async Task DeleteAsync() {
             long id = AbpSession.UserId ?? 0;
 
             User user = await _userManager.GetUserByIdAsync(id);
@@ -186,7 +187,7 @@ namespace TicketTracker.Authorization.Accounts
         }
 
         [AbpAuthorize]
-        public async Task DeActivate() { 
+        private async Task DeActivate() { 
             long id = AbpSession.UserId ?? 0;
 
             await _userRepo.UpdateAsync(id, async (entity) => {
