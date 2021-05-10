@@ -5,7 +5,9 @@ import SessionStore from './sessionStore';
 import AuthenticationStore from './authenticationStore';
 import AccountStore from './accountStore';
 import ProjectStore from './projectStore';
+import ProjectUserStore from './projectUserStore';
 import ProjectRoleStore from './projectRoleStore';
+import ComponentStore from './componentStore';
 
 export default function initializeStores() {
   return {
@@ -17,6 +19,8 @@ export default function initializeStores() {
     accountStore: new AccountStore(),
 
     projectStore: new ProjectStore(), 
+    projectUserStore: new ProjectUserStore(), 
     projectRoleStore: new ProjectRoleStore(), 
+    componentStore: new ComponentStore(), 
   };
 }

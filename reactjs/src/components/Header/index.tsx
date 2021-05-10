@@ -2,12 +2,13 @@ import './index.less';
 
 import * as React from 'react';
 
-import { Avatar, Button, /*Badge,*/ Col, Layout, Row } from 'antd';
+import { Avatar, Button, /*Badge,*/ Col, Layout, Row, Space } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 
-import AbpLogo from '../../images/abp-logo-long.png'; 
+import Logo from '../../images/logo.png'; 
 import LanguageSelect from '../LanguageSelect';
 import UserOptions from '../UserOptions'; 
+import { L } from '../../lib/abpUtility';
 
 
 export interface IHeaderProps {
@@ -31,7 +32,10 @@ export class Header extends React.Component<IHeaderProps> {
             :
               <></>
             }
-            <Avatar className="logo" shape="square" src={AbpLogo} />
+            <Space >
+              <Avatar className="logo" shape="square" src={Logo} />
+              <div className="logo-name">{L("AppName")}</div>
+            </Space>
           </Col>
           
           <Col style={{ padding: '0px 5px 0px 5px', textAlign: 'right' }} span={12}>  

@@ -163,6 +163,17 @@
     <text name="You">You</text>
     <text name="Creator">Creator</text>
     <text name="TheCreatorWillAlwaysHaveProjectManager">The creator will always have the Project manager role, even if you delete it</text>
+    <text name="AreYouSureDeleteProject">Are you sure you want to delete this project ?</text>    
+    <text name="ActionCantBeUndone">This action can NOT be undone</text>  
+    <text name="YouDontHaveRequiredPermission">You do NOT have the required permission</text>
+
+    <text name="NoComponentsAdded">There are no components added to this project</text>
+    <text name="AddComponent">Add component</text>
+    <text name="EditComponent">Edit component</text>
+    <text name="Components">Components</text>
+    <text name="Created">Created</text>
+    <text name="Modified">Modified</text>
+
 
   </texts>
 </localizationDictionary>

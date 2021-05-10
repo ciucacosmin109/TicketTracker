@@ -48,7 +48,7 @@ class Account extends AppComponentBase<IAccountProps, IAccountState> {
     return (
       <Row> 
         <Col flex="1 1 400px">
-          <Card className="account-details">
+          <Card className="account-details ui-card">
             <Form initialValues={account} onFinish={this.onAccountUpdate} layout="vertical"> 
               <Row>
                 <Col flex="auto"> 
@@ -79,7 +79,7 @@ class Account extends AppComponentBase<IAccountProps, IAccountState> {
         </Col>
 
         <Col flex="1 1 400px">
-          <Card className="change-password">
+          <Card className="change-password ui-card">
             <Form ref={this.changePassForm} onFinish={this.onPasswordUpdate} layout="vertical">  
               <Row>
                 <Col flex="auto"> 

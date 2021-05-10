@@ -9,7 +9,7 @@ import { L, isGranted } from '../../lib/abpUtility';
 import { appRouters } from '../../components/Router/router.config';
 import utils from '../../utils/utils';
 
-import SideUserInfo from './components/SideUserInfo';
+import SideUserInfo from './components/sideUserInfo';
 
 export interface ISiderMenuProps {
   path: any;

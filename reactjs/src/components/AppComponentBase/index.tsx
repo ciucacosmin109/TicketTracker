@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './index.less';
 
 import { L, isGranted } from '../../lib/abpUtility';
 
@@ -10,6 +11,7 @@ class AppComponentBase<P = {}, S = {}, SS = any> extends React.Component<P, S, S
   isGranted(permissionName: string): boolean {
     return isGranted(permissionName);
   }
+
 }
 
 export default AppComponentBase;

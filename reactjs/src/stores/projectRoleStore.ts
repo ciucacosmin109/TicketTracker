@@ -1,5 +1,5 @@
 import { action, observable } from "mobx"; 
-import projectRolesService from '../services/projectRole/projectRoleService'; 
+import projectRoleService from '../services/projectRole/projectRoleService'; 
 import { ListResultDto } from '../services/dto/listResultDto'; 
 import { PRoleWithPermissionsDto } from "../services/projectRole/dto/pRoleWithPermissionsDto";
 
@@ -9,7 +9,7 @@ export default class ProjectRoleStore {
     @action
     async getAllWithPermissions() : Promise<ListResultDto<PRoleWithPermissionsDto>> {
         if(this.rolesWithPermissions == null){
-            this.rolesWithPermissions = await projectRolesService.getAllWithPermissions(); 
+            this.rolesWithPermissions = await projectRoleService.getAllWithPermissions(); 
         }
         return this.rolesWithPermissions;
     }  

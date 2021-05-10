@@ -130,7 +130,7 @@ export const appRouters: any = [
     title: 'New project',
     name: 'newproject', 
     showInMenu: false,
-    component: LoadableComponent(() => import('../../scenes/EditProject/index')),
+    component: LoadableComponent(() => import('../../scenes/EditProject')),
   },
   {
     path: '/myprojects/edit/:id',
@@ -138,7 +138,15 @@ export const appRouters: any = [
     title: 'Edit project',
     name: 'editproject', 
     showInMenu: false,
-    component: LoadableComponent(() => import('../../scenes/EditProject/index')),
+    component: LoadableComponent(() => import('../../scenes/EditProject')),
+  }, 
+  {
+    path: '/project/:id',
+    permission: '',
+    title: 'Project info',
+    name: 'project', 
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../scenes/Project')),
   },  
 ];
 

@@ -7,8 +7,8 @@ import AccountStore from '../../stores/accountStore';
 
 import AppComponentBase from '../../components/AppComponentBase'; 
 import { L } from '../../lib/abpUtility';
-import { Button, Card, Col, Empty, Form, Input, message, Row, Select, Space, Spin, Switch, Table, Tooltip } from 'antd';
-import { DeleteOutlined, FileTextOutlined, FundProjectionScreenOutlined, LoadingOutlined, SaveOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'; 
+import { Button, Card, Col, Empty, Form, Input, message, Modal, Row, Select, Space, Spin, Switch, Table, Tooltip } from 'antd';
+import { DeleteOutlined, ExclamationCircleOutlined, FileTextOutlined, FundProjectionScreenOutlined, LoadingOutlined, SaveOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'; 
 
 import rules from './index.validation'
 import { FormInstance } from 'antd/lib/form'; 
@@ -25,6 +25,7 @@ import { ProjectDto } from '../../services/project/dto/projectDto';
 import projectUserService from '../../services/projectUser/projectUserService';
 import { GetProjectUsersInput } from '../../services/projectUser/dto/getProjectUsersInput'; 
 import { UpdateProjectInput } from '../../services/project/dto/updateProjectInput';
+import { EntityDto } from '../../services/dto/entityDto'; 
 
 export interface IEditProjectParams{
     id: string | undefined; 
@@ -97,6 +98,25 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
             this.create(formValues);
         }
     }
+    onProjectDelete = async () => {
+        const id = this.props.match.params.id;
+        if(id != null){
+            Modal.confirm({
+                title: L("AreYouSureDeleteProject"),
+                icon: <ExclamationCircleOutlined />,
+                content: L('ActionCantBeUndone'),
+                onOk: async () => {  
+                    await projectService.delete({id: parseInt(id)} as EntityDto); 
+                    
+                    const myProjectsPath : string = appRouters.find((x : any) => x.name === 'myprojects')?.path;
+                    this.props.history.push(myProjectsPath); 
+                    
+                    message.success(L("SuccessfullyDeleted")); 
+                },
+                onCancel() {},
+            }); 
+        } 
+    }
     create = async (formValues: any) => {
         const project : CreateProjectInput = {
             name: formValues.name,
@@ -124,7 +144,7 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
     goToProject = (id: number) => {
         const projectPath : string = appRouters.find((x : any) => x.name === 'project')?.path.replace('/:id', `/${id}`); 
         this.props.history.push(projectPath); 
-
+        
         message.success(L("SavedSuccessfully")); 
     }
 
@@ -170,12 +190,19 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
 
             // Get project users
             const users = (await projectUserService.getUsersOfProject({projectId: intId} as GetProjectUsersInput)).users;  
+            
+            const hasPermissions = users.find(x => x.id === this.props.accountStore?.account.id)?.roleNames?.includes("ProjectManager");
             this.setState({
                 selectedUsers: users as SearchAccountOutput[],
                 userRoles: users as MinimalUserWithPRolesDto[],
                 creatorId: project.creatorUserId ?? 0,
-                loading: false,
-            });
+                loading: hasPermissions ? false : true,
+            }); 
+            if(!hasPermissions){
+                message.error(L("YouDontHaveRequiredPermission")); 
+            }
+ 
+
         }else{ // create
             const currentUser = this.props.accountStore?.account;
             this.setState({
@@ -241,7 +268,13 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
                                 <h2><Space><FundProjectionScreenOutlined />{L('ProjectDetails')}</Space></h2> 
                             </Col>
                             <Col flex="none">
-                                <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
+                                <Space>
+                                    {this.props.match.params.id != null && this.props.accountStore?.account.id === this.state.creatorId
+                                        ? <Button type="primary" danger onClick={this.onProjectDelete} icon={<DeleteOutlined />}>{L('Delete')}</Button> 
+                                        : <></>
+                                    }
+                                    <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
+                                </Space>
                             </Col>
                         </Row> 
             
