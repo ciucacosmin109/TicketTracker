@@ -8,10 +8,9 @@ import AccountStore from '../../stores/accountStore';
 import AppComponentBase from '../../components/AppComponentBase'; 
 import { L } from '../../lib/abpUtility';
 import { Button, Card, Col , Row,   Space, Spin,   } from 'antd';
-import {   AppstoreAddOutlined, AppstoreOutlined, CalendarOutlined, EditOutlined,   LoadingOutlined, LockOutlined, ProjectOutlined,  } from '@ant-design/icons'; 
+import { AppstoreAddOutlined, AppstoreOutlined, CalendarOutlined, EditOutlined, LoadingOutlined, LockFilled, ProjectFilled } from '@ant-design/icons'; 
    
-import { RouteComponentProps, withRouter } from 'react-router';
-import { appRouters } from '../../components/Router/router.config'; 
+import { RouteComponentProps, withRouter } from 'react-router'; 
 import ProjectStore from '../../stores/projectStore';
 import ProjectUserStore from '../../stores/projectUserStore';
 import ComponentStore from '../../stores/componentStore';
@@ -50,7 +49,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
     }
 
     editProject = (id: number) => {
-        const projectPath : string = appRouters.find((x : any) => x.name === 'editproject')?.path.replace('/:id', `/${id}`); 
+        const projectPath : string = this.getPath('editproject').replace('/:id', `/${id}`); 
         this.props.history.push(projectPath);
     } 
 
@@ -75,6 +74,10 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
         const myRoles = this.props.projectUserStore?.projectUsers
                         ?.find(x => x.id === myProfile?.id)
                         ?.roleNames; 
+        const projectIdOk = project != null && 
+                            this.props.match.params.id != null && 
+                            (project.id === parseInt(this.props.match.params.id));
+                
 
         // Component content
         return ( 
@@ -85,9 +88,9 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                             <h2>
                                 <Space> 
                                     {project?.isPublic
-                                        ? <ProjectOutlined style={{color:"#1da57a"}}/> 
-                                        : <LockOutlined style={{color:"orange"}}/> }    
-                                    {project?.name}
+                                        ? <ProjectFilled style={{color:"#1da57a"}}/> 
+                                        : <LockFilled style={{color:"orange"}}/> }
+                                    {`${project?.name} (#${project?.id})`}
                                 </Space>
                             </h2> 
                         </Col>
@@ -121,8 +124,8 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                             {myRoles?.map(x => L('ProjectManager')).join(", ")}
                         </Space>  
 
-                        {project?.id 
-                            ? <UserList projectId={project?.id ?? 0} />
+                        {projectIdOk 
+                            ? <UserList projectId={project!.id ?? 0} />
                             : <></>
                         } 
                     </Space>
@@ -132,7 +135,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                         <Col flex="auto"> 
                             <h2>
                                 <Space> 
-                                    <AppstoreOutlined />    
+                                    <AppstoreOutlined style={{color: 'purple'}} />    
                                     {this.L('Components')}
                                 </Space>
                             </h2> 
@@ -144,15 +147,15 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                         </Col>
                     </Row>  
                     <Row>  
-                        {project?.id 
-                            ? <ComponentTable projectId={project?.id} editEnabled />
+                        {projectIdOk 
+                            ? <ComponentTable key={project?.id} projectId={project!.id} editEnabled />
                             : <></>
                         }  
                     </Row>
-                        {project?.id 
+                        {projectIdOk 
                             ? <EditComponent
                                 visible={this.state.modal}
-                                projectId={project?.id}
+                                projectId={project!.id}
                                 onOk={() => this.setModal(false)}
                                 onCancel={() => this.setModal(false)}
                             />

@@ -147,7 +147,40 @@ export const appRouters: any = [
     name: 'project', 
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Project')),
-  },  
+  }, 
+  {
+    path: '/component/:id',
+    permission: '',
+    title: 'Component info',
+    name: 'component', 
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../scenes/Component')),
+  },
+  ///////////////////////// 
+  /*{
+    path: '/ticket/:id',
+    permission: '',
+    title: 'Ticket info',
+    name: 'ticket', 
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../scenes/Ticket')),
+  },
+  /*{
+    path: '/tickets/edit/:id',
+    permission: '',
+    title: 'Edit ticket',
+    name: 'editticket', 
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../scenes/Component')),
+  }, 
+  {
+    path: '/tickets/new?:componentId',
+    permission: '',
+    title: 'New ticket',
+    name: 'newticket', 
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../scenes/Component')),
+  }, */ 
 ];
 
 export const routers = [...userRouter, ...appRouters];

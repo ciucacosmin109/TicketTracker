@@ -5,11 +5,7 @@ const rules = {
     {
       required: true, 
       message: L('ThisFieldIsRequired'),
-    },
-    { 
-      min: 3,
-      message: L('ThisFieldMustHaveAtLeast3Chr'),
-    },
+    } 
   ], 
 };
 

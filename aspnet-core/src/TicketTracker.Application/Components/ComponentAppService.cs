@@ -34,7 +34,7 @@ namespace TicketTracker.Components {
             CheckGetPermission();
 
             var entity = await GetEntityByIdAsync(input.Id);
-            projectManager.CheckVisibility(session.UserId, input.Id);
+            projectManager.CheckVisibility(session.UserId, entity.ProjectId);
 
             return MapToEntityDto(entity);
         }

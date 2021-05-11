@@ -8,10 +8,15 @@ import { UpdateComponentInput } from "../services/component/dto/updateComponentI
 import { EntityDto } from "../services/dto/entityDto";
 
 export default class ComponentStore {
-    @observable components!: PagedResultDto<ComponentDto>;
-    
+    @observable component!: ComponentDto;
+
+    @observable components!: PagedResultDto<ComponentDto>; 
     projectId!: number;
  
+    @action
+    async get(id : number) { 
+        this.component = await componentService.get({id});  
+    }  
     @action
     async getAll(projectId : number) {
         this.projectId = projectId;
@@ -21,29 +26,33 @@ export default class ComponentStore {
     @action
     async create(input : CreateComponentInput) {
         const comp = await componentService.create(input); 
-        this.components.totalCount++;
-        this.components.items.push(comp); 
-        this.components.items = [...this.components.items]
-    }  
-    @action
-    async update(input : UpdateComponentInput) {
-        const newComp = await componentService.update(input); 
-        const oldCompIndex = this.components.items.findIndex(x => x.id === input.id);
-        if(oldCompIndex !== -1){
-            this.components.items.splice(oldCompIndex, 1, newComp); 
-        }else{
-            this.components.totalCount++;
-            this.components.items.push(newComp); 
+        if(this.components != null && input.projectId === this.projectId){
+            this.components.totalCount++; 
+            this.components.items = [comp, ...this.components.items]
         }
-        this.components.items = [...this.components.items]
     }  
     @action
-    async delete(input : EntityDto) {
-        const oldCompIndex = this.components.items.findIndex(x => x.id === input.id);
-        if(oldCompIndex !== -1){
+    async update(input : UpdateComponentInput) { 
+        const newComp = await componentService.update(input); 
+        if(input.id === this.component.id){
+            this.component = newComp;
+        }
+
+        const oldCompIndex = this.components?.items.findIndex(x => x.id === input.id);
+        if(oldCompIndex != null && oldCompIndex !== -1){
+            this.components.items.splice(oldCompIndex, 1, newComp); 
+            this.components.items = [...this.components.items]
+        } 
+    }  
+    @action
+    async delete(input : EntityDto) { 
+        await componentService.delete(input); 
+
+        const oldCompIndex = this.components?.items.findIndex(x => x.id === input.id);
+        if(oldCompIndex != null && oldCompIndex !== -1){
             this.components.totalCount--;
             this.components.items.splice(oldCompIndex, 1); 
+            this.components.items = [...this.components.items]
         }
-        this.components.items = [...this.components.items]
     }  
 }

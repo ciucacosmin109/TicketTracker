@@ -8,7 +8,7 @@ import { L } from '../../../lib/abpUtility';
 import ComponentStore from '../../../stores/componentStore';
 import Stores from '../../../stores/storeIdentifier';
 import rules from './editComponent.validation';
-import componentService from '../../../services/component/componentService';
+//import componentService from '../../../services/component/componentService';
 import { CreateComponentInput } from '../../../services/component/dto/createComponentInput';
 import { UpdateComponentInput } from '../../../services/component/dto/updateComponentInput';
 
@@ -42,35 +42,56 @@ class EditComponent extends AppComponentBase<IEditComponentProps, IEditComponent
     }
     onOk = async () => { 
         this.setState({loading: true});
-        const values = this.form.current?.getFieldsValue();
-        console.log(values);
+        const values = this.form.current?.getFieldsValue(); 
 
         if(this.props.componentId){ // edit
             await this.props.componentStore?.update({id: this.props.componentId, ...values} as UpdateComponentInput);
         }else{ 
             await this.props.componentStore?.create({projectId: this.props.projectId, ...values} as CreateComponentInput);
-        }
+        } 
 
+        this.props.onOk(); 
         this.resetModal();
-        this.setState({loading: false});
-        this.props.onOk();
     }
-    onCancel = () => {
-        this.resetModal();
+    onCancel = () => {  
         this.props.onCancel();
+        this.resetModal();
     }
 
-    async componentDidMount(){
+    async componentDidMount(){  
         if(this.props.componentId){ // edit
             this.setState({loading: true});
-            let component = await componentService.get({id: this.props.componentId});
 
-            this.form.current?.setFieldsValue(component);
+            if(this.props.componentStore?.component?.id !== this.props.componentId){
+                await this.props.componentStore?.get(this.props.componentId);
+            }
+            //const component = this.props.componentStore?.component;
+
+            //console.log(this.form.current)
+            //console.log(this.props.componentId)
+            //this.form.current?.setFieldsValue(component);
             this.setState({loading: false});
         }
     }
 
-    render() {   
+    render() { 
+        const component = this.props.componentStore?.component;  
+        const isComponentOk = component && component?.id === this.props.componentId;
+
+        //console.log("sssss")
+        const modalForm = (
+            <Form /*key={component?.id ?? 1}*/ ref={this.form} layout="vertical" 
+                initialValues={isComponentOk ? component : undefined}>
+
+                <Form.Item label={L('Name')} name={'name'} rules={rules.name}> 
+                    <Input placeholder={L('Name')} prefix={<AppstoreAddOutlined style={{ color: 'lightgray' }}/>} />
+                </Form.Item>
+                <Form.Item label={L('Description')} name={'description'} rules={rules.name}> 
+                    <Input.TextArea placeholder={L('Description')} rows={4} />
+                </Form.Item>  
+            </Form>
+        );
+
         return (
             <Modal 
                 className="edit-component" 
@@ -82,14 +103,7 @@ class EditComponent extends AppComponentBase<IEditComponentProps, IEditComponent
                 cancelText={L('Cancel')}>
                 
                 <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}> 
-                    <Form ref={this.form} layout="vertical">
-                        <Form.Item label={L('Name')} name={'name'} rules={rules.name}> 
-                            <Input placeholder={L('Name')} prefix={<AppstoreAddOutlined style={{ color: 'lightgray' }}/>} />
-                        </Form.Item>
-                        <Form.Item label={L('Description')} name={'description'} rules={rules.name}> 
-                            <Input.TextArea placeholder={L('Description')} rows={4} />
-                        </Form.Item>  
-                    </Form>
+                    {isComponentOk || !this.props.componentId ? modalForm : <></>}
                 </Spin>
             </Modal>
         );

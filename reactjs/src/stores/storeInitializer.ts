@@ -8,6 +8,7 @@ import ProjectStore from './projectStore';
 import ProjectUserStore from './projectUserStore';
 import ProjectRoleStore from './projectRoleStore';
 import ComponentStore from './componentStore';
+import TicketStore from './ticketStore';
 
 export default function initializeStores() {
   return {
@@ -22,5 +23,6 @@ export default function initializeStores() {
     projectUserStore: new ProjectUserStore(), 
     projectRoleStore: new ProjectRoleStore(), 
     componentStore: new ComponentStore(), 
+    ticketStore: new TicketStore(), 
   };
 }

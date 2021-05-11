@@ -6,52 +6,41 @@ import Stores from '../../../stores/storeIdentifier';
 
 import AppComponentBase from '../../../components/AppComponentBase';  
 import { Table, Empty, Space, Button, Dropdown, Menu,  } from 'antd';
-import { AppstoreFilled, DownOutlined, LoadingOutlined,   } from '@ant-design/icons'; 
+import { BugFilled, BulbFilled, DownOutlined, FileTextOutlined, LoadingOutlined,   } from '@ant-design/icons'; 
    
-import { RouteComponentProps, withRouter } from 'react-router';   
-import ComponentStore from '../../../stores/componentStore';
-import { ComponentDto } from '../../../services/component/dto/componentDto'; 
-import { SpinProps } from 'antd/lib/spin';
-import EditComponent from './editComponent';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { SpinProps } from 'antd/lib/spin'; 
 import { L } from '../../../lib/abpUtility';
 import { ColumnsType } from 'antd/lib/table';
+import TicketStore from '../../../stores/ticketStore';
+import { TicketDto } from '../../../services/ticket/dto/ticketDto';
+import { TicketType } from '../../../services/ticket/dto/ticketType';
 
-export interface IComponentTableProps extends RouteComponentProps { 
-    componentStore?: ComponentStore; 
+export interface ITicketTableProps extends RouteComponentProps { 
+    ticketStore?: TicketStore; 
 
-    projectId: number; 
+    componentId: number; 
     editEnabled?: boolean;
 }
-export interface IComponentTableState {  
-    loading: boolean;
-    modal: boolean;
-    modalComponentId: number;
+export interface ITicketTableState {  
+    loading: boolean; 
 }
  
-@inject(Stores.ComponentStore)
+@inject(Stores.TicketStore)
 @observer
-class ComponentTable extends AppComponentBase<IComponentTableProps, IComponentTableState> {
+class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState> {
     state = {  
-        loading: true,       
-        modal: false,
-        modalComponentId: 0
-    }
-    setModal = (visible : boolean, id : number) => {
-        this.setState({modal: visible, modalComponentId: id});
-    }
-    modalOk = async () => { 
-        await this.props.componentStore?.getAll(this.props.projectId); 
-        this.setModal(false, 0);
-    }
+        loading: true,
+    } 
 
     // Load data
     async componentDidMount() {   
-        await this.props.componentStore?.getAll(this.props.projectId); 
+        await this.props.ticketStore?.getAll(this.props.componentId); 
         this.setState({loading: false}); 
     } 
 
-    onRowClick = (e:any, rec:ComponentDto) => {  
-        const path = this.getPath("component").replace('/:id', `/${rec.id}`);
+    onRowClick = (e:any, rec:TicketDto) => {
+        const path = this.getPath("ticket").replace('/:id', `/${rec.id}`);
         this.props.history.push(path);
     }
 
@@ -66,24 +55,25 @@ class ComponentTable extends AppComponentBase<IComponentTableProps, IComponentTa
     onActionsMenuClick = (e : any, id : number) => {  
         switch(e.key){
             case "0":
-                this.setModal(true, id);
+                const path = this.getPath("editticket").replace('/:id', `/${id}`);
+                this.props.history.push(path);
                 break;
             case "1":
-                this.props.componentStore?.delete({id});
+                this.props.ticketStore?.delete({id});
                 break;
             default: break;
         }
     };
 
     render() {    
-        const components = this.props.componentStore?.components?.items;
+        const tickets = this.props.ticketStore?.tickets?.items;
 
         // Table config
         const noDataLocale = { 
             emptyText: (
                 <Empty 
                     image={Empty.PRESENTED_IMAGE_SIMPLE} 
-                    description={this.L('NoComponentsAdded')}/>
+                    description={this.L('NoTicketsAdded')}/>
             )
         }; 
         const tableLoading : SpinProps = {
@@ -92,24 +82,30 @@ class ComponentTable extends AppComponentBase<IComponentTableProps, IComponentTa
             size: 'large'
         }
 
-        const columns : ColumnsType<ComponentDto> = [ 
-            { title: L('Name'), key:'name', render: (text: any, record: ComponentDto, index: number) =>
+        const columns : ColumnsType<TicketDto> = [ 
+            { title: L('Type'), key:'type', width:'1%', render: (text: any, record: TicketDto, index: number) =>
                 <div onClick={e => this.onRowClick(e, record)}>
                     <Space key={index}>
-                        <AppstoreFilled style={{color: 'purple'}} />
-                        {record.name}  
+                        {   
+                            record.type === 1 ?
+                                <BugFilled style={{color: 'red'}} /> :
+                            record.type === 2 ?
+                                <BulbFilled style={{color: 'green'}} /> :
+                            <FileTextOutlined />
+                        } 
+                        {L(TicketType[record.type])}  
                     </Space>
                 </div>
             },
-            { title: L('Description'), key:'description', dataIndex: 'description', render: (text: any, record: ComponentDto, index: number) =>
-                <div onClick={e => this.onRowClick(e, record)}>
+            { title: L('Ticket'), key:'title', dataIndex:"title", render: (text: any, record: TicketDto, index: number) =>
+                <div onClick={e => this.onRowClick(e, record)}> 
                     {text}
                 </div>
             },
         ];
         if(this.props.editEnabled){
             columns.push(
-                { title: '...', key:'actions', width:'1%', align:'right', render: (text: any, record: ComponentDto, index: number) =>
+                { title: '...', key:'actions', width:'1%', align:'right', render: (text: any, record: TicketDto, index: number) =>
                     <Dropdown key={index} overlay={this.getActionsMenu(record.id)} trigger={['click']}>
                         <Button onClick={e => e.preventDefault()} icon={<DownOutlined />} /> 
                     </Dropdown>
@@ -132,7 +128,7 @@ class ComponentTable extends AppComponentBase<IComponentTableProps, IComponentTa
                     loading={tableLoading}
                     scroll={{x: true}}
                     locale={noDataLocale} 
-                    dataSource={components} 
+                    dataSource={tickets} 
                     columns={columns}   
                     onRow={(record, rowIndex) => { // seteaza props pentru linii
                       return {
@@ -142,20 +138,10 @@ class ComponentTable extends AppComponentBase<IComponentTableProps, IComponentTa
                         }
                       };
                     }}
-                />
-                {this.state.modalComponentId !== 0
-                    ? <EditComponent
-                        key={this.state.modalComponentId}
-                        visible={this.state.modal}
-                        projectId={this.props.projectId}
-                        componentId={this.state.modalComponentId}
-                        onOk={this.modalOk}
-                        onCancel={() => this.setModal(false, 0)} 
-                    /> : <></>
-                }
+                /> 
             </div> 
         ); 
     }
 }
  
-export default withRouter(ComponentTable);
+export default withRouter(TicketTable);

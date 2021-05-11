@@ -139,7 +139,8 @@
     <text name="Developer">Developer</text>
     <text name="Tester">Tester</text> 
     <text name="TicketSubmitter">Ticket submitter</text>
-    
+
+    <text name="Project">Project</text>
     <text name="AssignedProjects">Assigned projects</text>
     <text name="PublicProjects">Public projects</text>
     <text name="NewProject">New project</text>
@@ -173,6 +174,14 @@
     <text name="Components">Components</text>
     <text name="Created">Created</text>
     <text name="Modified">Modified</text>
+    
+    <text name="Tickets">Tickets</text>
+    <text name="Ticket">Ticket</text>
+    <text name="AddTicket">Add ticket</text>
+    <text name="NoTicketsAdded">There are no tickets added to this component</text>
+    <text name="OTHER">Other</text>
+    <text name="BUG">Bug</text>
+    <text name="FEATURE">Feature</text>
 
 
   </texts>
