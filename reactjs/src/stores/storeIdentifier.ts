@@ -13,4 +13,6 @@ export default class Stores {
   static TicketStore: string = 'ticketStore';
   static WorkStore: string = 'workStore';
   static CommentStore: string = 'commentStore';
+  static ActivityStore: string = 'activityStore';
+  static StatusStore: string = 'statusStore';
 }

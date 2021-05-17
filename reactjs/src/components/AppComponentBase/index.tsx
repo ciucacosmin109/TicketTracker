@@ -20,6 +20,15 @@ class AppComponentBase<P = {}, S = {}, SS = any> extends React.Component<P, S, S
     return appRouters.find((x : any) => x.name === componentName)?.path ?? "/"; 
   }
 
+  getQueryParam(name: string) : string | null { 
+    if(this.props["location"] != null){
+      let params = new URLSearchParams(this.props["location"].search); 
+      return params.get('type');
+    }
+
+    return null;
+  }
+
   getDateString(date: Date){ 
     return new Date(date).toLocaleDateString("ro-RO");
   }

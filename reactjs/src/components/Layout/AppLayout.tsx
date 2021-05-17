@@ -12,7 +12,6 @@ import ProtectedRoute from '../../components/Router/ProtectedRoute';
 import SiderMenu from '../../components/SiderMenu';
 import { appRouters } from '../Router/router.config';
 import utils from '../../utils/utils';
-import NotFoundRoute from '../Router/NotFoundRoute';
 
 const { Content } = Layout;
 
@@ -41,6 +40,7 @@ class AppLayout extends React.Component<any> {
     const { collapsed } = this.state;
 
     const homePath : string = appRouters.find((x : any) => x.name === "myprojects")?.path ?? "/dashboard";
+    const notFoundPath : string = (appRouters.find((x : any) => x.name === "exception")?.path + "?type=404") ?? "/";
 
     const layout = (
       <Layout style={{ minHeight: '100vh' }}>
@@ -63,7 +63,7 @@ class AppLayout extends React.Component<any> {
                     render={(props) => <ProtectedRoute component={route.component} permission={route.permission} />}
                   />
                 ))}
-              {pathname !== '/' && <NotFoundRoute />}
+              {pathname !== '/' && <Redirect to={notFoundPath} />}
             </Switch>
           </Content>
           <Footer />

@@ -260,24 +260,26 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
 
         // Component content
         const content = ( 
-            <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}> 
-                <Card className="edit-project"> 
-                    <Form ref={this.form} onFinish={this.onProjectUpdate} layout="vertical"> 
-                        <Row>
-                            <Col flex="auto"> 
-                                <h2><Space><FundProjectionScreenOutlined />{L('ProjectDetails')}</Space></h2> 
-                            </Col>
-                            <Col flex="none">
-                                <Space>
-                                    {this.props.match.params.id != null && this.props.accountStore?.account.id === this.state.creatorId
-                                        ? <Button type="primary" danger onClick={this.onProjectDelete} icon={<DeleteOutlined />}>{L('Delete')}</Button> 
-                                        : <></>
-                                    }
-                                    <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
-                                </Space>
-                            </Col>
-                        </Row> 
-            
+            <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}>  
+                <Form ref={this.form} onFinish={this.onProjectUpdate} layout="vertical"> 
+                    <Card className="edit-project"
+                        title={
+                            <Row>
+                                <Col flex="auto"> 
+                                    <Space><FundProjectionScreenOutlined />{L('ProjectDetails')}</Space>
+                                </Col>
+                                <Col flex="none">
+                                    <Space>
+                                        {this.props.match.params.id != null && this.props.accountStore?.account.id === this.state.creatorId
+                                            ? <Button type="primary" danger onClick={this.onProjectDelete} icon={<DeleteOutlined />}>{L('Delete')}</Button> 
+                                            : <></>
+                                        }
+                                        <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
+                                    </Space>
+                                </Col>
+                            </Row> 
+                        }
+                    > 
                         <Form.Item label={L('Name')} name={'name'} rules={rules.name}>
                             <Input placeholder={L('Name')} prefix={<FileTextOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
                         </Form.Item> 
@@ -310,12 +312,12 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
                                         
                                         {L('AddUsers')}
                                     </Button> 
-                                }/>
-                        
-                        </Form.Item>
-                    </Form>  
-                    <SearchAccount visible={this.state.searchVisible} onOk={this.onUsersAdded} onCancel={()=>this.setModal(false)}/> 
-                </Card>
+                                }
+                            /> 
+                        </Form.Item> 
+                    </Card> 
+                </Form> 
+                <SearchAccount visible={this.state.searchVisible} onOk={this.onUsersAdded} onCancel={()=>this.setModal(false)}/>  
             </Spin>  
         );
         return content;

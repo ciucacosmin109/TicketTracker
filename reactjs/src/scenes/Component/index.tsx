@@ -40,7 +40,7 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
     addTicket = (e: any) => {
         const id = this.props.match.params.id;
         if(id != null){ // i have an id
-            const path = this.getPath("addticket").replace(":componentId", id);
+            const path = this.getPath("newticket").replace(":componentId", "componentId=" + id);  
             this.props.history.push(path);
         }
     }

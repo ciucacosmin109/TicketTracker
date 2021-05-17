@@ -119,7 +119,7 @@
     <text name="ResetPasswordStepTwoInfo">2. Copiați această parolă aleatorie, astfel încât să o puteți trimite utilizatorului</text>
     <text name="UsersActivation">Activarea utilizatorului</text>
 
-    <text name="AppName">TicketTracker</text>
+    <text name="AppName">Ticket Tracker</text>
     <text name="RoleDetails">Detaliile rolului</text>
     <text name="RolePermission">Permisiunile rolului</text>
     <text name="Error">Eroare</text>
@@ -168,7 +168,7 @@
 
     <text name="NoComponentsAdded">Nu exista componente adaugate in acest proiect</text>
     <text name="AddComponent">Adauga componente</text>
-    <text name="EditComponent">Editeaza componente</text>
+    <text name="EditComponent">Editeaza componenta</text>
     <text name="Components">Componente</text>
     <text name="Component">Componenta</text>
     <text name="Created">Creat</text>
@@ -218,6 +218,12 @@
     <text name="SetActive">Seteaza ca activa</text>
     <text name="ActiveWork">Munca in desfasurate</text>
     <text name="History">Istoric</text>
+
+    <text name="========================================">========</text>
+
+    <text name="AreYouSureDeleteTicket">Sunteti sigur ca vreti sa stergeti acest tichet ?</text>
+    <text name="Title">Titlu</text>
+
     
   </texts>
 </localizationDictionary>

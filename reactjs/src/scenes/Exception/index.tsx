@@ -9,8 +9,9 @@ import error401 from '../../images/401.png';
 import error404 from '../../images/404.png';
 import error500 from '../../images/500.png';
 import { L } from '../../lib/abpUtility';
+import AppComponentBase from '../../components/AppComponentBase';
 
-class Exception extends React.Component<any, any> {
+class Exception extends AppComponentBase {
   public render() {
     const exception = [
       { 
@@ -27,9 +28,8 @@ class Exception extends React.Component<any, any> {
         errorImg: error500, 
         errorDescription: L('Error500') },
     ];
-
-    let params = new URLSearchParams(this.props.match.params.type);
-    const type = params.get('type');
+ 
+    const type = this.getQueryParam("type");
     let error = exception.find(x => x.errorCode === type);
 
     if (error == null) {

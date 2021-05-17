@@ -11,6 +11,8 @@ import ComponentStore from './componentStore';
 import TicketStore from './ticketStore';
 import WorkStore from './workStore';
 import CommentStore from './commentStore';
+import ActivityStore from './activityStore';
+import StatusStore from './statusStore';
 
 export default function initializeStores() {
   return {
@@ -28,5 +30,7 @@ export default function initializeStores() {
     ticketStore: new TicketStore(), 
     workStore: new WorkStore(), 
     commentStore: new CommentStore(), 
+    activityStore: new ActivityStore(), 
+    statusStore: new StatusStore(), 
   };
 }

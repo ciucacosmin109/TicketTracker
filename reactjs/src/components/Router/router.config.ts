@@ -46,7 +46,7 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../components/Logout')),
   }, 
   {
-    path: '/exception?:type',
+    path: '/exception', // ?type
     permission: '',
     title: 'exception',
     name: 'exception',
@@ -165,22 +165,22 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Ticket')),
   },
-  /*{
+  {
     path: '/tickets/edit/:id',
     permission: '',
     title: 'Edit ticket',
     name: 'editticket', 
     showInMenu: false,
-    component: LoadableComponent(() => import('../../scenes/Component')),
+    component: LoadableComponent(() => import('../../scenes/EditTicket')),
   }, 
   {
-    path: '/tickets/new?:componentId',
+    path: '/tickets/new', // ?componentId
     permission: '',
     title: 'New ticket',
     name: 'newticket', 
     showInMenu: false,
-    component: LoadableComponent(() => import('../../scenes/Component')),
-  }, */ 
+    component: LoadableComponent(() => import('../../scenes/EditTicket')),
+  },
 ];
 
 export const routers = [...userRouter, ...appRouters];
