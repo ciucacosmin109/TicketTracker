@@ -19,8 +19,10 @@ namespace TicketTracker.Tickets.Dto {
         public string Title { get; set; }
         public string Description { get; set; }
         public TicketPriority Priority { get; set; }
-        public TicketType Type { get; set; } 
-         
+        public TicketType Type { get; set; }
+
+        public int ComponentId { get; set; }
+
         public SimpleStatusDto Status { get; set; }
         public SimpleActivityDto Activity { get; set; }
         public List<SimpleWorkDto> Works { get; set; }

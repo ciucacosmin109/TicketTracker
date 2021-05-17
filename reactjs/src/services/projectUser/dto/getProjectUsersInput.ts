@@ -1,3 +1,4 @@
 export class GetProjectUsersInput { 
-    projectId!: number;
+    projectId?: number;
+    ticketId?: number;
 }

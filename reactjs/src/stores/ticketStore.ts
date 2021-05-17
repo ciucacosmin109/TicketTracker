@@ -29,7 +29,7 @@ export default class TicketStore {
         if(this.tickets != null && input.componentId === this.componentId){
             this.tickets.totalCount++;
             this.tickets.items.push(tc); 
-            this.tickets.items = [tc, ...this.tickets.items]
+            this.tickets.items = [...this.tickets.items]
         }
     }  
     @action

@@ -1,6 +1,7 @@
 ﻿using Abp.Domain.Repositories;
 using Abp.Domain.Services;
 using Abp.ObjectMapping;
+using Abp.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ using TicketTracker.Works.Dto;
 namespace TicketTracker.Managers {
     public class WorkManager : IDomainService {
         private readonly ProjectManager projectManager;
+        private readonly TicketManager ticketManager;
         private readonly WorkRepository repoWorks;
         private readonly IRepository<Ticket> repoTickets;
         private readonly IRepository<ProjectUser> repoPUsers;
@@ -22,12 +24,14 @@ namespace TicketTracker.Managers {
 
         public WorkManager(
             ProjectManager projectManager,
+            TicketManager ticketManager,
             WorkRepository repoWorks,
             IRepository<Ticket> repoTickets,
             IRepository<ProjectUser> repoPUsers,
             IObjectMapper mapper
         ) {
             this.projectManager = projectManager;
+            this.ticketManager = ticketManager;
             this.repoWorks = repoWorks;
             this.repoTickets = repoTickets;
             this.repoPUsers = repoPUsers;
@@ -38,10 +42,15 @@ namespace TicketTracker.Managers {
             CheckWorkPermission(userId, workId, null);
         }
         public void CheckWorkPermission(long? userId, int workId, string permissionName = null) {
-            int puId = repoWorks.Get(workId).ProjectUserId;
-            int projectId = repoPUsers.Get(puId).ProjectId;
-
-            projectManager.CheckProjectPermission(userId, projectId, permissionName);
+            var work = repoWorks.Get(workId);
+            if(work.ProjectUserId != null) {
+                int projectId = repoPUsers.Get(work.ProjectUserId.Value).ProjectId;
+                projectManager.CheckProjectPermission(userId, projectId, permissionName);
+            } else if(work.TicketId != null) {
+                ticketManager.CheckTicketPermission(userId, work.TicketId.Value, permissionName);
+            } else {
+                throw new UserFriendlyException("Can't check the permissions. This entity should not exist. WorkId=" + workId);
+            }
         } 
 
         public WorkDto MapToDto(Work entity) {

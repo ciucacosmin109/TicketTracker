@@ -1968,10 +1968,10 @@ namespace TicketTracker.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("ProjectUserId")
+                    b.Property<int?>("ProjectUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TicketId")
+                    b.Property<int?>("TicketId")
                         .HasColumnType("int");
 
                     b.Property<int?>("WorkedTime")
@@ -1983,10 +1983,9 @@ namespace TicketTracker.Migrations
 
                     b.HasIndex("LastModifierUserId");
 
-                    b.HasIndex("TicketId");
+                    b.HasIndex("ProjectUserId");
 
-                    b.HasIndex("ProjectUserId", "TicketId")
-                        .IsUnique();
+                    b.HasIndex("TicketId");
 
                     b.ToTable("Works");
                 });
@@ -2505,15 +2504,11 @@ namespace TicketTracker.Migrations
 
                     b.HasOne("TicketTracker.Entities.ProjectUser", "ProjectUser")
                         .WithMany("Works")
-                        .HasForeignKey("ProjectUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectUserId");
 
                     b.HasOne("TicketTracker.Entities.Ticket", "Ticket")
                         .WithMany("Works")
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("TicketId");
 
                     b.Navigation("CreatorUser");
 

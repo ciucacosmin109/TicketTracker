@@ -23,6 +23,8 @@ namespace TicketTracker.ProjectUsers {
     public class ProjectUserAppService : IApplicationService {
         private readonly IRepository<ProjectUser> repository;
         private readonly IRepository<Project> repoProjects;
+        private readonly IRepository<Ticket> repoTickets;
+        private readonly IRepository<Component> repoComponents;
         private readonly IRepository<User, long> repoUsers;
         private readonly IRepository<PRole> repoPRoles;
         private readonly IObjectMapper mapper;
@@ -33,6 +35,8 @@ namespace TicketTracker.ProjectUsers {
         public ProjectUserAppService(
             IRepository<ProjectUser> repository,
             IRepository<Project> repoProjects,
+            IRepository<Ticket> repoTickets,
+            IRepository<Component> repoComponents,
             IRepository<User, long> repoUsers,
             IRepository<PRole> repoPRoles,
             IObjectMapper mapper,
@@ -43,6 +47,8 @@ namespace TicketTracker.ProjectUsers {
 
             this.repository = repository;
             this.repoProjects = repoProjects;
+            this.repoTickets = repoTickets;
+            this.repoComponents = repoComponents;
             this.repoUsers = repoUsers;
             this.repoPRoles = repoPRoles;
             this.mapper = mapper;
@@ -52,13 +58,21 @@ namespace TicketTracker.ProjectUsers {
         }
 
         public GetProjectUsersOutput GetUsersOfProjectAsync(GetProjectUsersInput input) {
-            projectManager.CheckVisibility(session.UserId, input.ProjectId);
+            if(input.ProjectId == null && input.TicketId == null) {
+                throw new UserFriendlyException("Provide ProjectId or TicketId");
+            }
+            if(input.ProjectId == null) {
+                int compId = repoTickets.Get(input.TicketId.Value).ComponentId;
+                input.ProjectId = repoComponents.Get(compId).ProjectId;
+            }
+
+            projectManager.CheckVisibility(session.UserId, input.ProjectId.Value);
 
             var projectUsers = repository.GetAllIncluding(x => x.User, x => x.Roles).Where(x => x.ProjectId == input.ProjectId);
             var users = projectUsers.Select(x => x.User);
 
             GetProjectUsersOutput result = new GetProjectUsersOutput();
-            result.ProjectId = input.ProjectId;
+            result.ProjectId = input.ProjectId.Value;
             result.Users = mapper.Map<List<SimpleUserWithRolesDto>>(users);
             foreach (var usr in result.Users) {
                 usr.RoleNames = projectUsers.First(x => x.UserId == usr.Id).Roles.Select(x => x.Name).ToList(); 

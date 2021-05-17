@@ -38,23 +38,25 @@ export default class ProjectList extends AppComponentBase<IProjectListProps, IPr
             ? this.props.projectStore?.assignedProjects 
             : this.props.projectStore?.publicProjects;
         
-        return <Card className="project-list">
-            <Row>
-                <Col flex="auto">   
-                    {this.props.category === ProjectCategory.ASSIGNED 
-                        ? <h2><Space><UserOutlined />{L('AssignedProjects')}</Space></h2>
-                        : <h2><Space><UserOutlined />{L('PublicProjects')}</Space></h2> 
-                    } 
-                </Col>
-                {this.props.showNewProjectButton ?
-                    <Col flex="none">
-                        <Link to={newProjectPath}>
-                            <Button type="primary" icon={<PlusOutlined />}>{L('NewProject')}</Button>
-                        </Link>
-                    </Col> : <></>
-                }
-            </Row>  
-                
+        return <Card className="project-list"
+            title={
+                <Row>
+                    <Col flex="auto">   
+                        {this.props.category === ProjectCategory.ASSIGNED 
+                            ? <><Space><UserOutlined />{L('AssignedProjects')}</Space></>
+                            : <><Space><UserOutlined />{L('PublicProjects')}</Space></> 
+                        } 
+                    </Col>
+                    {this.props.showNewProjectButton ?
+                        <Col flex="none">
+                            <Link to={newProjectPath}>
+                                <Button type="primary" icon={<PlusOutlined />}>{L('NewProject')}</Button>
+                            </Link>
+                        </Col> : <></>
+                    }
+                </Row>  
+            }
+        >   
             <Row>
                 {projects == null ? 
                     <Col flex="1 1 200px" className="project">

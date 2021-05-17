@@ -11,6 +11,7 @@ export interface IProfileAvatarProps extends RouteComponentProps {
     lastName?: string;
     userId?: number;
     showToolTip?: boolean;
+    size?: number | "small" | "default" | "large" | undefined;
 
     className?: string;
 } 
@@ -38,6 +39,7 @@ class ProfileAvatar extends React.Component<IProfileAvatarProps> {
                         verticalAlign: 'middle',
                         cursor: 'pointer'
                     }}
+                    size={this.props.size}
                     gap={1}>
 
                     {firstName.toUpperCase().slice(0, 1)

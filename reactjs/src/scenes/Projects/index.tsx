@@ -2,8 +2,6 @@ import React from 'react';
 import AppComponentBase from '../../components/AppComponentBase';  
 import ProjectList, {ProjectCategory} from './components/projectList';
 
-import './index.less'
-
 export interface IProjectProps {
     
 }

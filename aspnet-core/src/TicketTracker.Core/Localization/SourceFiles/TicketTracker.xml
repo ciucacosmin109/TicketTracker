@@ -119,11 +119,10 @@
     <text name="ResetPasswordStepTwoInfo">2. Copy this random password so you can send it to the user</text>
     <text name="UsersActivation">Users activation</text>
 
-    <text name="AppName">TicketTracker</text>
+    <text name="AppName">Ticket Tracker</text>
     <text name="RoleDetails">Role details</text>
     <text name="RolePermission">Role permissions</text>
-    <text name="Error">Error</text>
-
+    <text name="Error">Error</text> 
     <text name="Loading">Loading</text>
     <text name="Activities">Activities</text>
     <text name="AccountDetails">Account details</text>
@@ -138,8 +137,7 @@
     <text name="ProjectManager">Project manager</text>
     <text name="Developer">Developer</text>
     <text name="Tester">Tester</text> 
-    <text name="TicketSubmitter">Ticket submitter</text>
-
+    <text name="TicketSubmitter">Ticket submitter</text> 
     <text name="Project">Project</text>
     <text name="AssignedProjects">Assigned projects</text>
     <text name="PublicProjects">Public projects</text>
@@ -157,7 +155,7 @@
     <text name="SearchResults">Search results</text>
     <text name="SelectedUsers">Selected users</text>
     <text name="NoResultsFound">No results found</text>
-    <text name="LoadMore">LoadMore</text>
+    <text name="LoadMore">Load more</text>
     <text name="ThisFieldMustHaveAtLeast3Chr">This field must have at least 3 characters</text>
     <text name="SelectRoles">Select roles</text>
     <text name="NoOtherUsersAdded">No other users added</text>
@@ -172,6 +170,7 @@
     <text name="AddComponent">Add component</text>
     <text name="EditComponent">Edit component</text>
     <text name="Components">Components</text>
+    <text name="Component">Component</text>
     <text name="Created">Created</text>
     <text name="Modified">Modified</text>
     
@@ -179,9 +178,49 @@
     <text name="Ticket">Ticket</text>
     <text name="AddTicket">Add ticket</text>
     <text name="NoTicketsAdded">There are no tickets added to this component</text>
+    <text name="Type">Type</text>
     <text name="OTHER">Other</text>
     <text name="BUG">Bug</text>
     <text name="FEATURE">Feature</text>
+    <text name="Priority">Priority</text>
+    <text name="NONE">None</text>
+    <text name="VERY_LOW">Very low</text>
+    <text name="LOW">Low</text>
+    <text name="MEDIUM">Medium</text>
+    <text name="HIGH">High</text>
+    <text name="VERY_HIGH">Very high</text>
+    <text name="Activity">Activity</text>
+    <text name="Design">Design</text>
+    <text name="Development">Development</text>
+    <text name="Testing">Testing</text>
+    <text name="Documentation">Documentation</text>
+    <text name="Deployment">Deployment</text>
+    <text name="Status">Status</text>
+    <text name="New">New</text>
+    <text name="In development">In development</text>
+    <text name="In development (reopened)">In development (reopened)</text>
+    <text name="Solved">Solved</text>
+    <text name="Closed">Closed</text>
+    
+    <text name="Assigned">Assigned</text>
+    <text name="AssignedTo">Assigned to</text>
+    <text name="AssignedAt">Assigned at</text>
+    <text name="Nobody">Nobody</text>
+    <text name="TypeUser">Type user</text>
+    <text name="NoUserAssigned">No user assigned</text>
+    <text name="Unknown">Unknown</text>
+    <text name="TicketWork">Work</text>
+    <text name="NoData">No data</text>
+    <text name="WorkedTime">Worked time</text>
+    <text name="Worked">Worked</text>
+    <text name="Estimated">Estimated</text>
+    <text name="EditWork">Edit work</text>
+    <text name="SetActive">Set as active</text>
+    <text name="ActiveWork">Active work</text>
+    <text name="History">History</text>
+    
+    <text name="========================================">========</text>
+    
 
 
   </texts>

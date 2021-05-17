@@ -28,7 +28,7 @@ export default class ComponentStore {
         const comp = await componentService.create(input); 
         if(this.components != null && input.projectId === this.projectId){
             this.components.totalCount++; 
-            this.components.items = [comp, ...this.components.items]
+            this.components.items = [...this.components.items, comp]
         }
     }  
     @action

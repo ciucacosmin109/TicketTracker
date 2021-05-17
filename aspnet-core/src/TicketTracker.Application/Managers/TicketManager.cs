@@ -15,21 +15,18 @@ using TicketTracker.Users.Dto;
 
 namespace TicketTracker.Managers {
     public class TicketManager : IDomainService { 
-        private readonly ProjectManager projectManager;
-        private readonly WorkManager workManager;
+        private readonly ProjectManager projectManager; 
         private readonly IRepository<Ticket> repoTickets;
         private readonly IRepository<Component> repoComponents;
         private readonly IObjectMapper mapper;
 
         public TicketManager( 
-            ProjectManager projectManager,
-            WorkManager workManager,
+            ProjectManager projectManager, 
             IRepository<Ticket> repoTickets,
             IRepository<Component> repoComponents,
             IObjectMapper mapper
         ) { 
-            this.projectManager = projectManager;
-            this.workManager = workManager;
+            this.projectManager = projectManager; 
             this.repoTickets = repoTickets;
             this.repoComponents = repoComponents;
             this.mapper = mapper;
@@ -49,7 +46,7 @@ namespace TicketTracker.Managers {
             TicketDto dto = mapper.Map<TicketDto>(entity);
             if (entity.Works != null) {
                 for (int i = 0; i < entity.Works.Count; i++) {
-                    workManager.PopulateWorkDtoWithUser(dto.Works[i], entity.Works[i].ProjectUser.User);
+                    dto.Works[i].User = mapper.Map<SimpleUserDto>(entity.Works[i].ProjectUser.User); 
                 }
             }
             return dto;

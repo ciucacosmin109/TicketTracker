@@ -6,6 +6,7 @@ using Abp.Domain.Uow;
 using Abp.ObjectMapping;
 using Abp.Runtime.Session;
 using Abp.UI;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,7 @@ namespace TicketTracker.Subscriptions {
             this.session = session;
         }
 
+        [HttpGet]
         public async Task<bool> CheckAsync(CheckSubscriptionInput input) {
             try { 
                 await repoSubs.GetAll().FirstAsync(x => x.UserId == input.UserId && x.TicketId == input.TicketId);

@@ -13,7 +13,8 @@ namespace TicketTracker.EntityFrameworkCore.Repositories {
         public TicketRepository(IDbContextProvider<TicketTrackerDbContext> dbContextProvider)
             : base(dbContextProvider) {
         }
-
+        
+        // Basic info
         public IQueryable<Ticket> GetAllIncludingBasicInfo() {
             return Context.Tickets 
                 .Include(x => x.Status)
@@ -26,6 +27,7 @@ namespace TicketTracker.EntityFrameworkCore.Repositories {
             return await GetAllIncludingBasicInfo().FirstAsync(x => x.Id == id);
         }
 
+        // Info
         public IQueryable<Ticket> GetAllIncludingInfo() {
             return GetAllIncludingBasicInfo()
                 .Include(x => x.Works)

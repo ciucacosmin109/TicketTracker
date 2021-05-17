@@ -54,14 +54,6 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/Exception')),
   }, 
   {
-    path: '/account',
-    permission: '',
-    title: 'Account', 
-    name: 'account',
-    showInMenu: false,
-    component: LoadableComponent(() => import('../../scenes/Account')),
-  },
-  {
     path: '/dashboard',
     permission: '',
     title: 'Dashboard',
@@ -70,6 +62,32 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Dashboard')),
   }, 
+  {
+    path: '/account',
+    permission: '',
+    title: 'Account', 
+    name: 'account',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../scenes/Account')),
+  },
+  {
+    path: '/myprojects',
+    permission: '',
+    title: 'AssignedProjects',
+    name: 'myprojects',
+    icon: FundProjectionScreenOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/MyProjects')),
+  }, 
+  {
+    path: '/projects',
+    permission: '',
+    title: 'PublicProjects',
+    name: 'projects',
+    icon: FundProjectionScreenOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/Projects')),
+  },  
   {
     path: '/tenants',
     permission: 'Pages.Tenants',
@@ -107,24 +125,6 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/About')),
   }, 
   {
-    path: '/projects',
-    permission: '',
-    title: 'Projects',
-    name: 'projects',
-    icon: FundProjectionScreenOutlined,
-    showInMenu: true,
-    component: LoadableComponent(() => import('../../scenes/Projects')),
-  },  
-  {
-    path: '/myprojects',
-    permission: '',
-    title: 'My projects',
-    name: 'myprojects',
-    icon: FundProjectionScreenOutlined,
-    showInMenu: true,
-    component: LoadableComponent(() => import('../../scenes/MyProjects')),
-  }, 
-  {
     path: '/myprojects/new',
     permission: '',
     title: 'New project',
@@ -157,7 +157,7 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/Component')),
   },
   ///////////////////////// 
-  /*{
+  {
     path: '/ticket/:id',
     permission: '',
     title: 'Ticket info',

@@ -11,4 +11,6 @@ export default class Stores {
   static ProjectRoleStore: string = 'projectRoleStore';
   static ComponentStore: string = 'componentStore';
   static TicketStore: string = 'ticketStore';
+  static WorkStore: string = 'workStore';
+  static CommentStore: string = 'commentStore';
 }

@@ -46,12 +46,12 @@ namespace TicketTracker.EntityFrameworkCore
                 .IsRequired();
 
             // Ticket - Work
-            modelBuilder.Entity<Ticket>()
+            /*modelBuilder.Entity<Ticket>()
                 .HasMany(x => x.Works)
                 .WithOne(x => x.Ticket)
                 .HasForeignKey(x => x.TicketId)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.NoAction);*/
 
             modelBuilder.Entity<Activity>()
                 .HasIndex(x => x.Name)
@@ -71,9 +71,9 @@ namespace TicketTracker.EntityFrameworkCore
             modelBuilder.Entity<Subscription>()
                 .HasIndex(x => new { x.UserId, x.TicketId })
                 .IsUnique();
-            modelBuilder.Entity<Work>()
+            /*modelBuilder.Entity<Work>()
                 .HasIndex(x => new { x.ProjectUserId, x.TicketId })
-                .IsUnique();
+                .IsUnique();*/
         }
     }
 }

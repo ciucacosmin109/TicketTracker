@@ -73,26 +73,27 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
         // Component content
         return ( 
             <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}> 
-                <Card className="component ui-card">   
-                    <Row>
-                        <Col flex="auto"> 
-                            <h2>
+                <Card className="component ui-card"
+                    title={
+                        <Row>
+                            <Col flex="auto">  
                                 <Space> 
                                     <AppstoreFilled style={{color: 'purple'}} />
                                     {`${component?.name} (#${component?.id})`} 
-                                </Space>
-                            </h2> 
-                        </Col>
-                        <Col flex="none">
-                            <Button 
-                                type="primary" 
-                                onClick={() => this.setEditModal(true)} 
-                                icon={<EditOutlined />}>
-                                    
-                                {L('Edit')}
-                            </Button>
-                        </Col>
-                    </Row> 
+                                </Space> 
+                            </Col>
+                            <Col flex="none">
+                                <Button 
+                                    type="primary" 
+                                    onClick={() => this.setEditModal(true)} 
+                                    icon={<EditOutlined />}>
+                                        
+                                    {L('Edit')}
+                                </Button>
+                            </Col>
+                        </Row> 
+                    }
+                >   
                     <Row style={{marginBottom: '15px'}}> 
                         {component?.description}  
                     </Row>  
@@ -119,22 +120,23 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                         </Space>
                     </Row> 
                 </Card>    
-                <Card className="component-tickets ui-card">   
-                    <Row>
-                        <Col flex="auto"> 
-                            <h2>
-                                <Space> 
-                                    <FileTextOutlined />   
+                <Card className="component-tickets ui-card"
+                    title={
+                        <Row>
+                            <Col flex="auto">
+                                <Space>
+                                    <FileTextOutlined />
                                     {this.L('Tickets')}
-                                </Space>
-                            </h2> 
-                        </Col>
-                        <Col flex="none">
-                            <Button type="primary" onClick={this.addTicket} icon={<FileAddOutlined />}>
-                                {L('AddTicket')}
-                            </Button>
-                        </Col>
-                    </Row>
+                                </Space> 
+                            </Col>
+                            <Col flex="none">
+                                <Button type="primary" onClick={this.addTicket} icon={<FileAddOutlined />}>
+                                    {L('AddTicket')}
+                                </Button>
+                            </Col>
+                        </Row>
+                    }
+                >
                     <Row>
                         {componentIdOk
                             ? <TicketTable componentId={component!.id} editEnabled />

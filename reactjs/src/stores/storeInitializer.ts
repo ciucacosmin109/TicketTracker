@@ -9,6 +9,8 @@ import ProjectUserStore from './projectUserStore';
 import ProjectRoleStore from './projectRoleStore';
 import ComponentStore from './componentStore';
 import TicketStore from './ticketStore';
+import WorkStore from './workStore';
+import CommentStore from './commentStore';
 
 export default function initializeStores() {
   return {
@@ -24,5 +26,7 @@ export default function initializeStores() {
     projectRoleStore: new ProjectRoleStore(), 
     componentStore: new ComponentStore(), 
     ticketStore: new TicketStore(), 
+    workStore: new WorkStore(), 
+    commentStore: new CommentStore(), 
   };
 }

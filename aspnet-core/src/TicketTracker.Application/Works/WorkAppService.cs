@@ -60,7 +60,7 @@ namespace TicketTracker.Works {
             this.session = session;
         }
 
-        public async Task<WorkDto> GetAsync(Entity<int> input) {
+        public async Task<WorkDto> GetAsync(EntityDto<int> input) {
             var entity = await repoWork.GetIncludingInfoAsync(input.Id); 
             if (entity == null) {
                 throw new UserFriendlyException("There is no work with this id");
@@ -73,14 +73,19 @@ namespace TicketTracker.Works {
         }
         public async Task<WorkDto> GetWorkingAsync(GetWorkingInput input) {
             var entity = await repoWork.GetAllIncludingInfo().FirstOrDefaultAsync(x => x.TicketId == input.TicketId && x.IsWorking);
-            if(entity == null) {
+            /*if(entity == null) {
                 throw new UserFriendlyException("There is no active work asociated with this ticket id");
-            }
-            workManager.CheckVisibility(session.UserId, entity.Id);
+            }*/
 
-            var dto = mapper.Map<WorkDto>(entity);
-            workManager.PopulateWorkDtoWithUser(dto, entity.ProjectUser.User);
-            return dto;
+            if (entity != null) {
+                workManager.CheckVisibility(session.UserId, entity.Id);
+
+                var dto = mapper.Map<WorkDto>(entity);
+                workManager.PopulateWorkDtoWithUser(dto, entity.ProjectUser.User);
+                return dto;
+            } else {
+                return null;
+            }
         }
         public async Task<PagedResultDto<WorkDto>> GetAllAsync(GetAllWorksInput input) {
             if(input.TicketId == null && input.UserId == null) {
@@ -133,23 +138,23 @@ namespace TicketTracker.Works {
             }
 
             int pId = ticket.Component.ProjectId;
-            ProjectUser projectUser = repoPUsers.GetAll().FirstOrDefault(x => x.ProjectId == pId && x.UserId == input.UserId);
+            ProjectUser projectUser = repoPUsers.GetAllIncluding(x=>x.User).FirstOrDefault(x => x.ProjectId == pId && x.UserId == input.UserId);
             if(projectUser == null) {
                 throw new UserFriendlyException("The user is not assigned to the project");
             }
 
             // User validations
-            ProjectUser pUser;
-            try { pUser = await repoPUsers.GetAsync(projectUser.Id); }
-            catch { throw new UserFriendlyException("There is no project user with id=" + projectUser.Id); }
+            //ProjectUser pUser;
+            //try { pUser = await repoPUsers.GetAsync(projectUser.Id); }
+            //catch { throw new UserFriendlyException("There is no project user with id=" + projectUser.Id); }
 
-            if (session.UserId != pUser.UserId)
-                projectManager.CheckProjectPermission(session.UserId, pUser.ProjectId, StaticProjectPermissionNames.Ticket_AssignWork);
+            if (session.UserId != projectUser.UserId)
+                projectManager.CheckProjectPermission(session.UserId, projectUser.ProjectId, StaticProjectPermissionNames.Ticket_AssignWork);
             else
-                projectManager.CheckProjectPermission(session.UserId, pUser.ProjectId, StaticProjectPermissionNames.Ticket_SelfAssignWork);
+                projectManager.CheckProjectPermission(session.UserId, projectUser.ProjectId, StaticProjectPermissionNames.Ticket_SelfAssignWork);
 
             // Work validations
-            Work activeWork = repoWork.GetAll().FirstOrDefault(x => x.ProjectUserId == projectUser.Id && x.TicketId == input.TicketId && x.IsWorking);
+            Work activeWork = repoWork.GetAllIncludingInfo().FirstOrDefault(x => x.ProjectUserId == projectUser.Id && x.TicketId == input.TicketId && x.IsWorking);
             if (activeWork != null) {
                 throw new UserFriendlyException("The project user with with id=" + projectUser.Id + " is already working at the ticket");
             }
@@ -158,33 +163,60 @@ namespace TicketTracker.Works {
 
             // Insert
             Work entity = mapper.Map<Work>(input);
+            entity.ProjectUserId = projectUser.Id;
             entity.IsWorking = true;
             await repoWork.InsertAndGetIdAsync(entity);
             await uowManager.Current.SaveChangesAsync();
 
             var dto = mapper.Map<WorkDto>(entity);
+            workManager.PopulateWorkDtoWithUser(dto, projectUser.User);
             return dto;
         }
-        public async Task<WorkDto> UpdateAsync(UpdateWorkInput input) { 
-            ProjectUser pUser;
+        public async Task<WorkDto> UpdateAsync(UpdateWorkInput input) {
+            Work existingEntity = await repoWork.GetIncludingInfoAsync(input.Id);
             try {
-                int pUserId = (await repoWork.GetAsync(input.Id)).ProjectUserId;
-                pUser = await repoPUsers.GetAsync(pUserId); 
-            } catch { throw new UserFriendlyException("There is no work item with id=" + input.Id.ToString()); }
+                int pUserId = existingEntity.ProjectUserId.Value; // ex
+                ProjectUser pUser = await repoPUsers.GetAsync(pUserId);
 
-            if (session.UserId != pUser.UserId)
-                projectManager.CheckProjectPermission(session.UserId, pUser.ProjectId, StaticProjectPermissionNames.Ticket_AssignWork);
+                if (session.UserId != pUser.UserId)
+                    projectManager.CheckProjectPermission(session.UserId, pUser.ProjectId, StaticProjectPermissionNames.Ticket_AssignWork);
+            } catch {
+                if (existingEntity.TicketId != null) {
+                    ticketManager.CheckTicketPermission(session.UserId, existingEntity.TicketId.Value, StaticProjectPermissionNames.Ticket_AssignWork);
+                } else {
+                    throw new UserFriendlyException("Failed to check the permissions. This entity should not exist. WorkId=" + input.Id.ToString());
+                }
+            }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously 
             var entity = await repoWork.UpdateAsync(input.Id, async x => {
                 x.WorkedTime = input.WorkedTime;
-                x.EstimatedTime = input.EstimatedTime; 
+                x.EstimatedTime = input.EstimatedTime;
             });
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
-            return mapper.Map<WorkDto>(entity);
+            existingEntity.WorkedTime = entity.WorkedTime;
+            existingEntity.EstimatedTime = entity.EstimatedTime;
+            var dto = mapper.Map<WorkDto>(existingEntity);
+            if(existingEntity.ProjectUser != null)
+                workManager.PopulateWorkDtoWithUser(dto, existingEntity.ProjectUser.User);
+            return dto;
         }
-        public async Task DeleteAsync(Entity<int> input) {
+        public async Task UpdateIsWorkingAsync(UpdateIsWorkingInput input) {
+            Ticket ticket = await repoTickets.GetAsync(input.TicketId);
+            ticketManager.CheckTicketPermission(session.UserId, input.TicketId, StaticProjectPermissionNames.Ticket_AssignWork);
+            await repoWork.SetIsWorkingFalse(input.TicketId);
+
+            if(input.WorkId != null) {
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously 
+                var entity = await repoWork.UpdateAsync(input.WorkId.Value, async x => {
+                    x.IsWorking = true;
+                });
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+            }
+
+        }
+        public async Task DeleteAsync(EntityDto<int> input) {
             bool isCreator = (await repoWork.GetAsync(input.Id)).CreatorUserId == session.UserId;
             if (!isCreator) {
                 workManager.CheckWorkPermission(session.UserId, input.Id, StaticProjectPermissionNames.Ticket_AssignWork);

@@ -40,6 +40,8 @@ class AppLayout extends React.Component<any> {
     const { path } = this.props.match;
     const { collapsed } = this.state;
 
+    const homePath : string = appRouters.find((x : any) => x.name === "myprojects")?.path ?? "/dashboard";
+
     const layout = (
       <Layout style={{ minHeight: '100vh' }}>
         <Header collapsed={this.state.collapsed} toggle={this.toggle} /> 
@@ -50,7 +52,7 @@ class AppLayout extends React.Component<any> {
         <Layout className={"header-margin " + (this.state.collapsed ? "sider-margin-m" : "sider-margin")}> 
           <Content style={{ margin: 16 }}>
             <Switch>
-              {pathname === '/' && <Redirect from="/" to="/dashboard" />}
+              {pathname === '/' && <Redirect from="/" to={homePath} />}
               {appRouters
                 .filter((item: any) => !item.isLayout)
                 .map((route: any, index: any) => (

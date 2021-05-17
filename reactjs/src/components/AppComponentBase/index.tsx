@@ -19,6 +19,13 @@ class AppComponentBase<P = {}, S = {}, SS = any> extends React.Component<P, S, S
   getPath(componentName: string): string {
     return appRouters.find((x : any) => x.name === componentName)?.path ?? "/"; 
   }
+
+  getDateString(date: Date){ 
+    return new Date(date).toLocaleDateString("ro-RO");
+  }
+  getDateTimeString(date: Date){ 
+    return new Date(date).toLocaleString("ro-RO");
+  }
 }
 
 export default AppComponentBase;

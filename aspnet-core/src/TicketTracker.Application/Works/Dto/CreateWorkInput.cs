@@ -12,8 +12,7 @@ namespace TicketTracker.Works.Dto {
     public class CreateWorkInput {
         public int UserId { get; set; }
         public int TicketId { get; set; }
-
-        public bool IsWorking { get; set; }
+         
         public ushort? WorkedTime { get; set; }
         public ushort? EstimatedTime { get; set; }
     }

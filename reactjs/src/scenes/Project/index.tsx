@@ -1,5 +1,4 @@
-import React from 'react';
-import './index.less'
+import React from 'react'; 
 
 import { inject, observer } from 'mobx-react';
 import Stores from '../../stores/storeIdentifier';
@@ -8,7 +7,7 @@ import AccountStore from '../../stores/accountStore';
 import AppComponentBase from '../../components/AppComponentBase'; 
 import { L } from '../../lib/abpUtility';
 import { Button, Card, Col , Row,   Space, Spin,   } from 'antd';
-import { AppstoreAddOutlined, AppstoreOutlined, CalendarOutlined, EditOutlined, LoadingOutlined, LockFilled, ProjectFilled } from '@ant-design/icons'; 
+import { AppstoreAddOutlined, AppstoreOutlined, CalendarOutlined, EditOutlined, LoadingOutlined, LockFilled, ProjectFilled, UserOutlined } from '@ant-design/icons'; 
    
 import { RouteComponentProps, withRouter } from 'react-router'; 
 import ProjectStore from '../../stores/projectStore';
@@ -82,22 +81,23 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
         // Component content
         return ( 
             <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}> 
-                <Card className="project ui-card">   
-                    <Row>
-                        <Col flex="auto"> 
-                            <h2>
+                <Card className="project ui-card"
+                    title={
+                        <Row>
+                            <Col flex="auto">  
                                 <Space> 
                                     {project?.isPublic
                                         ? <ProjectFilled style={{color:"#1da57a"}}/> 
                                         : <LockFilled style={{color:"orange"}}/> }
                                     {`${project?.name} (#${project?.id})`}
-                                </Space>
-                            </h2> 
-                        </Col>
-                        <Col flex="none">
-                            <Button type="primary" onClick={() => this.editProject(project?.id ?? 0)} icon={<EditOutlined />}>{L('Edit')}</Button>
-                        </Col>
-                    </Row> 
+                                </Space> 
+                            </Col>
+                            <Col flex="none">
+                                <Button type="primary" onClick={() => this.editProject(project?.id ?? 0)} icon={<EditOutlined />}>{L('Edit')}</Button>
+                            </Col>
+                        </Row> 
+                    }
+                >   
                     <Row style={{marginBottom: '15px'}}> 
                         {project?.description}  
                     </Row> 
@@ -116,7 +116,12 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                         </Row> : <></>
                     }    
                 </Card>
-                <Card className="project-extras ui-card">
+                <Card className="project-extras ui-card"
+                    title={<Space> 
+                        <UserOutlined />
+                        {L("Users")}
+                    </Space>}
+                >
                     <Space direction="vertical" size="middle">  
                         <Space> 
                             <ProfileAvatar showToolTip firstName={myProfile?.name ?? L("You")} lastName={myProfile?.surname} userId={myProfile?.id} />
@@ -130,22 +135,23 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                         } 
                     </Space>
                 </Card>     
-                <Card className="project-components ui-card">   
-                    <Row>
-                        <Col flex="auto"> 
-                            <h2>
+                <Card className="project-components ui-card"
+                    title={
+                        <Row>
+                            <Col flex="auto">  
                                 <Space> 
                                     <AppstoreOutlined style={{color: 'purple'}} />    
                                     {this.L('Components')}
-                                </Space>
-                            </h2> 
-                        </Col>
-                        <Col flex="none">
-                            <Button type="primary" onClick={() => this.setModal(true)} icon={<AppstoreAddOutlined />}>
-                                {L('AddComponent')}
-                            </Button>
-                        </Col>
-                    </Row>  
+                                </Space> 
+                            </Col>
+                            <Col flex="none">
+                                <Button type="primary" onClick={() => this.setModal(true)} icon={<AppstoreAddOutlined />}>
+                                    {L('AddComponent')}
+                                </Button>
+                            </Col>
+                        </Row> 
+                    }
+                >    
                     <Row>  
                         {projectIdOk 
                             ? <ComponentTable key={project?.id} projectId={project!.id} editEnabled />

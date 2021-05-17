@@ -11,6 +11,8 @@ export class TicketDto extends AuditedEntityDto {
     priority!: TicketPriority;
     type!: TicketType;
 
+    componentId!: number;
+
     status?: SimpleStatusDto;
     activity?: SimpleActivityDto;
     works?: SimpleWorkDto[];

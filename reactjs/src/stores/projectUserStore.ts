@@ -10,8 +10,15 @@ export default class ProjectUserStore {
  
     @action
     async getAll(projectId : number) { 
-        let puRes = await projectUserService.getUsersOfProject({projectId: projectId} as GetProjectUsersInput); 
+        let puRes = await projectUserService.getUsersOfProject({projectId} as GetProjectUsersInput); 
         this.projectUsers = puRes.users;
+        this.projectId = puRes.projectId;
+    }
+    @action
+    async getAllByTicketId(ticketId : number) { 
+        let puRes = await projectUserService.getUsersOfProject({ticketId} as GetProjectUsersInput); 
+        this.projectUsers = puRes.users;
+        this.projectId = puRes.projectId;
     }
  
 }
