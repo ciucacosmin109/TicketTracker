@@ -109,7 +109,7 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
                     await projectService.delete({id: parseInt(id)} as EntityDto); 
                     
                     const myProjectsPath : string = appRouters.find((x : any) => x.name === 'myprojects')?.path;
-                    this.props.history.push(myProjectsPath); 
+                    this.props.history.replace(myProjectsPath); 
                     
                     message.success(L("SuccessfullyDeleted")); 
                 },
@@ -143,7 +143,7 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
     }
     goToProject = (id: number) => {
         const projectPath : string = appRouters.find((x : any) => x.name === 'project')?.path.replace('/:id', `/${id}`); 
-        this.props.history.push(projectPath); 
+        this.props.history.replace(projectPath); 
         
         message.success(L("SavedSuccessfully")); 
     }

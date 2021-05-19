@@ -10,6 +10,7 @@ using TicketTracker.Authorization.Users;
 
 namespace TicketTracker.Entities {
     public class Activity : Entity<int> { 
+        [Required]
         public string Name { get; set; }
         public bool IsStatic { get; set; }
     }

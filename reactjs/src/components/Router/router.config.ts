@@ -48,7 +48,7 @@ export const appRouters: any = [
   {
     path: '/exception', // ?type
     permission: '',
-    title: 'exception',
+    title: 'Exception',
     name: 'exception',
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Exception')),
@@ -127,7 +127,7 @@ export const appRouters: any = [
   {
     path: '/myprojects/new',
     permission: '',
-    title: 'New project',
+    title: 'NewProject',
     name: 'newproject', 
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/EditProject')),
@@ -135,7 +135,7 @@ export const appRouters: any = [
   {
     path: '/myprojects/edit/:id',
     permission: '',
-    title: 'Edit project',
+    title: 'EditProject',
     name: 'editproject', 
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/EditProject')),
@@ -143,7 +143,7 @@ export const appRouters: any = [
   {
     path: '/project/:id',
     permission: '',
-    title: 'Project info',
+    title: 'Project',
     name: 'project', 
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Project')),
@@ -151,7 +151,7 @@ export const appRouters: any = [
   {
     path: '/component/:id',
     permission: '',
-    title: 'Component info',
+    title: 'Component',
     name: 'component', 
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Component')),
@@ -160,7 +160,7 @@ export const appRouters: any = [
   {
     path: '/ticket/:id',
     permission: '',
-    title: 'Ticket info',
+    title: 'Ticket',
     name: 'ticket', 
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Ticket')),
@@ -168,7 +168,7 @@ export const appRouters: any = [
   {
     path: '/tickets/edit/:id',
     permission: '',
-    title: 'Edit ticket',
+    title: 'EditTicket',
     name: 'editticket', 
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/EditTicket')),
@@ -176,7 +176,7 @@ export const appRouters: any = [
   {
     path: '/tickets/new', // ?componentId
     permission: '',
-    title: 'New ticket',
+    title: 'NewTicket',
     name: 'newticket', 
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/EditTicket')),

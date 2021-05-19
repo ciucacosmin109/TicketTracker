@@ -24,13 +24,15 @@ export default class TicketStore {
     }  
     
     @action
-    async create(input : CreateTicketInput) {
+    async create(input : CreateTicketInput) : Promise<TicketDto> {
         const tc = await ticketService.create(input); 
         if(this.tickets != null && input.componentId === this.componentId){
             this.tickets.totalCount++;
             this.tickets.items.push(tc); 
             this.tickets.items = [...this.tickets.items]
         }
+
+        return tc;
     }  
     @action
     async update(input : UpdateTicketInput) {

@@ -120,6 +120,11 @@
     <text name="UsersActivation">Users activation</text>
 
     <text name="AppName">Ticket Tracker</text>
+    <text name="Home">Home</text>
+    <text name="Exception">Exception</text>
+    <text name="Dashboard">Dashboard</text>
+    <text name="Account">Account</text>
+    
     <text name="RoleDetails">Role details</text>
     <text name="RolePermission">Role permissions</text>
     <text name="Error">Error</text> 
@@ -134,14 +139,15 @@
     <text name="Error401">Sorry, you dont have access to this page</text>
     <text name="Error500">Sorry, the server is reporting an error</text>
 
+    <text name="Project">Project</text>
     <text name="ProjectManager">Project manager</text>
     <text name="Developer">Developer</text>
     <text name="Tester">Tester</text> 
-    <text name="TicketSubmitter">Ticket submitter</text> 
-    <text name="Project">Project</text>
+    <text name="TicketSubmitter">Ticket submitter</text>  
     <text name="AssignedProjects">Assigned projects</text>
     <text name="PublicProjects">Public projects</text>
     <text name="NewProject">New project</text>
+    <text name="EditProject">Edit project</text>
     <text name="ProjectDetails">Project details</text>
     <text name="Description">Description</text>
     <text name="IsPublic">Is public</text>

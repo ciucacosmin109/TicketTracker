@@ -23,7 +23,7 @@ class AppComponentBase<P = {}, S = {}, SS = any> extends React.Component<P, S, S
   getQueryParam(name: string) : string | null { 
     if(this.props["location"] != null){
       let params = new URLSearchParams(this.props["location"].search); 
-      return params.get('type');
+      return params.get(name);
     }
 
     return null;

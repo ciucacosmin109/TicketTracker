@@ -9,9 +9,8 @@ import { AlignLeftOutlined, BgColorsOutlined,  BranchesOutlined,  BugFilled,  Bu
     QuestionCircleOutlined, SnippetsFilled, UpCircleFilled, ZoomInOutlined } from '@ant-design/icons'; 
     
 import { TicketType } from '../../../services/ticket/dto/ticketType';
-import { TicketPriority } from '../../../services/ticket/dto/ticketPriority';
-import { SimpleStatusDto } from '../../../services/status/dto/simpleStatusDto';  
-import {TicketDto} from '../../../services/ticket/dto/ticketDto';
+import { TicketPriority } from '../../../services/ticket/dto/ticketPriority'; 
+import {TicketDto} from '../../../services/ticket/dto/ticketDto'; 
 
 export interface ITicketInfoProps { 
     ticketDto: TicketDto; 
@@ -19,7 +18,7 @@ export interface ITicketInfoProps {
 
 class TicketInfo extends AppComponentBase<ITicketInfoProps> { 
 
-    getPriorityIcon = (priority: TicketPriority) => {
+    static getPriorityIcon = (priority: TicketPriority) => {
         switch(priority){ 
             case TicketPriority.VERY_LOW:
                 return <DownCircleOutlined />;
@@ -35,7 +34,7 @@ class TicketInfo extends AppComponentBase<ITicketInfoProps> {
                 return <QuestionCircleOutlined />;
         }
     }
-    getActivityIcon = (activity: SimpleStatusDto | undefined) => {
+    static getActivityIcon = (activity: { name: string|undefined } | undefined) => {
         switch(activity?.name){ 
             case "Design":
                 return <BgColorsOutlined style={{color: 'orange'}} />;
@@ -51,7 +50,7 @@ class TicketInfo extends AppComponentBase<ITicketInfoProps> {
                 return <QuestionCircleOutlined />;
         }
     }
-    getStatusIcon = (status: SimpleStatusDto | undefined) => {
+    static getStatusIcon = (status: { name: string|undefined } | undefined) => {
         switch(status?.name){ 
             case "New":
                 return <FileAddOutlined />;
@@ -67,7 +66,17 @@ class TicketInfo extends AppComponentBase<ITicketInfoProps> {
                 return <QuestionCircleOutlined />;
         }
     }
-
+    static getTypeIcon = (type: TicketType) => {
+        switch(type){ 
+            case TicketType.BUG:
+                return <BugFilled style={{color: 'red'}} />;
+            case TicketType.FEATURE:
+                return <BulbFilled style={{color: 'green'}} />;
+            default:
+                return <FileTextOutlined />;
+        }
+    }
+    
     render() {
         const ticket = this.props.ticketDto;
 
@@ -75,13 +84,7 @@ class TicketInfo extends AppComponentBase<ITicketInfoProps> {
             <Row> 
                 <Space>
                     {`${L("Type")}:`}
-                    {   
-                        ticket?.type === 1 ?
-                            <BugFilled style={{color: 'red'}} /> :
-                        ticket?.type === 2 ?
-                            <BulbFilled style={{color: 'green'}} /> :
-                        <FileTextOutlined />
-                    } 
+                    {TicketInfo.getTypeIcon(ticket?.type)} 
                     {L(TicketType[ticket?.type ?? 0])} 
                 </Space>
             </Row>
@@ -89,7 +92,7 @@ class TicketInfo extends AppComponentBase<ITicketInfoProps> {
                 {ticket?.activity != null ?
                     <Space>
                         {`${L("Activity")}:`}
-                        {this.getActivityIcon(ticket?.activity)} 
+                        {TicketInfo.getActivityIcon(ticket?.activity)}
                         {L(ticket?.activity?.name ?? "")} 
                     </Space> : <></>
                 }
@@ -97,14 +100,14 @@ class TicketInfo extends AppComponentBase<ITicketInfoProps> {
             <Row> 
                 <Space>
                     {`${L("Priority")}:`}
-                    {this.getPriorityIcon(ticket?.priority ?? 0)} 
+                    {TicketInfo.getPriorityIcon(ticket?.priority ?? 0)} 
                     {L(TicketPriority[ticket?.priority ?? 0])} 
                 </Space>
             </Row> 
             <Row> 
                 <Space>
                     {`${L("Status")}:`}
-                    {this.getStatusIcon(ticket?.status)} 
+                    {TicketInfo.getStatusIcon(ticket?.status)} 
                     {L(ticket?.status?.name ?? "")}  
                 </Space>
             </Row> 

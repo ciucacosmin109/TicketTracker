@@ -120,6 +120,11 @@
     <text name="UsersActivation">Activarea utilizatorului</text>
 
     <text name="AppName">Ticket Tracker</text>
+    <text name="Home">Acasa</text>
+    <text name="Exception">Exceptie</text>
+    <text name="Dashboard">Dashboard</text>
+    <text name="Account">Cont</text>
+    
     <text name="RoleDetails">Detaliile rolului</text>
     <text name="RolePermission">Permisiunile rolului</text>
     <text name="Error">Eroare</text>
@@ -134,14 +139,15 @@
     <text name="Error401">Scuze, nu aveti acces la aceasta pagina</text>
     <text name="Error500">Scuze, serverul raporteaza o eroare</text>
 
+    <text name="Project">Proiect</text>
     <text name="ProjectManager">Manager de proiect</text>
     <text name="Developer">Dezvoltator</text>
     <text name="Tester">Examinator</text>
-    <text name="TicketSubmitter">Creator de tichete</text>
-    <text name="Project">Proiect</text>
+    <text name="TicketSubmitter">Creator de tichete</text> 
     <text name="AssignedProjects">Proiecte atribuite</text>
     <text name="PublicProjects">Proiecte publice</text>
     <text name="NewProject">Proiect nou</text>
+    <text name="EditProject">Editeaza proiect</text>
     <text name="ProjectDetails">Detalii proiect</text>
     <text name="Description">Descriere</text>
     <text name="IsPublic">Este public</text>
@@ -223,6 +229,9 @@
 
     <text name="AreYouSureDeleteTicket">Sunteti sigur ca vreti sa stergeti acest tichet ?</text>
     <text name="Title">Titlu</text>
+    <text name="EditTicket">Editeaza tichet</text>
+    <text name="NewTicket">Adauga tichet</text>
+    <text name="NoActivity">Fara activitate</text>
 
     
   </texts>
