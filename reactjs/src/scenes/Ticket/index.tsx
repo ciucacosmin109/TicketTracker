@@ -8,7 +8,7 @@ import AppComponentBase from '../../components/AppComponentBase';
 import { L } from '../../lib/abpUtility';
 import { Button, Card, Col, Row, Space, Spin, Switch } from 'antd';
 import { AppstoreOutlined, BugFilled,  BulbFilled,  
-    CalendarOutlined, EditOutlined, FileTextOutlined, 
+    CalendarOutlined, CommentOutlined, EditOutlined, FileTextOutlined, 
     FundOutlined, LoadingOutlined, } from '@ant-design/icons'; 
    
 import { RouteComponentProps, withRouter } from 'react-router';  
@@ -19,6 +19,8 @@ import ProjectUserStore from '../../stores/projectUserStore';
 import TicketInfo from './components/ticketInfo';
 import TicketWork from './components/ticketWork';
 import WorkTable from './components/workTable';
+import CommentList from './components/commentList';
+import CommentStore from '../../stores/commentStore';
 
 export interface ITicketParams{
     id: string | undefined; 
@@ -28,6 +30,7 @@ export interface ITicketProps extends RouteComponentProps<ITicketParams> {
     projectStore?: ProjectStore;
     componentStore?: ComponentStore;
     projectUserStore?: ProjectUserStore;
+    commentStore?: CommentStore;
 }
 export interface ITicketState {  
     loading: boolean; 
@@ -40,7 +43,8 @@ export interface ITicketState {
     Stores.TicketStore, 
     Stores.ProjectStore,
     Stores.ProjectUserStore, 
-    Stores.ComponentStore)
+    Stores.ComponentStore,
+    Stores.CommentStore)
 @observer
 class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
     state = {  
@@ -60,6 +64,19 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
 
     changeEditWork = (value: boolean) => {
         this.setState({editWork: value})
+    }
+    
+    addNewComment = async (event: any) => {  
+        const id = this.props.match.params.id;
+        if(id != null) {
+            let str = prompt(this.L("AddAComment"));
+            if (str != null && str !== "") {   
+                this.props.commentStore?.create({
+                    ticketId: parseInt(id),
+                    content: str
+                });
+            }
+        }
     }
 
     // Load data
@@ -202,6 +219,27 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                         ? <WorkTable editEnabled={this.state.editWork} ticketId={ticket?.id} />
                         : <></>
                     }
+                </Card>
+
+                <Card className="ui-card"
+                    title={
+                        <Row>
+                            <Col flex="auto">  
+                                <Space>
+                                    <CommentOutlined />
+                                    {L("Comments")}
+                                </Space>
+                            </Col>
+                            <Col flex="none">
+                                <Button onClick={this.addNewComment}>{L('AddAComment')}</Button>  
+                            </Col>
+                        </Row> 
+                    } 
+                >
+                    {ticket
+                        ? <CommentList ticketId={ticket?.id} />
+                        : <></>
+                    }  
                 </Card>
             </Spin>  
         ); 

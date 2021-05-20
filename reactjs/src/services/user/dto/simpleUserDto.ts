@@ -5,4 +5,5 @@ export class SimpleUserDto extends EntityDto{
     name!: string;
     surname!: string;
     fullName!: string;
+    isActive!: boolean;
 }

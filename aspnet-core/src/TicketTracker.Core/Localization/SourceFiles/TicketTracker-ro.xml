@@ -232,6 +232,9 @@
     <text name="EditTicket">Editeaza tichet</text>
     <text name="NewTicket">Adauga tichet</text>
     <text name="NoActivity">Fara activitate</text>
+    <text name="AddAComment">Adauga un comentariu</text>
+    <text name="Comments">Comentarii</text>
+    <text name="Reply">Raspunde</text>
 
     
   </texts>

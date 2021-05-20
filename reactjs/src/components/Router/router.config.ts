@@ -1,5 +1,6 @@
 import LoadableComponent from './../Loadable/index';
-import { FundProjectionScreenOutlined, HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { FundProjectionScreenOutlined, HomeOutlined, 
+  UserOutlined, TagsOutlined, AppstoreOutlined } from '@ant-design/icons';
 
 export const userRouter: any = [
   {
@@ -115,15 +116,6 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Roles')),
   },
-  {
-    path: '/about',
-    permission: '',
-    title: 'About',
-    name: 'about',
-    icon: InfoCircleOutlined,
-    showInMenu: true,
-    component: LoadableComponent(() => import('../../scenes/About')),
-  }, 
   {
     path: '/myprojects/new',
     permission: '',

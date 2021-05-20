@@ -16,5 +16,6 @@ namespace TicketTracker.Users.Dto {
         public string Surname { get; set; }
         public string FullName { get; set; }
 
+        public bool IsActive { get; set; }
     }
 }

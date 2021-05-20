@@ -1,12 +1,12 @@
 import { EntityDto } from "../../dto/entityDto";
-import { CommentUserDto } from "./others/commentUserDto";
+import { SimpleUserDto } from "../../user/dto/simpleUserDto"; 
 
 export class CommentDto extends EntityDto {
     content?: string;
     ticketId?: number;
     parentId?: number;
 
-    creatorUser?: CommentUserDto;
+    creatorUser?: SimpleUserDto; 
     creationTime!: Date;
 
     children?: CommentDto[];

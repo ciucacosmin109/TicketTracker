@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TicketTracker.Entities;
+using TicketTracker.Users.Dto;
 
 namespace TicketTracker.Comments.Dto {
     [AutoMap(typeof(Comment))]
@@ -16,7 +17,7 @@ namespace TicketTracker.Comments.Dto {
         public int? TicketId { get; set; }
         public int? ParentId { get; set; }
 
-        public CommentUserDto CreatorUser { get; set; }
+        public SimpleUserDto CreatorUser { get; set; }
         public DateTime CreationTime { get; set; }
         
         public List<CommentDto> Children { get; set; }

@@ -19,7 +19,7 @@ export default class CommentStore {
     
     @action
     async create(input : CreateCommentInput) {
-        const newC = await commentService.create(input);  
+        const newC = await commentService.create(input);   
 
         if(input.parentId != null && this.comments != null && this.comments.items.length > 0){
             // parcurg graful si inserez

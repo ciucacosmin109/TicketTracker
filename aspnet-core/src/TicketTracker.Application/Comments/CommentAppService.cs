@@ -40,35 +40,54 @@ namespace TicketTracker.Comments {
 
         public override async Task<CommentDto> GetAsync(EntityDto<int> input) {
             CheckGetPermission();
-
-            var entity = await GetEntityByIdAsync(input.Id);
             commentManager.CheckVisibility(session.UserId, input.Id);
 
+            var entity = repoComments.GetIncludingChildren(input.Id);
             return MapToEntityDto(entity);
         }
 
         public override async Task<PagedResultDto<CommentDto>> GetAllAsync(GetAllCommentsInput input) {
             ticketManager.CheckVisibility(session.UserId, input.TicketId);
-            return await base.GetAllAsync(input);
-        }
-        protected override IQueryable<Comment> CreateFilteredQuery(GetAllCommentsInput input) { 
-            return repoComments.GetAllIncludingChildren(input.TicketId); 
+
+            var comms = repoComments.GetAllIncludingChildren(input.TicketId).AsQueryable();
+            var totalCount = comms.Count();
+
+            comms = ApplySorting(comms, input);
+            comms = ApplyPaging(comms, input);
+
+            return new PagedResultDto<CommentDto>(
+                totalCount, ObjectMapper.Map<List<CommentDto>>(comms)
+            );
         }
 
         public async override Task<CommentDto> CreateAsync(CreateCommentInput input) {
-            commentManager.CheckCommentPermission(session.UserId, input.TicketId.Value, StaticProjectPermissionNames.Ticket_AddComments);
-
             if(input.TicketId != null)
+                ticketManager.CheckTicketPermission(session.UserId, input.TicketId.Value, StaticProjectPermissionNames.Ticket_AddComments);
+            else if(input.ParentId != null)
+                commentManager.CheckCommentPermission(session.UserId, input.ParentId.Value, StaticProjectPermissionNames.Ticket_AddComments);
+
+            if (input.TicketId != null)
                 ticketManager.CheckVisibility(session.UserId, input.TicketId.Value);
             else if(input.ParentId != null)
                 commentManager.CheckVisibility(session.UserId, input.ParentId.Value);
 
-            return await base.CreateAsync(input);
+            var entity = MapToEntity(input); 
+            int id = await Repository.InsertAndGetIdAsync(entity);
+            await CurrentUnitOfWork.SaveChangesAsync();
+
+            var res = Repository.GetAllIncluding(x => x.CreatorUser).FirstOrDefault(x => x.Id == id);
+            return MapToEntityDto(res);
         }
 
         public override async Task<CommentDto> UpdateAsync(UpdateCommentInput input) {
             commentManager.CheckEditPermission(session.UserId, input.Id);
-            return await base.UpdateAsync(input);
+
+            var entity = ObjectMapper.Map<Comment>(input);
+            await Repository.UpdateAsync(entity);
+            await CurrentUnitOfWork.SaveChangesAsync();
+
+            var res = Repository.GetAllIncluding(x => x.CreatorUser).FirstOrDefault(x => x.Id == input.Id);
+            return MapToEntityDto(res);
         }
 
         public override async Task DeleteAsync(EntityDto<int> input) {
