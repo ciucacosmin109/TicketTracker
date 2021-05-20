@@ -52,6 +52,8 @@ namespace TicketTracker.Users
             _passwordHasher = passwordHasher;
             _abpSession = abpSession;
             _logInManager = logInManager;
+
+            LocalizationSourceName = TicketTrackerConsts.LocalizationSourceName;
         }
 
         // CRUD

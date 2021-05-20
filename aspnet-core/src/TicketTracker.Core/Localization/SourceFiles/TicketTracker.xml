@@ -7,7 +7,7 @@
     <text name="FormIsNotValidMessage" value="Form is not valid. Please check and fix errors." />
     <text name="TenantNameCanNotBeEmpty" value="Tenant name can not be empty" />
     <text name="InvalidUserNameOrPassword" value="Invalid user name or password" />
-    <text name="ThereIsNoTenantDefinedWithName" value="There is no tenant defined with name {0}" />
+    <text name="ThereIsNoTenantDefinedWithName{0}" value="There is no tenant defined with name {0}" />
     <text name="TenantIsNotActive" value="Tenant {0} is not active." />
     <text name="UserIsNotActiveAndCanNotLogin" value="User {0} is not active and can not log in." />
     <text name="UserEmailIsNotConfirmedAndCanNotLogin">Your email address is not confirmed. You can not login.</text>
@@ -224,9 +224,34 @@
     <text name="SetActive">Set as active</text>
     <text name="ActiveWork">Active work</text>
     <text name="History">History</text>
+
+    <text name="AreYouSureDeleteTicket">Are you sure do you want to delete this ticket ?</text>
+    <text name="Title">Title</text>
+    <text name="EditTicket">Edit ticket</text>
+    <text name="NewTicket">Add ticket</text>
+    <text name="NoActivity">No activity</text>
+    <text name="AddAComment">Add a comment</text>
+    <text name="Comments">Comments</text>
+    <text name="Reply">Reply</text>
     
     <text name="========================================">========</text>
-    
+
+    <text name="YouAreNotTheCreator{0}{1}">You are not the creator of the entity {0} with Id={1}</text>
+    <text name="StaticEntityCantBeModified{0}{1}">The entity {0} with Id={1} can not be modified because it is marked as static</text>
+    <text name="Provide{0}{1}">Provide {0} or {1}</text>
+
+    <text name="CantRemoveTheProjectCreator">Can't remove the project creator</text>
+    <text name="CantChangeRolesOfTheProjectCreator">Can't change the roles of the project creator</text>
+    <text name="NotAssignedToProject{0}{1}">The user with Id={0} is not assigned to project with Id={1}</text>
+    <text name="UserIsAlreadyInProject{0}{1}">The user with Id={0} is already added to the project with Id={1}</text>
+    <text name="UserIsNotInProject{0}{1}">The user with Id={0} is not added to the project with Id={1}</text>
+    <text name="UserIsAlreadyWorking{0}{1}">The user with Id={0} is already working at the ticket with Id={1}</text>
+    <text name="UserIsAlreadySubscribed{0}{1}">The user with Id={0} is already subscribed to the ticket with Id={1}</text>
+
+    <text name="FailedToCheckWorkPermissions{0}">Failed to check the permissions. This entity should not exist. WorkId={0}</text>
+    <text name="FailedToCheckPermissions">Failed to check the permissions</text>
+    <text name="NotTheCreatorOrNoPermissions{0}{1}">You are not the creator of the entity {0} with Id={1}, or you don't have enough permissions</text>
+    <text name="NoPermissions{0}{1}">You don't have enough permissions over the entity {0} with Id={1}</text>
 
 
   </texts>

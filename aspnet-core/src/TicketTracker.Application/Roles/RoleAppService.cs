@@ -28,6 +28,8 @@ namespace TicketTracker.Roles
         {
             _roleManager = roleManager;
             _userManager = userManager;
+
+            LocalizationSourceName = TicketTrackerConsts.LocalizationSourceName;
         }
 
         public override async Task<RoleDto> CreateAsync(CreateRoleDto input)

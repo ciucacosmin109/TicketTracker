@@ -39,6 +39,8 @@ namespace TicketTracker.Tickets {
             this.projectManager = projectManager;
             this.ticketManager = ticketManager;
             this.workManager = workManager;
+
+            LocalizationSourceName = TicketTrackerConsts.LocalizationSourceName;
         }
 
 

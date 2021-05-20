@@ -35,6 +35,8 @@ namespace TicketTracker.Comments {
             this.ticketManager = ticketManager;
             this.commentManager = commentManager;
             this.session = session;
+
+            LocalizationSourceName = TicketTrackerConsts.LocalizationSourceName;
         }
 
 

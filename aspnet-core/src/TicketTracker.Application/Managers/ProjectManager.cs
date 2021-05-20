@@ -1,6 +1,8 @@
 ﻿using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Domain.Services;
+using Abp.Localization;
+using Abp.Localization.Sources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +16,19 @@ namespace TicketTracker.Managers {
     public class ProjectManager : IDomainService {
         private readonly IRepository<Project> repoProjects;
         private readonly ProjectUserRepository repoPUsers;
+        private readonly ILocalizationManager loc;
+        private readonly ILocalizationSource l;
 
         public ProjectManager(
             IRepository<Project> repoProjects,
-            ProjectUserRepository repoPUsers
+            ProjectUserRepository repoPUsers, 
+            ILocalizationManager loc
         ) {
             this.repoProjects = repoProjects;
             this.repoPUsers = repoPUsers;
+            this.loc = loc;
+
+            this.l = loc.GetSource(TicketTrackerConsts.LocalizationSourceName);
         }
 
         public IQueryable<Project> FilterProjectsByVisibility(IQueryable<Project> query, long? userId, bool? arePublic = null, bool? areAssigned = null) {
@@ -65,7 +73,7 @@ namespace TicketTracker.Managers {
         public void CheckProjectPermission(long? userId, int projectId, string permissionName = null) {
             var isAssigned = repoPUsers.GetAll().Where(x => x.ProjectId == projectId && x.UserId == userId).Any();
             if (!isAssigned) {
-                throw new AbpAuthorizationException("You are not assigned to this project");
+                throw new AbpAuthorizationException(l.GetString("NotAssignedToProject{0}{1}", userId, projectId));
             }
 
             if (permissionName != null) {
@@ -90,7 +98,7 @@ namespace TicketTracker.Managers {
                     );
 
                 if (!ok) {
-                    throw new AbpAuthorizationException("You don't have the required permission");
+                    throw new AbpAuthorizationException(l.GetString("NoPermissions{0}{1}", "Project", projectId));
                 }
             }
         }

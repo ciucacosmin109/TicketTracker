@@ -28,6 +28,8 @@ namespace TicketTracker.Components {
 
             this.projectManager = projectManager;
             this.session = session;
+
+            LocalizationSourceName = TicketTrackerConsts.LocalizationSourceName;
         }
 
         public override async Task<ComponentDto> GetAsync(EntityDto<int> input) {

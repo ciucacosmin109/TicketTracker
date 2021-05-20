@@ -1,6 +1,7 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
+using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
 using Abp.Runtime.Session;
 using Abp.UI;
@@ -34,12 +35,16 @@ namespace TicketTracker.Projects {
             ProjectUserRepository repoPUsers,
             IRepository<PRole> repoPRoles,
             ProjectManager projectManager,
-            IAbpSession session) : base(repository) {
+            IAbpSession session) 
+            : base(repository) {
+
             this.repoProjects = repoProjects;
             this.repoPUsers = repoPUsers;
             this.repoPRoles = repoPRoles;
             this.projectManager = projectManager;
             this.session = session;
+
+            LocalizationSourceName = TicketTrackerConsts.LocalizationSourceName;
         }
 
         public override async Task<ProjectDto> GetAsync(EntityDto<int> input) {
@@ -56,7 +61,7 @@ namespace TicketTracker.Projects {
 
             var entity = await repoProjects.GetAllIncludingRoles().FirstOrDefaultAsync(x => x.Id == input.Id);
             if (entity == null)
-                throw new UserFriendlyException("There is no Project with Id=" + input.Id);
+                throw new EntityNotFoundException(typeof(Project), input.Id); 
 
             if (!entity.IsPublic)
                 projectManager.CheckVisibility(session.UserId, input.Id);
@@ -245,7 +250,9 @@ namespace TicketTracker.Projects {
         public override async Task DeleteAsync(EntityDto<int> input) {
             long? creatorId = (await Repository.GetAsync(input.Id)).CreatorUserId;
             if (session.UserId != creatorId)
-                throw new UserFriendlyException("You are not the creator of this project");
+                throw new UserFriendlyException(
+                    L("YouAreNotTheCreator{0}{1}", "Project", input.Id)
+                );
 
             await base.DeleteAsync(input);
         }

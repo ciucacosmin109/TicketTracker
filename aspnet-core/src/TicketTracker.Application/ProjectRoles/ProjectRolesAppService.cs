@@ -2,6 +2,8 @@
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
+using Abp.Localization;
+using Abp.Localization.Sources;
 using Abp.ObjectMapping;
 using Abp.UI;
 using Microsoft.EntityFrameworkCore;
@@ -19,13 +21,19 @@ namespace TicketTracker.ProjectRoles {
     public class ProjectRolesAppService : IApplicationService {
         private readonly IRepository<PRole> repoPRoles;
         private readonly IObjectMapper mapper;
+        private readonly ILocalizationManager loc;
+        private readonly ILocalizationSource l;
 
         public ProjectRolesAppService(
             IRepository<PRole> repoPRoles,
-            IObjectMapper mapper
+            IObjectMapper mapper,
+            ILocalizationManager loc
             ) {
             this.repoPRoles = repoPRoles;
             this.mapper = mapper;
+            this.loc = loc;
+
+            this.l = loc.GetSource(TicketTrackerConsts.LocalizationSourceName);
         }
 
         public async Task<ListResultDto<PRoleDto>> GetAll() {
@@ -36,7 +44,6 @@ namespace TicketTracker.ProjectRoles {
         }
         public async Task<ListResultDto<PRoleWithPermissionsDto>> GetAllWithPermissions() {
             var entities = await repoPRoles.GetAllIncluding(x => x.Permissions).ToListAsync();
-            //var dtos = mapper.Map<List<PRoleWithPermissionsDto>>(entities);
              
             var dtos = new List<PRoleWithPermissionsDto>();
             foreach (PRole role in entities) {

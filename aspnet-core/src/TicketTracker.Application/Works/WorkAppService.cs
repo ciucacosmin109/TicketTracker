@@ -20,7 +20,9 @@ using TicketTracker.EntityFrameworkCore.Repositories;
 using TicketTracker.Managers;
 using TicketTracker.Works.Dto;
  
-using System.Linq.Dynamic.Core; 
+using System.Linq.Dynamic.Core;
+using Abp.Localization;
+using Abp.Localization.Sources;
 
 namespace TicketTracker.Works {
     [AbpAuthorize]
@@ -35,6 +37,8 @@ namespace TicketTracker.Works {
         private readonly IObjectMapper mapper;
         private readonly IUnitOfWorkManager uowManager;
         private readonly IAbpSession session;
+        private readonly ILocalizationManager loc;
+        private readonly ILocalizationSource l;
 
         public WorkAppService(
             WorkRepository repoWorks,
@@ -46,7 +50,8 @@ namespace TicketTracker.Works {
             TicketManager ticketManager, 
             IObjectMapper mapper,
             IUnitOfWorkManager uowManager,
-            IAbpSession session
+            IAbpSession session,
+            ILocalizationManager loc
         ) {
             this.repoWork = repoWorks;
             this.repoProjects = repoProjects;
@@ -58,12 +63,15 @@ namespace TicketTracker.Works {
             this.mapper = mapper;
             this.uowManager = uowManager;
             this.session = session;
+            this.loc = loc;
+
+            this.l = loc.GetSource(TicketTrackerConsts.LocalizationSourceName);
         }
 
         public async Task<WorkDto> GetAsync(EntityDto<int> input) {
             var entity = await repoWork.GetIncludingInfoAsync(input.Id); 
             if (entity == null) {
-                throw new UserFriendlyException("There is no work with this id");
+                throw new EntityNotFoundException(typeof(Work), input.Id);
             } 
             workManager.CheckVisibility(session.UserId, input.Id);
 
@@ -73,9 +81,6 @@ namespace TicketTracker.Works {
         }
         public async Task<WorkDto> GetWorkingAsync(GetWorkingInput input) {
             var entity = await repoWork.GetAllIncludingInfo().FirstOrDefaultAsync(x => x.TicketId == input.TicketId && x.IsWorking);
-            /*if(entity == null) {
-                throw new UserFriendlyException("There is no active work asociated with this ticket id");
-            }*/
 
             if (entity != null) {
                 workManager.CheckVisibility(session.UserId, entity.Id);
@@ -89,7 +94,7 @@ namespace TicketTracker.Works {
         }
         public async Task<PagedResultDto<WorkDto>> GetAllAsync(GetAllWorksInput input) {
             if(input.TicketId == null && input.UserId == null) {
-                throw new UserFriendlyException("Please provide UserId or TicketId");
+                throw new UserFriendlyException(l.GetString("Provide{0}{1}", "TicketId", "UserId"));
             }
              
             var query = repoWork.GetAllIncludingInfo();
@@ -133,21 +138,17 @@ namespace TicketTracker.Works {
         public async Task<WorkDto> CreateAsync(CreateWorkInput input) { 
             // Ticket validations
             Ticket ticket = await repoTickets.GetAllIncluding(x => x.Component).FirstOrDefaultAsync(x => x.Id == input.TicketId); 
-            if(ticket == null){ 
-                throw new UserFriendlyException("There is no ticket with id=" + input.TicketId.ToString()); 
+            if(ticket == null) { 
+                throw new EntityNotFoundException(typeof(Ticket), input.TicketId);
             }
 
             int pId = ticket.Component.ProjectId;
             ProjectUser projectUser = repoPUsers.GetAllIncluding(x=>x.User).FirstOrDefault(x => x.ProjectId == pId && x.UserId == input.UserId);
             if(projectUser == null) {
-                throw new UserFriendlyException("The user is not assigned to the project");
+                throw new UserFriendlyException(l.GetString("NotAssignedToProject{0}{1}", input.UserId, pId));
             }
 
             // User validations
-            //ProjectUser pUser;
-            //try { pUser = await repoPUsers.GetAsync(projectUser.Id); }
-            //catch { throw new UserFriendlyException("There is no project user with id=" + projectUser.Id); }
-
             if (session.UserId != projectUser.UserId)
                 projectManager.CheckProjectPermission(session.UserId, projectUser.ProjectId, StaticProjectPermissionNames.Ticket_AssignWork);
             else
@@ -156,7 +157,7 @@ namespace TicketTracker.Works {
             // Work validations
             Work activeWork = repoWork.GetAllIncludingInfo().FirstOrDefault(x => x.ProjectUserId == projectUser.Id && x.TicketId == input.TicketId && x.IsWorking);
             if (activeWork != null) {
-                throw new UserFriendlyException("The project user with with id=" + projectUser.Id + " is already working at the ticket");
+                throw new UserFriendlyException(l.GetString("UserIsAlreadyWorking{0}{1}", input.UserId, ticket.Id));
             }
 
             await repoWork.SetIsWorkingFalse(input.TicketId); 
@@ -184,7 +185,7 @@ namespace TicketTracker.Works {
                 if (existingEntity.TicketId != null) {
                     ticketManager.CheckTicketPermission(session.UserId, existingEntity.TicketId.Value, StaticProjectPermissionNames.Ticket_AssignWork);
                 } else {
-                    throw new UserFriendlyException("Failed to check the permissions. This entity should not exist. WorkId=" + input.Id.ToString());
+                    throw new UserFriendlyException("FailedToCheckWorkPermissions{0}" + input.Id);
                 }
             }
 

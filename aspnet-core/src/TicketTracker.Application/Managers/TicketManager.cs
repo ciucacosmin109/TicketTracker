@@ -1,6 +1,8 @@
 ﻿using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Domain.Services;
+using Abp.Localization;
+using Abp.Localization.Sources;
 using Abp.ObjectMapping;
 using System;
 using System.Collections.Generic;
@@ -19,17 +21,23 @@ namespace TicketTracker.Managers {
         private readonly IRepository<Ticket> repoTickets;
         private readonly IRepository<Component> repoComponents;
         private readonly IObjectMapper mapper;
+        private readonly ILocalizationManager loc;
+        private readonly ILocalizationSource l;
 
         public TicketManager( 
             ProjectManager projectManager, 
             IRepository<Ticket> repoTickets,
             IRepository<Component> repoComponents,
-            IObjectMapper mapper
+            IObjectMapper mapper,
+            ILocalizationManager loc
         ) { 
             this.projectManager = projectManager; 
             this.repoTickets = repoTickets;
             this.repoComponents = repoComponents;
             this.mapper = mapper;
+            this.loc = loc;
+
+            this.l = loc.GetSource(TicketTrackerConsts.LocalizationSourceName);
         }
 
         public void CheckVisibility(long? userId, int ticketId) {

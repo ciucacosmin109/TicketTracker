@@ -3,6 +3,8 @@ using Abp.Authorization;
 using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
+using Abp.Localization;
+using Abp.Localization.Sources;
 using Abp.ObjectMapping;
 using Abp.Runtime.Session;
 using Abp.UI;
@@ -30,6 +32,8 @@ namespace TicketTracker.Subscriptions {
         private readonly IObjectMapper mapper;
         private readonly IUnitOfWorkManager uowManager;
         private readonly IAbpSession session;
+        private readonly ILocalizationManager loc;
+        private readonly ILocalizationSource l;
 
         public SubscriptionAppService( 
             SubscriptionRepository repoSubs,
@@ -38,7 +42,8 @@ namespace TicketTracker.Subscriptions {
             TicketManager ticketManager,
             IObjectMapper mapper,
             IUnitOfWorkManager uowManager,
-            IAbpSession session
+            IAbpSession session,
+            ILocalizationManager loc
         ) {
             this.repoSubs = repoSubs;
             this.repoTickets = repoTickets;
@@ -47,6 +52,9 @@ namespace TicketTracker.Subscriptions {
             this.mapper = mapper;
             this.uowManager = uowManager;
             this.session = session;
+            this.loc = loc;
+
+            this.l = loc.GetSource(TicketTrackerConsts.LocalizationSourceName);
         }
 
         [HttpGet]
@@ -63,14 +71,14 @@ namespace TicketTracker.Subscriptions {
             ticketManager.CheckVisibility(session.UserId, input.TicketId);
 
             try { await repoTickets.GetAsync(input.TicketId); }
-            catch { throw new UserFriendlyException("There is no ticket with id=" + input.TicketId.ToString()); } 
+            catch { throw new EntityNotFoundException(typeof(Ticket), input.TicketId); } 
 
             try { await repoUsers.GetAsync(input.UserId); }
-            catch { throw new UserFriendlyException("There is no user with id=" + input.UserId.ToString()); }
+            catch { throw new EntityNotFoundException(typeof(User), input.UserId); }
 
             bool exists = (await repoSubs.GetAllListAsync(x => x.UserId == input.UserId && x.TicketId == input.TicketId)).Count() > 0;
             if (exists) {
-                throw new UserFriendlyException("The user with with id=" + input.UserId.ToString() + " is already subscribed to the ticket");
+                throw new UserFriendlyException(l.GetString("UserIsAlreadySubscribed{0}{1}", input.UserId, input.TicketId));
             }
 
             Subscription entity = mapper.Map<Subscription>(input);

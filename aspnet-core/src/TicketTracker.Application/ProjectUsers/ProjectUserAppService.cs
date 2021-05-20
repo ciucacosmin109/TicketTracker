@@ -1,8 +1,11 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
+using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
+using Abp.Localization;
+using Abp.Localization.Sources;
 using Abp.ObjectMapping;
 using Abp.Runtime.Session;
 using Abp.UI;
@@ -31,6 +34,8 @@ namespace TicketTracker.ProjectUsers {
         private readonly IUnitOfWorkManager uowManager;
         private readonly ProjectManager projectManager;
         private readonly IAbpSession session;
+        private readonly ILocalizationManager loc;
+        private readonly ILocalizationSource l;
 
         public ProjectUserAppService(
             IRepository<ProjectUser> repository,
@@ -42,7 +47,8 @@ namespace TicketTracker.ProjectUsers {
             IObjectMapper mapper,
             IUnitOfWorkManager uowManager,
             ProjectManager projectManager,
-            IAbpSession session
+            IAbpSession session,
+            ILocalizationManager loc
         ) {
 
             this.repository = repository;
@@ -55,11 +61,14 @@ namespace TicketTracker.ProjectUsers {
             this.uowManager = uowManager;
             this.projectManager = projectManager;
             this.session = session;
+            this.loc = loc;
+
+            this.l = loc.GetSource(TicketTrackerConsts.LocalizationSourceName);
         }
 
         public GetProjectUsersOutput GetUsersOfProjectAsync(GetProjectUsersInput input) {
             if(input.ProjectId == null && input.TicketId == null) {
-                throw new UserFriendlyException("Provide ProjectId or TicketId");
+                throw new UserFriendlyException(l.GetString("Provide{0}{1}", "ProjectId", "TicketId"));
             }
             if(input.ProjectId == null) {
                 int compId = repoTickets.Get(input.TicketId.Value).ComponentId;
@@ -84,14 +93,14 @@ namespace TicketTracker.ProjectUsers {
             projectManager.CheckProjectPermission(session.UserId, input.ProjectId, StaticProjectPermissionNames.Project_Edit);
 
             try { await repoUsers.GetAsync(input.UserId); }
-            catch { throw new UserFriendlyException("There is no user with id=" + input.UserId.ToString()); }
+            catch { throw new EntityNotFoundException(typeof(User), input.UserId); }
 
             try { await repoProjects.GetAsync(input.ProjectId); }
-            catch { throw new UserFriendlyException("There is no project with id=" + input.ProjectId.ToString()); }
+            catch { throw new EntityNotFoundException(typeof(Project), input.ProjectId); }
 
             bool exists = (await repository.GetAllListAsync(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId)).Count() > 0;
             if (exists) {
-                throw new UserFriendlyException("The user with with id=" + input.UserId.ToString() + " is already added the project");
+                throw new UserFriendlyException(l.GetString("UserIsAlreadyInProject{0}{1}", input.UserId, input.ProjectId));
             }
 
             ProjectUser entity = mapper.Map<ProjectUser>(input);
@@ -106,7 +115,7 @@ namespace TicketTracker.ProjectUsers {
                 projectManager.CheckProjectPermission(session.UserId, input.ProjectId, StaticProjectPermissionNames.Project_Edit);
             }
             if (projectManager.IsProjectCreator(input.UserId, input.ProjectId)) {
-                throw new UserFriendlyException("Can't remove the project creator");
+                throw new UserFriendlyException(l.GetString("CantRemoveTheProjectCreator"));
             }
             await repository.DeleteAsync(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId);
         }
@@ -116,7 +125,7 @@ namespace TicketTracker.ProjectUsers {
 
             var pUsers = repository.GetAllIncluding(x=>x.Roles).Where(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId); 
             if (pUsers.Count() <= 0) {
-                throw new UserFriendlyException("The user with with id=" + input.UserId.ToString() + " is not added to the project with id=" + input.ProjectId.ToString());
+                throw new UserFriendlyException(l.GetString("UserIsNotInProject{0}{1}", input.UserId, input.ProjectId));
             } 
             ProjectUser pUser = pUsers.First(); 
 
@@ -127,12 +136,12 @@ namespace TicketTracker.ProjectUsers {
         public async Task<RolesOfUserDto> UpdateRolesOfUserOfProject(UpdateRolesOfUserInput input) {
             projectManager.CheckProjectPermission(session.UserId, input.ProjectId, StaticProjectPermissionNames.Project_Edit);
             if (projectManager.IsProjectCreator(input.UserId, input.ProjectId)) {
-                throw new UserFriendlyException("Can't change the roles of the project creator");
+                throw new UserFriendlyException(l.GetString("CantChangeRolesOfTheProjectCreator"));
             }
 
             var pUser = await repository.GetAllIncluding(x => x.Roles).FirstAsync(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId);
             if (pUser == null) {
-                throw new UserFriendlyException("The user with with id=" + input.UserId.ToString() + " is not added to the project with id=" + input.ProjectId.ToString());
+                throw new UserFriendlyException(l.GetString("UserIsNotInProject{0}{1}", input.UserId, input.ProjectId));
             }
 
             if(input.RoleNames == null) {

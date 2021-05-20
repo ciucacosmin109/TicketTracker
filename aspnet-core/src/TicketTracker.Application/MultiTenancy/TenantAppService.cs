@@ -41,6 +41,8 @@ namespace TicketTracker.MultiTenancy
             _userManager = userManager;
             _roleManager = roleManager;
             _abpZeroDbMigrator = abpZeroDbMigrator;
+
+            LocalizationSourceName = TicketTrackerConsts.LocalizationSourceName;
         }
 
         public override async Task<TenantDto> CreateAsync(CreateTenantDto input)

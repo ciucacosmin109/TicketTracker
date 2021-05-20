@@ -1,6 +1,8 @@
 ﻿using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Domain.Services;
+using Abp.Localization;
+using Abp.Localization.Sources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,17 +18,23 @@ namespace TicketTracker.Managers {
         private readonly IRepository<Ticket> repoTickets;
         private readonly IRepository<Comment> repoComments;
         private readonly IRepository<Component> repoComponents;
+        private readonly ILocalizationManager loc;
+        private readonly ILocalizationSource l;
 
         public CommentManager(
             ProjectManager projectManager, 
             IRepository<Ticket> repoTickets,
             IRepository<Comment> repoComments,
-            IRepository<Component> repoComponents
+            IRepository<Component> repoComponents,
+            ILocalizationManager loc
         ) {
             this.projectManager = projectManager; 
             this.repoTickets = repoTickets;
             this.repoComments = repoComments;
             this.repoComponents = repoComponents;
+            this.loc = loc;
+
+            this.l = loc.GetSource(TicketTrackerConsts.LocalizationSourceName);
         }
 
         public void CheckVisibility(long? userId, int commentId) {
@@ -43,7 +51,9 @@ namespace TicketTracker.Managers {
             else if (comm.ParentId != null) {
                 CheckCommentPermission(userId, comm.ParentId.Value, permissionName);
             }
-            else throw new AbpAuthorizationException("Unable to check if you have the right permission");
+            else throw new AbpAuthorizationException(
+                l.GetString("FailedToCheckPermissions")
+            );
         }
 
         public void CheckEditPermission(long? userId, int commentId) {
@@ -54,7 +64,7 @@ namespace TicketTracker.Managers {
                     CheckCommentPermission(userId, commentId, StaticProjectPermissionNames.Ticket_ManageComments);
                 }
                 catch {
-                    throw new AbpAuthorizationException("You are not the creator of this comment or you don't have enough permissions");
+                    throw new AbpAuthorizationException(l.GetString("NotTheCreatorOrNoPermissions{0}{1}", "Comment", commentId));
                 }
             }
         }

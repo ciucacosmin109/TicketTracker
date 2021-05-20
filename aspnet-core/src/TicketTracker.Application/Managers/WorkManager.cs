@@ -1,5 +1,7 @@
 ﻿using Abp.Domain.Repositories;
 using Abp.Domain.Services;
+using Abp.Localization;
+using Abp.Localization.Sources;
 using Abp.ObjectMapping;
 using Abp.UI;
 using System;
@@ -21,6 +23,8 @@ namespace TicketTracker.Managers {
         private readonly IRepository<Ticket> repoTickets;
         private readonly IRepository<ProjectUser> repoPUsers;
         private readonly IObjectMapper mapper;
+        private readonly ILocalizationManager loc;
+        private readonly ILocalizationSource l;
 
         public WorkManager(
             ProjectManager projectManager,
@@ -28,7 +32,8 @@ namespace TicketTracker.Managers {
             WorkRepository repoWorks,
             IRepository<Ticket> repoTickets,
             IRepository<ProjectUser> repoPUsers,
-            IObjectMapper mapper
+            IObjectMapper mapper,
+            ILocalizationManager loc
         ) {
             this.projectManager = projectManager;
             this.ticketManager = ticketManager;
@@ -36,6 +41,9 @@ namespace TicketTracker.Managers {
             this.repoTickets = repoTickets;
             this.repoPUsers = repoPUsers;
             this.mapper = mapper;
+            this.loc = loc;
+
+            this.l = loc.GetSource(TicketTrackerConsts.LocalizationSourceName);
         }
          
         public void CheckVisibility(long? userId, int workId) {
@@ -49,7 +57,7 @@ namespace TicketTracker.Managers {
             } else if(work.TicketId != null) {
                 ticketManager.CheckTicketPermission(userId, work.TicketId.Value, permissionName);
             } else {
-                throw new UserFriendlyException("Can't check the permissions. This entity should not exist. WorkId=" + workId);
+                throw new UserFriendlyException(l.GetString("FailedToCheckWorkPermissions{0}", workId));
             }
         } 
 

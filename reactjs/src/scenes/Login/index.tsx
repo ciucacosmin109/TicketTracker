@@ -56,7 +56,7 @@ class Login extends React.Component<ILoginProps> {
           Modal.error({ title: L('Error'), content: L('TenantIsNotActive') });
           break;
         case TenantAvailabilityState.NotFound:
-          Modal.error({ title: L('Error'), content: L('ThereIsNoTenantDefinedWithName', tenancyName) });
+          Modal.error({ title: L('Error'), content: L('ThereIsNoTenantDefinedWithName{0}', tenancyName) });
           break;
       }
     }

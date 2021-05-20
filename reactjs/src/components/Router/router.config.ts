@@ -1,6 +1,8 @@
 import LoadableComponent from './../Loadable/index';
-import { FundProjectionScreenOutlined, HomeOutlined, 
-  UserOutlined, TagsOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { 
+  //HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined, 
+  FundProjectionScreenOutlined, 
+} from '@ant-design/icons';
 
 export const userRouter: any = [
   {
@@ -55,15 +57,6 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/Exception')),
   }, 
   {
-    path: '/dashboard',
-    permission: '',
-    title: 'Dashboard',
-    name: 'dashboard',
-    icon: HomeOutlined,
-    showInMenu: true,
-    component: LoadableComponent(() => import('../../scenes/Dashboard')),
-  }, 
-  {
     path: '/account',
     permission: '',
     title: 'Account', 
@@ -71,6 +64,15 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Account')),
   },
+  /*{
+    path: '/dashboard',
+    permission: '',
+    title: 'Dashboard',
+    name: 'dashboard',
+    icon: HomeOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/Dashboard')),
+  }, */
   {
     path: '/myprojects',
     permission: '',
@@ -89,7 +91,7 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Projects')),
   },  
-  {
+  /*{
     path: '/tenants',
     permission: 'Pages.Tenants',
     title: 'Tenants',
@@ -115,7 +117,7 @@ export const appRouters: any = [
     icon: TagsOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Roles')),
-  },
+  },*/
   {
     path: '/myprojects/new',
     permission: '',

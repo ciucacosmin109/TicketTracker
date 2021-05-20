@@ -7,7 +7,7 @@
     <text name="FormIsNotValidMessage" value="Formularul nu este valid. Vă rugăm să verificați și să remediați erorile" />
     <text name="TenantNameCanNotBeEmpty" value="Numele tenant-ului nu poate fi gol" />
     <text name="InvalidUserNameOrPassword" value="Nume de utilizator sau parola incorecte" />
-    <text name="ThereIsNoTenantDefinedWithName" value="Nu există niciun tenant definit cu numele {0}" />
+    <text name="ThereIsNoTenantDefinedWithName{0}" value="Nu există niciun tenant definit cu numele {0}" />
     <text name="TenantIsNotActive" value="Tenant-ul {0} nu este activ." />
     <text name="UserIsNotActiveAndCanNotLogin" value="Utilizatorul {0} nu este activ și nu se poate conecta" />
     <text name="UserEmailIsNotConfirmedAndCanNotLogin">Adresa dvs. de e-mail nu este confirmată. Nu vă puteți conecta</text>
@@ -224,9 +224,7 @@
     <text name="SetActive">Seteaza ca activa</text>
     <text name="ActiveWork">Munca in desfasurate</text>
     <text name="History">Istoric</text>
-
-    <text name="========================================">========</text>
-
+    
     <text name="AreYouSureDeleteTicket">Sunteti sigur ca vreti sa stergeti acest tichet ?</text>
     <text name="Title">Titlu</text>
     <text name="EditTicket">Editeaza tichet</text>
@@ -236,6 +234,25 @@
     <text name="Comments">Comentarii</text>
     <text name="Reply">Raspunde</text>
 
-    
+    <text name="========================================">========</text>
+
+    <text name="YouAreNotTheCreator{0}{1}">Nu esti creatorul entitatii {0} cu Id={1}</text> 
+    <text name="StaticEntityCantBeModified{0}{1}">Entitatea {0} cu Id={1} nu poate fi modificata deoarece este marcata ca statica</text>
+    <text name="Provide{0}{1}">Furnizati {0} sau {1}</text>
+
+    <text name="CantRemoveTheProjectCreator">Creatorul proiectului nu poate fi sters</text>
+    <text name="CantChangeRolesOfTheProjectCreator">Nu se pot schimba rolurile creatorului de proiect</text>
+    <text name="NotAssignedToProject{0}{1}">Utilizatorul cu Id={0} nu este adaugat in proiectul cu Id={1}</text>
+    <text name="UserIsAlreadyInProject{0}{1}">Utilizatorul cu Id={0} este deja adaugat in proiectul cu Id={1}</text>
+    <text name="UserIsNotInProject{0}{1}">Utilizatorul cu Id={0} nu este adaugat in proiectul cu Id={1}</text>
+    <text name="UserIsAlreadyWorking{0}{1}">Utilizatorul cu Id={0} lucreaza deja la tichetul cu Id={1}</text>
+    <text name="UserIsAlreadySubscribed{0}{1}">Utilizatorul cu Id={0} este deja abonat la tichetul cu Id={1}</text>
+
+    <text name="FailedToCheckWorkPermissions{0}">Nu se pot verifica permisiunile. Entitatea nu ar trebui sa existe. WorkId={0}</text>
+    <text name="FailedToCheckPermissions">Nu se pot verifica permisiunile</text>
+    <text name="NotTheCreatorOrNoPermissions{0}{1}">Nu esti creatorul entitatii {0} cu Id={1}, sau nu ai destule permisiuni</text>
+    <text name="NoPermissions{0}{1}">Nu ai destule permisiuni pentru entitatea {0} cu Id={1}</text>
+
+
   </texts>
 </localizationDictionary>

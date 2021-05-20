@@ -17,11 +17,14 @@ namespace TicketTracker.Statuses {
     public class StatusAppService : AsyncCrudAppService<Status, StatusDto, int, PagedAndSortedResultRequestDto, CreateStatusInput, UpdateStatusInput> {
         public StatusAppService(IRepository<Status> repository) 
             : base(repository) {
-
+             
+            LocalizationSourceName = TicketTrackerConsts.LocalizationSourceName;
         }
         protected void CheckStaticEntity(int id) {
             if (Repository.FirstOrDefault(id).IsStatic) {
-                throw new UserFriendlyException("The entity can not be modified because it is marked as static");
+                throw new UserFriendlyException(
+                    L("StaticEntityCantBeModified{0}{1}", "Activity", id)
+                );
             }
         }
 
