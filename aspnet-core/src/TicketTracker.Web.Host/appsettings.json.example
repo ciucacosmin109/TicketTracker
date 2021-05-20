@@ -4,10 +4,16 @@
 // Set "Build Action"="Content"
 // Set "Copy to output directory"="Copy if newer"
 //
-// Content: 
+// Content:
 {
+  "DatabaseConfig": {
+    "Type": "MSSQL",
+    "TnsAdmin": "", //Oracle: Enter the directory where the tnsnames.ora and sqlnet.ora files are located
+    "WalletLocation": "" //Oracle: Enter directory where wallet is stored locally
+  },
   "ConnectionStrings": {
-    "Default": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AppNameDb;Integrated Security=True;"
+    "Default": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AppNameDb;Integrated Security=True;",
+    "DefaultOracle": "User Id=user;Password=pass;Data Source=dbname_high;"
   },
   "App": {
     "ServerRootAddress": "http://localhost:21021/",
@@ -30,7 +36,7 @@
     }
   },
 
-  "DbSeedValues": { 
+  "DbSeedValues": { // The seed is done at the first start, not at the update-database !
     "DefaultLanguage": "en",
     "Smtp": {
       "DefaultFromAddress": "user@gmail.com",

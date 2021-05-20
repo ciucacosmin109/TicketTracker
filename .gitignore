@@ -7,3 +7,4 @@ bin/
 aspnet-core/src/TicketTracker.Web.Host/App_Data/Logs/
 aspnet-core/src/TicketTracker.Web.Mvc/App_Data/Logs/
 aspnet-core/src/TicketTracker.Migrator/Logs/Logs.txt
+/aspnet-core/src/TicketTracker.Web.Host/appsettings.Production.json

@@ -2,7 +2,10 @@
 using Abp.Modules;
 using Abp.Reflection.Extensions;
 using Abp.Zero.EntityFrameworkCore;
+using System.Transactions;
+using TicketTracker.Configuration;
 using TicketTracker.EntityFrameworkCore.Seed;
+using TicketTracker.Web;
 
 namespace TicketTracker.EntityFrameworkCore
 {
@@ -16,8 +19,13 @@ namespace TicketTracker.EntityFrameworkCore
 
         public bool SkipDbSeed { get; set; }
 
-        public override void PreInitialize()
-        {
+        public override void PreInitialize(){
+            var config = AppConfigurations.Get(WebContentDirectoryFinder.CalculateContentRootFolder());
+            var type = config.GetSection("DatabaseConfig").GetSection("Type").Value;
+            if (type == "ORACLE") {
+                Configuration.UnitOfWork.IsolationLevel = IsolationLevel.ReadCommitted;
+            }
+
             if (!SkipDbContextRegistration)
             {
                 Configuration.Modules.AbpEfCore().AddDbContext<TicketTrackerDbContext>(options =>
