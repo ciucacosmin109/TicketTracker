@@ -165,12 +165,11 @@ class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState>
                 }
             );
         }
-
+console.log(this.props.assignedUserId)
         // Component content
         return (  
             <div style={{ width: '100%' }}>
                 <Table size='small'
-                    key={this.props.componentId ?? this.props.projectId ?? this.props.assignedUserId}  
                     showHeader={true} 
                     rowKey={x=>x.id} 
                     pagination={{

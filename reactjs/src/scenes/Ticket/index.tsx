@@ -224,11 +224,11 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                     } 
                 >
                     {ticket && this.state.workTabKey === "active"
-                        ? <TicketWork editEnabled={this.state.editWork} ticketId={ticket?.id} />
+                        ? <TicketWork key={ticket?.id} ticketId={ticket?.id} editEnabled={this.state.editWork} />
                         : <></>
                     } 
                     {ticket && this.state.workTabKey === "history"
-                        ? <WorkTable editEnabled={this.state.editWork} ticketId={ticket?.id} />
+                        ? <WorkTable key={ticket?.id} ticketId={ticket?.id} editEnabled={this.state.editWork} />
                         : <></>
                     }
                 </Card>

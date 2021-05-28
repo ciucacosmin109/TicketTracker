@@ -39,7 +39,11 @@ class MyTickets extends AppComponentBase<IMyTicketsProps, IMyTicketsState> {
                     }
                 >
                     <Row> 
-                        <TicketTable assignedUserId={this.props.accountStore?.account?.id} detailed /> 
+                        <TicketTable 
+                            key={this.props.accountStore?.account?.id} 
+                            assignedUserId={this.props.accountStore?.account?.id} 
+                            detailed 
+                        /> 
                     </Row>
                 </Card>
             </Spin>  
