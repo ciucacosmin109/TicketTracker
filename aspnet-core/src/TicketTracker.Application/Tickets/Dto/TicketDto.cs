@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TicketTracker.Activities.Dto;
 using TicketTracker.Components.Dto;
 using TicketTracker.Entities;
+using TicketTracker.Projects.Dto;
 using TicketTracker.Statuses.Dto;
 using TicketTracker.Works.Dto;
 
@@ -21,7 +22,8 @@ namespace TicketTracker.Tickets.Dto {
         public TicketPriority Priority { get; set; }
         public TicketType Type { get; set; }
 
-        public int ComponentId { get; set; }
+        public SimpleComponentDto Component { get; set; }
+        public SimpleProjectDto Project { get; set; }
 
         public SimpleStatusDto Status { get; set; }
         public SimpleActivityDto Activity { get; set; }

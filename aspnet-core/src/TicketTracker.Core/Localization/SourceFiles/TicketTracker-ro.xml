@@ -265,6 +265,10 @@
     <text name="CommentedOnTheFollowingTicket">a adaugat un comentariu la urmatorul tichet</text>
     <text name="ANewCommentWasAdded">Un nou comentariu a fost adaugat</text>
 
+    <text name="========================================010">=====10===</text>
+    
+    <text name="Statistics">Statistici</text>
+
 
   </texts>
 </localizationDictionary>

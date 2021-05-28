@@ -14,6 +14,8 @@ using TicketTracker.Entities.ProjectAuthorization;
 using TicketTracker.EntityFrameworkCore.Repositories;
 using TicketTracker.Tickets.Dto;
 using TicketTracker.Users.Dto;
+using TicketTracker.Components.Dto;
+using TicketTracker.Projects.Dto;
 
 namespace TicketTracker.Managers {
     public class TicketManager : IDomainService { 
@@ -57,6 +59,9 @@ namespace TicketTracker.Managers {
                     dto.Works[i].User = mapper.Map<SimpleUserDto>(entity.Works[i].ProjectUser.User); 
                 }
             }
+            var comp = repoComponents.GetAllIncluding(x => x.Project).First(x => x.Id == entity.ComponentId);
+            dto.Component = mapper.Map<SimpleComponentDto>(comp);
+            dto.Project = mapper.Map<SimpleProjectDto>(comp.Project);
             return dto;
         }
         public List<TicketDto> MapToDto(List<Ticket> entities) {

@@ -12,10 +12,7 @@ import { AppstoreOutlined, BugFilled,  BulbFilled,
     FundOutlined, LoadingOutlined, MailOutlined, } from '@ant-design/icons'; 
    
 import { RouteComponentProps, withRouter } from 'react-router';  
-import TicketStore from '../../stores/ticketStore'; 
-import ProjectStore from '../../stores/projectStore'; 
-import ComponentStore from '../../stores/componentStore'; 
-import ProjectUserStore from '../../stores/projectUserStore';
+import TicketStore from '../../stores/ticketStore';  
 import TicketInfo from './components/ticketInfo';
 import TicketWork from './components/ticketWork';
 import WorkTable from './components/workTable';
@@ -32,10 +29,7 @@ export interface ITicketParams{
 }
 export interface ITicketProps extends RouteComponentProps<ITicketParams> { 
     accountStore?: AccountStore;
-    ticketStore?: TicketStore;
-    projectStore?: ProjectStore;
-    componentStore?: ComponentStore;
-    projectUserStore?: ProjectUserStore;
+    ticketStore?: TicketStore; 
     commentStore?: CommentStore;
 }
 export interface ITicketState {  
@@ -48,10 +42,7 @@ export interface ITicketState {
  
 @inject(
     Stores.AccountStore, 
-    Stores.TicketStore, 
-    Stores.ProjectStore,
-    Stores.ProjectUserStore, 
-    Stores.ComponentStore,
+    Stores.TicketStore,  
     Stores.CommentStore)
 @observer
 class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
@@ -107,20 +98,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
         if(id != null){ // i have an id
             const intId = parseInt(id); 
             await this.props.ticketStore?.get(intId);
-
-            const compId = this.props.ticketStore?.ticket?.componentId;
-            if(compId != null && compId !== this.props.componentStore?.component?.id){
-               await this.props.componentStore?.get(compId);
-            }
-
-            const projId = this.props.componentStore?.component?.projectId;
-            if(projId != null && projId !== this.props.projectStore?.project?.id){
-               await this.props.projectStore?.getProject(projId);
-            } 
-            if(projId != null && projId !== this.props.projectUserStore?.projectId){
-               await this.props.projectUserStore?.getAll(projId);
-            }
-
+  
             const assignedUserId = this.props.ticketStore?.ticket?.works?.find(x => x.isWorking)?.user?.id; 
 
             const sub = await subscriptionService.check({
@@ -135,9 +113,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
     }
 
     render() {
-        const ticket = this.props.ticketStore?.ticket;
-        const project = this.props.projectStore?.project;
-        const component = this.props.componentStore?.component; 
+        const ticket = this.props.ticketStore?.ticket; 
  
         /*const ticketIdOk = ticket != null && 
                             this.props.match.params.id != null && 
@@ -215,13 +191,13 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                     <Row> 
                         <Space> 
                             <FundOutlined />  
-                            {`${L('Project')}: ${project?.name}`}   
+                            {`${L('Project')}: ${ticket?.project.name}`}   
                         </Space>
                     </Row> 
                     <Row> 
                         <Space> 
                             <AppstoreOutlined />  
-                            {`${L('Component')}: ${component?.name}`}   
+                            {`${L('Component')}: ${ticket?.component.name}`}   
                         </Space>
                     </Row> 
                 </Card> 

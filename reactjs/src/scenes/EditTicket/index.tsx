@@ -149,6 +149,7 @@ class EditTicket extends AppComponentBase<IEditTicketProps, IEditTicketState> {
                     creatorId: this.props.ticketStore?.ticket?.creatorUserId ?? 0,
                     ticket: {
                         ...this.props.ticketStore?.ticket,
+                        componentId: this.props.ticketStore?.ticket?.component.id,
                         statusId: this.props.ticketStore?.ticket?.status?.id ?? 0,
                         activityId: this.props.ticketStore?.ticket?.activity?.id ?? 0,
                     }

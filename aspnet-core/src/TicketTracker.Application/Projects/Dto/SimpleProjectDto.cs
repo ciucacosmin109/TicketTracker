@@ -8,10 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using TicketTracker.Entities;
 
-namespace TicketTracker.Components.Dto { 
-    [AutoMap(typeof(Component))]
-    public class SimpleComponentDto : EntityDto<int> {
+namespace TicketTracker.Projects.Dto { 
+    [AutoMap(typeof(Project))]
+    public class SimpleProjectDto : EntityDto<int> {
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } 
     }
 }

@@ -57,8 +57,14 @@ namespace TicketTracker.Tickets {
 
         public override async Task<PagedResultDto<TicketDto>> GetAllAsync(GetAllTicketsInput input) {
             CheckGetAllPermission(); 
-            int projectId = (await repoComponents.GetAsync(input.ComponentId)).ProjectId;
-            projectManager.CheckVisibility(session.UserId, projectId);
+            if(input.ComponentId != null) {
+                int projectId = (await repoComponents.GetAsync(input.ComponentId.Value)).ProjectId;
+                projectManager.CheckVisibility(session.UserId, projectId);
+            }else if(input.ProjectId != null) {
+                projectManager.CheckVisibility(session.UserId, input.ProjectId.Value);
+            } else {
+                throw new UserFriendlyException(L("Provide{0}{1}", "ComponentId", "ProjectId"));
+            }
              
             var query = CreateFilteredQuery(input); 
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
@@ -74,7 +80,12 @@ namespace TicketTracker.Tickets {
         }
         protected override IQueryable<Ticket> CreateFilteredQuery(GetAllTicketsInput input) {
             var res = repoTickets.GetAllIncludingInfo();
-            return res.Where(x => x.ComponentId == input.ComponentId);
+            if (input.ComponentId != null) {
+                return res.Where(x => x.ComponentId == input.ComponentId);
+            } else if (input.ProjectId != null) {
+                List<int> components = repoComponents.GetAll().Where(x => x.ProjectId == input.ProjectId).Select(x => x.Id).ToList();
+                return res.Where(x => components.Contains(x.ComponentId));
+            } else return res;
         }
          
         public override async Task<TicketDto> CreateAsync(CreateTicketInput input) {

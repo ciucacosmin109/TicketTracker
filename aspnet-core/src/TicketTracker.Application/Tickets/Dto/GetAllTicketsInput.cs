@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace TicketTracker.Tickets.Dto {
     public class GetAllTicketsInput : PagedAndSortedResultRequestDto {
-        public int ComponentId { get; set; }
+        public int? ComponentId { get; set; }
+        public int? ProjectId { get; set; }
     }
 }

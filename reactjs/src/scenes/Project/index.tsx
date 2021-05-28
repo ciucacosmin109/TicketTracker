@@ -7,7 +7,7 @@ import AccountStore from '../../stores/accountStore';
 import AppComponentBase from '../../components/AppComponentBase'; 
 import { L } from '../../lib/abpUtility';
 import { Button, Card, Col , Row,   Space, Spin,   } from 'antd';
-import { AppstoreAddOutlined, AppstoreOutlined, CalendarOutlined, EditOutlined, LoadingOutlined, LockFilled, ProjectFilled, UserOutlined } from '@ant-design/icons'; 
+import { AppstoreAddOutlined, AppstoreOutlined, AreaChartOutlined, CalendarOutlined, EditOutlined, LoadingOutlined, LockFilled, ProjectFilled, UserOutlined } from '@ant-design/icons'; 
    
 import { RouteComponentProps, withRouter } from 'react-router'; 
 import ProjectStore from '../../stores/projectStore';
@@ -116,7 +116,17 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                         </Row> : <></>
                     }    
                 </Card>
-                <Card className="project-extras ui-card"
+                <Card className="ui-card"
+                    title={<Space> 
+                        <AreaChartOutlined style={{color: 'royalblue'}}/>
+                        {L("Statistics")}
+                    </Space>}
+                >
+                    <Space direction="vertical" size="middle">
+                        
+                    </Space>
+                </Card>
+                <Card className="ui-card"
                     title={<Space> 
                         <UserOutlined />
                         {L("Users")}
@@ -134,7 +144,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                             : <></>
                         } 
                     </Space>
-                </Card>     
+                </Card>
                 <Card className="project-components ui-card"
                     title={
                         <Row>

@@ -15,18 +15,28 @@ import { ColumnsType } from 'antd/lib/table';
 import TicketStore from '../../../stores/ticketStore';
 import { TicketDto } from '../../../services/ticket/dto/ticketDto';
 import { TicketType } from '../../../services/ticket/dto/ticketType';
+import ComponentStore from '../../../stores/componentStore';
+import ProjectStore from '../../../stores/projectStore';
+import componentService from '../../../services/component/componentService';
+import projectService from '../../../services/project/projectService';
 
 export interface ITicketTableProps extends RouteComponentProps { 
     ticketStore?: TicketStore; 
+    componentStore?: ComponentStore; 
+    projectStore?: ProjectStore; 
 
     componentId: number; 
     editEnabled?: boolean;
+    detailed?: boolean;
 }
 export interface ITicketTableState {  
     loading: boolean; 
 }
  
-@inject(Stores.TicketStore)
+@inject(
+    Stores.TicketStore,
+    Stores.ComponentStore,
+    Stores.ProjectStore)
 @observer
 class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState> {
     state = {  
@@ -43,7 +53,26 @@ class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState>
         const path = this.getPath("ticket").replace('/:id', `/${rec.id}`);
         this.props.history.push(path);
     }
+    goToProject = async (e:any, rec:TicketDto) => {
+        const comp = await componentService.get({id: rec.component.id});
 
+        const path = this.getPath("project").replace('/:id', `/${comp.projectId}`);
+        this.props.history.push(path);
+    }
+    goToComponent = (e:any, rec:TicketDto) => {
+        const path = this.getPath("component").replace('/:id', `/${rec.component.id}`);
+        this.props.history.push(path);
+    }
+
+    getProjectName = async (rec:TicketDto) => {
+        const comp = await componentService.get({id: rec.component.id});
+        const proj = await projectService.get({id: comp.projectId});
+        return proj.name;
+    }
+    getComponentName = async (rec:TicketDto) => {
+        const comp = await componentService.get({id: rec.component.id});
+        return comp.name;
+    }
     getActionsMenu = (id : number) => {
         return (
             <Menu onClick={e => this.onActionsMenuClick(e, id)}> 
@@ -103,6 +132,20 @@ class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState>
                 </div>
             },
         ];
+        if(this.props.detailed){
+            columns.push(
+                { title: L('Project'), key:'project', render: (text: any, record: TicketDto, index: number) =>
+                    <div onClick={e => this.goToProject(e, record)}> 
+                        {record.project.name}
+                    </div>
+                },
+                { title: L('Component'), key:'component', render: (text: any, record: TicketDto, index: number) =>
+                    <div onClick={e => this.goToComponent(e, record)}> 
+                        {record.component.name}
+                    </div>
+                },
+            );
+        }
         if(this.props.editEnabled){
             columns.push(
                 { title: '...', key:'actions', width:'1%', align:'right', render: (text: any, record: TicketDto, index: number) =>

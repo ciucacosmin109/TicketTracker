@@ -4,6 +4,8 @@ import {TicketType} from './ticketType';
 import {SimpleStatusDto} from '../../status/dto/simpleStatusDto';
 import {SimpleActivityDto} from '../../activity/dto/simpleActivityDto';
 import {SimpleWorkDto} from '../../work/dto/simpleWorkDto';
+import { SimpleComponentDto } from "../../component/dto/simpleComponentDto";
+import { SimpleProjectDto } from "../../project/dto/simpleProjectDto";
 
 export class TicketDto extends AuditedEntityDto { 
     title!: string; 
@@ -11,7 +13,8 @@ export class TicketDto extends AuditedEntityDto {
     priority!: TicketPriority;
     type!: TicketType;
 
-    componentId!: number;
+    component!: SimpleComponentDto;
+    project!: SimpleProjectDto;
 
     status?: SimpleStatusDto;
     activity?: SimpleActivityDto;
