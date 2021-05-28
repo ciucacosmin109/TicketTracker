@@ -24,6 +24,7 @@ namespace TicketTracker.Tickets {
         private readonly ProjectManager projectManager;
         private readonly TicketManager ticketManager;
         private readonly WorkManager workManager;
+        private readonly EmailManager emailManager;
 
         public TicketAppService(
             TicketRepository repoTickets,
@@ -31,15 +32,16 @@ namespace TicketTracker.Tickets {
             IAbpSession session,
             ProjectManager projectManager,
             TicketManager ticketManager,
-            WorkManager workManager) 
-            : base(repoTickets) {
+            WorkManager workManager,
+            EmailManager emailManager
+        ) : base(repoTickets) {
             this.repoTickets = repoTickets;
             this.repoComponents = repoComponents;
             this.session = session;
             this.projectManager = projectManager;
             this.ticketManager = ticketManager;
             this.workManager = workManager;
-
+            this.emailManager = emailManager;
             LocalizationSourceName = TicketTrackerConsts.LocalizationSourceName;
         }
 
@@ -89,14 +91,19 @@ namespace TicketTracker.Tickets {
         }
 
         public override async Task<TicketDto> UpdateAsync(UpdateTicketInput input) {
-            long? creatorId = (await Repository.GetAsync(input.Id)).CreatorUserId;
+            Ticket oldT = await Repository.GetAsync(input.Id);
+            string oldTitle = oldT.Title;
+            long? creatorId = oldT.CreatorUserId;
             if (session.UserId != creatorId)
                 ticketManager.CheckTicketPermission(session.UserId, input.Id, StaticProjectPermissionNames.Component_ManageTickets);
 
             await base.UpdateAsync(input);
             await CurrentUnitOfWork.SaveChangesAsync();
+
+            Ticket newT = await repoTickets.GetIncludingInfoAsync(input.Id);
+            emailManager.SendTicketUpdate(oldTitle, newT);
             
-            return ticketManager.MapToDto(await repoTickets.GetIncludingInfoAsync(input.Id));
+            return ticketManager.MapToDto(newT);
         }
 
         public override async Task DeleteAsync(EntityDto<int> input) {

@@ -1,6 +1,7 @@
 import LoadableComponent from './../Loadable/index';
 import { 
-  //HomeOutlined, UserOutlined, TagsOutlined, AppstoreOutlined, 
+  //HomeOutlined, 
+  UserOutlined, TagsOutlined, AppstoreOutlined, 
   FundProjectionScreenOutlined, 
 } from '@ant-design/icons';
 
@@ -91,7 +92,7 @@ export const appRouters: any = [
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Projects')),
   },  
-  /*{
+  {
     path: '/tenants',
     permission: 'Pages.Tenants',
     title: 'Tenants',
@@ -117,7 +118,7 @@ export const appRouters: any = [
     icon: TagsOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Roles')),
-  },*/
+  },
   {
     path: '/myprojects/new',
     permission: '',

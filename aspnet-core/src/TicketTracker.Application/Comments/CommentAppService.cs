@@ -21,6 +21,7 @@ namespace TicketTracker.Comments {
         private readonly ProjectManager projectManager;
         private readonly TicketManager ticketManager;
         private readonly CommentManager commentManager;
+        private readonly EmailManager emailManager;
         private readonly IAbpSession session;
 
         public CommentAppService(
@@ -28,12 +29,15 @@ namespace TicketTracker.Comments {
             ProjectManager projectManager, 
             TicketManager ticketManager,
             CommentManager commentManager,
-            IAbpSession session) : base(repoComments) {
+            EmailManager emailManager,
+            IAbpSession session
+        ) : base(repoComments) {
 
             this.repoComments = repoComments;
             this.projectManager = projectManager;
             this.ticketManager = ticketManager;
             this.commentManager = commentManager;
+            this.emailManager = emailManager;
             this.session = session;
 
             LocalizationSourceName = TicketTrackerConsts.LocalizationSourceName;
@@ -78,6 +82,8 @@ namespace TicketTracker.Comments {
             await CurrentUnitOfWork.SaveChangesAsync();
 
             var res = Repository.GetAllIncluding(x => x.CreatorUser).FirstOrDefault(x => x.Id == id);
+            emailManager.SendNewComment(res);
+
             return MapToEntityDto(res);
         }
 

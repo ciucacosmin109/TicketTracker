@@ -18,11 +18,11 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
 
         public void Create() {
             if (_context.Activities.IgnoreQueryFilters().Count() == 0) {
-                _context.Activities.Add(new Activity { Id = 1, Name = "Design", IsStatic = true });
-                _context.Activities.Add(new Activity { Id = 2, Name = "Development", IsStatic = true });
-                _context.Activities.Add(new Activity { Id = 3, Name = "Testing", IsStatic = true });
-                _context.Activities.Add(new Activity { Id = 4, Name = "Documentation", IsStatic = true });
-                _context.Activities.Add(new Activity { Id = 5, Name = "Deployment", IsStatic = true });
+                _context.Activities.Add(new Activity { Name = "Design", IsStatic = true });
+                _context.Activities.Add(new Activity { Name = "Development", IsStatic = true });
+                _context.Activities.Add(new Activity { Name = "Testing", IsStatic = true });
+                _context.Activities.Add(new Activity { Name = "Documentation", IsStatic = true });
+                _context.Activities.Add(new Activity { Name = "Deployment", IsStatic = true });
 
                 _context.SaveChanges();
             } 

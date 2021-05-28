@@ -87,20 +87,7 @@ namespace TicketTracker.Authorization.Accounts {
             return new RegisterOutput {
                 CanLogin = user.IsActive && (user.IsEmailConfirmed || !isEmailConfirmationRequiredForLogin)
             };
-        }
-
-        private void ExceptionTest() {
-            throw new UserFriendlyException(222, "Message", "Details");
-        }
-        private void EmailTest() { 
-            _emailSender.Send(
-                //from: "tickettracker99@gmail.com",
-                to: "ciucacosmin109@gmail.com",
-                subject: "Email test!",
-                body: $"Email test using <b>HTML body</b>",
-                isBodyHtml: true
-            );
-        }  
+        } 
 
         // For logged in users
         [AbpAuthorize]

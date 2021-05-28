@@ -8,8 +8,8 @@ import AppComponentBase from '../../components/AppComponentBase';
 import { L } from '../../lib/abpUtility';
 import { Button, Card, Col, Row, Space, Spin, Switch } from 'antd';
 import { AppstoreOutlined, BugFilled,  BulbFilled,  
-    CalendarOutlined, CommentOutlined, EditOutlined, FileTextOutlined, 
-    FundOutlined, LoadingOutlined, } from '@ant-design/icons'; 
+    CalendarOutlined, CloseOutlined, CommentOutlined, EditOutlined, FileTextOutlined, 
+    FundOutlined, LoadingOutlined, MailOutlined, } from '@ant-design/icons'; 
    
 import { RouteComponentProps, withRouter } from 'react-router';  
 import TicketStore from '../../stores/ticketStore'; 
@@ -21,11 +21,17 @@ import TicketWork from './components/ticketWork';
 import WorkTable from './components/workTable';
 import CommentList from './components/commentList';
 import CommentStore from '../../stores/commentStore';
+import subscriptionService from '../../services/subscription/subscriptionService';
+import AccountStore from '../../stores/accountStore';
+import { CreateSubscriptionInput } from '../../services/subscription/dto/createSubscriptionInput';
+import { DeleteSubscriptionInput } from '../../services/subscription/dto/deleteSubscriptionInput';
+import { CheckSubscriptionInput } from '../../services/subscription/dto/checkSubscriptionInput';
 
 export interface ITicketParams{
     id: string | undefined; 
 }
 export interface ITicketProps extends RouteComponentProps<ITicketParams> { 
+    accountStore?: AccountStore;
     ticketStore?: TicketStore;
     projectStore?: ProjectStore;
     componentStore?: ComponentStore;
@@ -34,12 +40,14 @@ export interface ITicketProps extends RouteComponentProps<ITicketParams> {
 }
 export interface ITicketState {  
     loading: boolean; 
+    subscribed: boolean;
     editWork: boolean;
     workTabKey: string;
     assignedUserId: number; 
 }
  
 @inject(
+    Stores.AccountStore, 
     Stores.TicketStore, 
     Stores.ProjectStore,
     Stores.ProjectUserStore, 
@@ -49,6 +57,7 @@ export interface ITicketState {
 class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
     state = {  
         loading: true,
+        subscribed: false,
         editWork: false,
         workTabKey: "active",
         assignedUserId: 0,
@@ -79,6 +88,19 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
         }
     }
 
+    setSubscribed = async (val: boolean) => {
+        let subscription = {
+            userId: this.props.accountStore?.account?.id,
+            ticketId: this.props.ticketStore?.ticket?.id
+        }
+        if(val){
+            await subscriptionService.create(subscription as CreateSubscriptionInput);
+        }else{
+            await subscriptionService.delete(subscription as DeleteSubscriptionInput);
+        }
+        this.setState({subscribed: val});
+    }
+
     // Load data
     async componentDidMount() { 
         const id = this.props.match.params.id;
@@ -101,7 +123,12 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
 
             const assignedUserId = this.props.ticketStore?.ticket?.works?.find(x => x.isWorking)?.user?.id; 
 
-            this.setState({loading: false, assignedUserId: assignedUserId ?? 0});
+            const sub = await subscriptionService.check({
+                userId: this.props.accountStore?.account?.id,
+                ticketId: this.props.ticketStore?.ticket?.id
+            } as CheckSubscriptionInput);
+
+            this.setState({loading: false, subscribed: sub, assignedUserId: assignedUserId ?? 0});
         } else {
             this.props.history.replace('/exception?type=404');
         }
@@ -140,13 +167,22 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                                 </Space> 
                             </Col>
                             <Col flex="none">
-                                <Button 
-                                    type="primary" 
-                                    onClick={this.editTicket} 
-                                    icon={<EditOutlined />}>
-                                        
-                                    {L('Edit')}
-                                </Button>
+                                <Space>
+                                    <Switch 
+                                        size="default"
+                                        checked={this.state.subscribed}
+                                        onChange={this.setSubscribed}
+                                        checkedChildren={<Space><MailOutlined />{L("Subscribed")}</Space>}
+                                        unCheckedChildren={<Space><CloseOutlined />{L("NotSubscribed")}</Space>} 
+                                    />
+                                    <Button 
+                                        type="primary" 
+                                        onClick={this.editTicket} 
+                                        icon={<EditOutlined />}>
+                                            
+                                        {L('Edit')}
+                                    </Button>
+                                </Space>
                             </Col>
                         </Row> 
                     }
@@ -237,7 +273,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                     } 
                 >
                     {ticket
-                        ? <CommentList ticketId={ticket?.id} />
+                        ? <CommentList key={ticket?.id} ticketId={ticket?.id} />
                         : <></>
                     }  
                 </Card>

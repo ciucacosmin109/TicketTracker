@@ -226,6 +226,7 @@
     <text name="History">History</text>
 
     <text name="AreYouSureDeleteTicket">Are you sure do you want to delete this ticket ?</text>
+    <text name="TicketDetails">Ticket details</text>
     <text name="Title">Title</text>
     <text name="EditTicket">Edit ticket</text>
     <text name="NewTicket">Add ticket</text>

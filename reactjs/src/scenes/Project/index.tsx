@@ -126,7 +126,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                         <Space> 
                             <ProfileAvatar showToolTip firstName={myProfile?.name ?? L("You")} lastName={myProfile?.surname} userId={myProfile?.id} />
                              
-                            {myRoles?.map(x => L('ProjectManager')).join(", ")}
+                            {myRoles?.map(x => L(x)).join(", ")}
                         </Space>  
 
                         {projectIdOk 

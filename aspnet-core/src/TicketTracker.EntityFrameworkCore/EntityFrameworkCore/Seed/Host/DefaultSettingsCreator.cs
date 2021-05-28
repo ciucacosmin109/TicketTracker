@@ -12,14 +12,11 @@ using System.IO;
 using System.Reflection;
 using System;
 
-namespace TicketTracker.EntityFrameworkCore.Seed.Host
-{
-    public class DefaultSettingsCreator
-    {
+namespace TicketTracker.EntityFrameworkCore.Seed.Host {
+    public class DefaultSettingsCreator {
         private readonly TicketTrackerDbContext _context;
 
-        public DefaultSettingsCreator(TicketTrackerDbContext context)
-        {
+        public DefaultSettingsCreator(TicketTrackerDbContext context) {
             _context = context;
         }
 
@@ -41,8 +38,12 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Host
             string Password = configuration.GetValue<string>("DbSeedValues:Smtp:Password");
             string UseDefaultCredentials = configuration.GetValue<string>("DbSeedValues:Smtp:UseDefaultCredentials");
             string DefaultLanguage = configuration.GetValue<string>("DbSeedValues:DefaultLanguage", "en");
+            string ClientRootAddress = configuration.GetValue<string>("App:ClientRootAddress");
+            if(ClientRootAddress != null && ClientRootAddress.Length > 0 && !ClientRootAddress.EndsWith('/')) {
+                ClientRootAddress += '/';
+            }
 
-            // Emailing
+            // Email
             AddSettingIfNotExists(EmailSettingNames.DefaultFromAddress, DefaultFromAddress, tenantId);
             AddSettingIfNotExists(EmailSettingNames.DefaultFromDisplayName, DefaultFromDisplayName, tenantId);  
             AddSettingIfNotExists(EmailSettingNames.Smtp.Host, Host, tenantId);
@@ -50,16 +51,15 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Host
             AddSettingIfNotExists(EmailSettingNames.Smtp.EnableSsl, EnableSsl, tenantId);
             AddSettingIfNotExists(EmailSettingNames.Smtp.UserName, UserName, tenantId);
             AddSettingIfNotExists(EmailSettingNames.Smtp.Password, Password, tenantId);
-            AddSettingIfNotExists(EmailSettingNames.Smtp.UseDefaultCredentials, UseDefaultCredentials, tenantId); 
+            AddSettingIfNotExists(EmailSettingNames.Smtp.UseDefaultCredentials, UseDefaultCredentials, tenantId);
 
-            // Languages
+            // Others
             AddSettingIfNotExists(LocalizationSettingNames.DefaultLanguage, DefaultLanguage, tenantId);
+            AddSettingIfNotExists(AppSettingNames.ClientRootAddress, ClientRootAddress, tenantId);
         }
 
-        private void AddSettingIfNotExists(string name, string value, int? tenantId = null)
-        {
-            if (_context.Settings.IgnoreQueryFilters().Any(s => s.Name == name && s.TenantId == tenantId && s.UserId == null))
-            {
+        private void AddSettingIfNotExists(string name, string value, int? tenantId = null) {
+            if (_context.Settings.IgnoreQueryFilters().Any(s => s.Name == name && s.TenantId == tenantId && s.UserId == null)) {
                 return;
             }
 

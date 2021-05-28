@@ -224,8 +224,9 @@
     <text name="SetActive">Seteaza ca activa</text>
     <text name="ActiveWork">Munca in desfasurate</text>
     <text name="History">Istoric</text>
-    
+
     <text name="AreYouSureDeleteTicket">Sunteti sigur ca vreti sa stergeti acest tichet ?</text>
+    <text name="TicketDetails">Detaliile tichetului</text>
     <text name="Title">Titlu</text>
     <text name="EditTicket">Editeaza tichet</text>
     <text name="NewTicket">Adauga tichet</text>
@@ -252,6 +253,17 @@
     <text name="FailedToCheckPermissions">Nu se pot verifica permisiunile</text>
     <text name="NotTheCreatorOrNoPermissions{0}{1}">Nu esti creatorul entitatii {0} cu Id={1}, sau nu ai destule permisiuni</text>
     <text name="NoPermissions{0}{1}">Nu ai destule permisiuni pentru entitatea {0} cu Id={1}</text>
+
+    <text name="========================================00">=====0===</text>
+
+    <text name="ATicketWasUpdated">A fost actualizat un tichet</text>
+    <text name="Hi">Salut</text>
+    <text name="TheFollowingTicketWasUpdated">Tocmai a fost actualizat tichetul</text>
+    <text name="UpdatedBy">Modificat de</text>
+    <text name="LinkToTicket">Link catre ticket</text>
+    <text name="Id">Id</text>
+    <text name="CommentedOnTheFollowingTicket">a adaugat un comentariu la urmatorul tichet</text>
+    <text name="ANewCommentWasAdded">Un nou comentariu a fost adaugat</text>
 
 
   </texts>

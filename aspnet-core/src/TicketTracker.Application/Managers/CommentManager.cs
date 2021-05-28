@@ -15,7 +15,7 @@ using TicketTracker.EntityFrameworkCore.Repositories;
 namespace TicketTracker.Managers {
     public class CommentManager : IDomainService {
         private readonly ProjectManager projectManager; 
-        private readonly IRepository<Ticket> repoTickets;
+        private readonly TicketRepository repoTickets;
         private readonly IRepository<Comment> repoComments;
         private readonly IRepository<Component> repoComponents;
         private readonly ILocalizationManager loc;
@@ -23,7 +23,7 @@ namespace TicketTracker.Managers {
 
         public CommentManager(
             ProjectManager projectManager, 
-            IRepository<Ticket> repoTickets,
+            TicketRepository repoTickets,
             IRepository<Comment> repoComments,
             IRepository<Component> repoComponents,
             ILocalizationManager loc
@@ -54,6 +54,17 @@ namespace TicketTracker.Managers {
             else throw new AbpAuthorizationException(
                 l.GetString("FailedToCheckPermissions")
             );
+        }
+        public Ticket GetTicket(int commentId) { 
+            Comment comm = repoComments.Get(commentId);
+
+            if (comm.TicketId != null) {
+                return repoTickets.GetIncludingInfo(comm.TicketId.Value);
+
+            } else if (comm.ParentId != null) {
+                return GetTicket(comm.ParentId.Value);
+
+            } else return null;
         }
 
         public void CheckEditPermission(long? userId, int commentId) {
