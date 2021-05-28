@@ -19,6 +19,8 @@ namespace TicketTracker.Tickets {
     [AbpAuthorize]
     public class TicketAppService : AsyncCrudAppService<Ticket, TicketDto, int, GetAllTicketsInput, CreateTicketInput, UpdateTicketInput> {
         private readonly TicketRepository repoTickets;
+        private readonly WorkRepository repoWorks;
+        private readonly IRepository<ProjectUser> repoPUsers;
         private readonly IRepository<Component> repoComponents;
         private readonly IAbpSession session;
         private readonly ProjectManager projectManager;
@@ -28,6 +30,8 @@ namespace TicketTracker.Tickets {
 
         public TicketAppService(
             TicketRepository repoTickets,
+            WorkRepository repoWorks,
+            IRepository<ProjectUser> repoPUsers,
             IRepository<Component> repoComponents,
             IAbpSession session,
             ProjectManager projectManager,
@@ -36,6 +40,8 @@ namespace TicketTracker.Tickets {
             EmailManager emailManager
         ) : base(repoTickets) {
             this.repoTickets = repoTickets;
+            this.repoWorks = repoWorks;
+            this.repoPUsers = repoPUsers;
             this.repoComponents = repoComponents;
             this.session = session;
             this.projectManager = projectManager;
@@ -62,10 +68,10 @@ namespace TicketTracker.Tickets {
                 projectManager.CheckVisibility(session.UserId, projectId);
             }else if(input.ProjectId != null) {
                 projectManager.CheckVisibility(session.UserId, input.ProjectId.Value);
-            } else {
-                throw new UserFriendlyException(L("Provide{0}{1}", "ComponentId", "ProjectId"));
+            } else if(input.AssignedUserId == null){
+                throw new UserFriendlyException(L("Provide{0}{1}{3}", "ComponentId", "ProjectId", "UserId"));
             }
-             
+            
             var query = CreateFilteredQuery(input); 
             var totalCount = await AsyncQueryableExecuter.CountAsync(query);
 
@@ -82,9 +88,24 @@ namespace TicketTracker.Tickets {
             var res = repoTickets.GetAllIncludingInfo();
             if (input.ComponentId != null) {
                 return res.Where(x => x.ComponentId == input.ComponentId);
+
             } else if (input.ProjectId != null) {
-                List<int> components = repoComponents.GetAll().Where(x => x.ProjectId == input.ProjectId).Select(x => x.Id).ToList();
+                List<int> components = repoComponents
+                    .GetAll()
+                    .Where(x => x.ProjectId == input.ProjectId)
+                    .Select(x => x.Id)
+                    .ToList();
                 return res.Where(x => components.Contains(x.ComponentId));
+
+            } else if (input.AssignedUserId != null) {
+                List<int?> tickets = repoPUsers
+                    .GetAllIncluding(x => x.Works)
+                    .Where(x => x.UserId == input.AssignedUserId)
+                    .SelectMany(x => x.Works)
+                    .Select(x => x.TicketId)
+                    .ToList(); 
+                return res.Where(x => tickets.Contains(x.Id));
+
             } else return res;
         }
          

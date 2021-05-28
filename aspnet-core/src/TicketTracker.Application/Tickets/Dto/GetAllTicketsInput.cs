@@ -9,5 +9,6 @@ namespace TicketTracker.Tickets.Dto {
     public class GetAllTicketsInput : PagedAndSortedResultRequestDto {
         public int? ComponentId { get; set; }
         public int? ProjectId { get; set; }
+        public int? AssignedUserId { get; set; }
     }
 }

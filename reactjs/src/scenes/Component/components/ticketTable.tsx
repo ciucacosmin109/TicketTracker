@@ -25,7 +25,10 @@ export interface ITicketTableProps extends RouteComponentProps {
     componentStore?: ComponentStore; 
     projectStore?: ProjectStore; 
 
-    componentId: number; 
+    componentId?: number; 
+    projectId?: number; 
+    assignedUserId?: number; 
+
     editEnabled?: boolean;
     detailed?: boolean;
 }
@@ -45,7 +48,14 @@ class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState>
 
     // Load data
     async componentDidMount() {   
-        await this.props.ticketStore?.getAll(this.props.componentId); 
+        if(this.props.componentId != null){
+            await this.props.ticketStore?.getAllByComponentId(this.props.componentId); 
+        }else if(this.props.projectId != null){
+            await this.props.ticketStore?.getAllByProjectId(this.props.projectId); 
+        }else if(this.props.assignedUserId != null){
+            await this.props.ticketStore?.getAllByAssignedUserId(this.props.assignedUserId); 
+        }
+
         this.setState({loading: false}); 
     } 
 
@@ -159,7 +169,8 @@ class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState>
         // Component content
         return (  
             <div style={{ width: '100%' }}>
-                <Table size='small'  
+                <Table size='small'
+                    key={this.props.componentId ?? this.props.projectId ?? this.props.assignedUserId}  
                     showHeader={true} 
                     rowKey={x=>x.id} 
                     pagination={{

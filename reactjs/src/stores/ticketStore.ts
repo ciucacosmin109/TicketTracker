@@ -11,16 +11,34 @@ export default class TicketStore {
     @observable ticket!: TicketDto;
 
     @observable tickets!: PagedResultDto<TicketDto>; 
-    componentId!: number;
+    componentId?: number;
+    projectId?: number;
+    assignedUserId?: number;
  
     @action
     async get(id : number) { 
         this.ticket = await ticketService.get({id});  
     }  
     @action
-    async getAll(componentId : number) {
-        this.componentId = componentId;
+    async getAllByComponentId(componentId : number) { 
         this.tickets = await ticketService.getAll({componentId} as GetAllTicketsInput);  
+        this.componentId = componentId;
+        this.projectId = undefined;
+        this.assignedUserId = undefined;
+    }  
+    @action
+    async getAllByProjectId(projectId : number) { 
+        this.tickets = await ticketService.getAll({projectId} as GetAllTicketsInput);  
+        this.componentId = undefined;
+        this.projectId = projectId;
+        this.assignedUserId = undefined;
+    }  
+    @action
+    async getAllByAssignedUserId(assignedUserId : number) { 
+        this.tickets = await ticketService.getAll({assignedUserId} as GetAllTicketsInput);
+        this.componentId = undefined;
+        this.projectId = undefined;
+        this.assignedUserId = assignedUserId;  
     }  
     
     @action

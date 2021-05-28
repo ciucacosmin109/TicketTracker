@@ -240,6 +240,7 @@
     <text name="YouAreNotTheCreator{0}{1}">You are not the creator of the entity {0} with Id={1}</text>
     <text name="StaticEntityCantBeModified{0}{1}">The entity {0} with Id={1} can not be modified because it is marked as static</text>
     <text name="Provide{0}{1}">Provide {0} or {1}</text>
+    <text name="Provide{0}{1}{2}">Provide {0}, {1} or {2}</text>
 
     <text name="CantRemoveTheProjectCreator">Can't remove the project creator</text>
     <text name="CantChangeRolesOfTheProjectCreator">Can't change the roles of the project creator</text>

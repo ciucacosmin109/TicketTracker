@@ -2,7 +2,8 @@ import LoadableComponent from './../Loadable/index';
 import { 
   //HomeOutlined, 
   UserOutlined, TagsOutlined, AppstoreOutlined, 
-  FundProjectionScreenOutlined, 
+  FundProjectionScreenOutlined,
+  FileTextOutlined, 
 } from '@ant-design/icons';
 
 export const userRouter: any = [
@@ -91,7 +92,16 @@ export const appRouters: any = [
     icon: FundProjectionScreenOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Projects')),
-  },  
+  },
+  {
+    path: '/mytickets',
+    permission: '',
+    title: 'AssignedTickets',
+    name: 'mytickets',
+    icon: FileTextOutlined,
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/MyTickets')),
+  },
   {
     path: '/tenants',
     permission: 'Pages.Tenants',

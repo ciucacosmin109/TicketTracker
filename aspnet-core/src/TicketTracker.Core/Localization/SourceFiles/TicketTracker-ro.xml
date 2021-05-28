@@ -235,11 +235,12 @@
     <text name="Comments">Comentarii</text>
     <text name="Reply">Raspunde</text>
 
-    <text name="========================================">========</text>
+    <text name="========================================0">Backend</text>
 
     <text name="YouAreNotTheCreator{0}{1}">Nu esti creatorul entitatii {0} cu Id={1}</text> 
     <text name="StaticEntityCantBeModified{0}{1}">Entitatea {0} cu Id={1} nu poate fi modificata deoarece este marcata ca statica</text>
     <text name="Provide{0}{1}">Furnizati {0} sau {1}</text>
+    <text name="Provide{0}{1}{2}">Furnizati {0}, {1} sau {2}</text>
 
     <text name="CantRemoveTheProjectCreator">Creatorul proiectului nu poate fi sters</text>
     <text name="CantChangeRolesOfTheProjectCreator">Nu se pot schimba rolurile creatorului de proiect</text>
@@ -254,7 +255,7 @@
     <text name="NotTheCreatorOrNoPermissions{0}{1}">Nu esti creatorul entitatii {0} cu Id={1}, sau nu ai destule permisiuni</text>
     <text name="NoPermissions{0}{1}">Nu ai destule permisiuni pentru entitatea {0} cu Id={1}</text>
 
-    <text name="========================================00">=====0===</text>
+    <text name="========================================1">Email</text>
 
     <text name="ATicketWasUpdated">A fost actualizat un tichet</text>
     <text name="Hi">Salut</text>
@@ -265,9 +266,10 @@
     <text name="CommentedOnTheFollowingTicket">a adaugat un comentariu la urmatorul tichet</text>
     <text name="ANewCommentWasAdded">Un nou comentariu a fost adaugat</text>
 
-    <text name="========================================010">=====10===</text>
-    
+    <text name="========================================2">=======</text>
+
     <text name="Statistics">Statistici</text>
+    <text name="AssignedTickets">AssignedTickets</text>
 
 
   </texts>
