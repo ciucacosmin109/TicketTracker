@@ -15,8 +15,11 @@ import ProjectUserStore from '../../stores/projectUserStore';
 import ComponentStore from '../../stores/componentStore';
 import UserList from './components/userList';
 import ComponentTable from './components/componentTable';
-import EditComponent from './components/editComponent';
-import ProfileAvatar from '../../components/SiderMenu/components/profileAvatar';
+import EditComponent from './components/editComponent'; 
+import TicketStore from '../../stores/ticketStore';
+import TicketTypeChart from './chartComponents/ticketTypeChart';
+import TicketPriorityChart from './chartComponents/ticketPriorityChart';
+import TicketStatusChart from './chartComponents/ticketStatusChart';
 
 export interface IProjectParams{
     id: string | undefined; 
@@ -26,6 +29,7 @@ export interface IProjectProps extends RouteComponentProps<IProjectParams> {
     projectStore?: ProjectStore;
     projectUserStore?: ProjectUserStore;
     componentStore?: ComponentStore;
+    ticketStore?: TicketStore;
 }
 export interface IProjectState {  
     loading: boolean;
@@ -36,7 +40,8 @@ export interface IProjectState {
     Stores.AccountStore, 
     Stores.ProjectStore, 
     Stores.ProjectUserStore, 
-    Stores.ComponentStore)
+    Stores.ComponentStore,
+    Stores.TicketStore)
 @observer
 class Project extends AppComponentBase<IProjectProps, IProjectState> {
     state = {  
@@ -61,6 +66,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
             await this.props.projectStore?.getProject(intId);
             await this.props.projectUserStore?.getAll(intId);
             await this.props.componentStore?.getAll(intId);
+            await this.props.ticketStore?.getAllByProjectId(intId);
  
             this.setState({loading: false});
         } else { // hmmm
@@ -75,8 +81,8 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                         ?.roleNames; 
         const projectIdOk = project != null && 
                             this.props.match.params.id != null && 
-                            (project.id === parseInt(this.props.match.params.id));
-                
+                            (project.id === parseInt(this.props.match.params.id)); 
+        const tickets = this.props.ticketStore?.tickets; 
 
         // Component content
         return ( 
@@ -97,53 +103,46 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                             </Col>
                         </Row> 
                     }
-                >   
+                >
                     <Row style={{marginBottom: '15px'}}> 
                         {project?.description}  
                     </Row> 
-                    <Row> 
-                        <Space>
-                            <CalendarOutlined />
-                            {`${L('Created')}: ${new Date(project?.creationTime!).toLocaleString("ro-RO")}`}  
-                        </Space>
+                    <Row>
+                        <Col flex="auto">
+                            <Row> 
+                                <Space>
+                                    <CalendarOutlined />
+                                    {`${L('Created')}: ${new Date(project?.creationTime!).toLocaleString("ro-RO")}`}  
+                                </Space>
+                            </Row>
+                            {project?.lastModificationTime ? 
+                                <Row> 
+                                    <Space>
+                                        <EditOutlined />
+                                        {`${L('Modified')}: ${new Date(project?.lastModificationTime!).toLocaleString("ro-RO")}`}  
+                                    </Space>
+                                </Row> : <></>
+                            }
+                            {myRoles != null ?
+                                <Row> 
+                                    <Space>
+                                        <UserOutlined />
+                                        {myRoles.length === 0
+                                            ? `${L('You')}: ${L("NoRole")}`
+                                            : `${L('You')}: ${myRoles?.map(x => L(x)).join(", ")}`
+                                        }
+                                    </Space>
+                                </Row>
+                                :<></>
+                            }
+                        </Col>
+                        <Col flex="none" style={{paddingTop: '15px'}}> 
+                            {projectIdOk 
+                                ? <UserList projectId={project!.id ?? 0} />
+                                : <></>
+                            } 
+                        </Col>
                     </Row>
-                    {project?.lastModificationTime ? 
-                        <Row> 
-                            <Space>
-                                <EditOutlined />
-                                {`${L('Modified')}: ${new Date(project?.lastModificationTime!).toLocaleString("ro-RO")}`}  
-                            </Space>
-                        </Row> : <></>
-                    }    
-                </Card>
-                <Card className="ui-card"
-                    title={<Space> 
-                        <AreaChartOutlined style={{color: 'royalblue'}}/>
-                        {L("Statistics")}
-                    </Space>}
-                >
-                    <Space direction="vertical" size="middle">
-                        
-                    </Space>
-                </Card>
-                <Card className="ui-card"
-                    title={<Space> 
-                        <UserOutlined />
-                        {L("Users")}
-                    </Space>}
-                >
-                    <Space direction="vertical" size="middle">  
-                        <Space> 
-                            <ProfileAvatar showToolTip firstName={myProfile?.name ?? L("You")} lastName={myProfile?.surname} userId={myProfile?.id} />
-                             
-                            {myRoles?.map(x => L(x)).join(", ")}
-                        </Space>  
-
-                        {projectIdOk 
-                            ? <UserList projectId={project!.id ?? 0} />
-                            : <></>
-                        } 
-                    </Space>
                 </Card>
                 <Card className="project-components ui-card"
                     title={
@@ -178,6 +177,26 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                             : <></>
                         }  
                 </Card>
+
+                <Card className="ui-card"
+                    title={<Space> 
+                        <AreaChartOutlined style={{color: 'royalblue'}}/>
+                        {L("Statistics")}
+                    </Space>}
+                > 
+                    <Row>
+                        {/* Baaa, nu stiu de ce, dar fara width: 0, toate cardurile se vad pe cate o linie ... */}
+                        <Col flex="1 1 300px" style={{width: 0, margin: 5}}>
+                            <TicketTypeChart tickets={tickets?.items ?? []} /> 
+                        </Col>
+                        <Col flex="1 1 500px" style={{width: 0, margin: 5}}>
+                            <TicketPriorityChart tickets={tickets?.items ?? []} /> 
+                        </Col>
+                        <Col flex="1 1 500px" style={{width: 0, margin: 5}}>
+                            <TicketStatusChart tickets={tickets?.items ?? []} /> 
+                        </Col> 
+                    </Row>
+                </Card>  
             </Spin>  
         ); 
     }

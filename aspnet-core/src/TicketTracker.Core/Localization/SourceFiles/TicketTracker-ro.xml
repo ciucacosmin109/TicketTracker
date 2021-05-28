@@ -269,7 +269,11 @@
     <text name="========================================2">=======</text>
 
     <text name="Statistics">Statistici</text>
-    <text name="AssignedTickets">AssignedTickets</text>
+    <text name="AssignedTickets">Tichete atribuite</text>
+    <text name="TicketTypes">Tipuri de tichete</text>
+    <text name="TicketPriorities">Prioritati ale tichetelor</text>
+    <text name="TicketStatuses">Stari ale tichetelor</text>
+    <text name="NoRole">Fara rol</text>
 
 
   </texts>

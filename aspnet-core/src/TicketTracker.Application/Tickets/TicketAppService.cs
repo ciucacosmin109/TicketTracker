@@ -102,6 +102,7 @@ namespace TicketTracker.Tickets {
                     .GetAllIncluding(x => x.Works)
                     .Where(x => x.UserId == input.AssignedUserId)
                     .SelectMany(x => x.Works)
+                    .Where(x => x.IsWorking)
                     .Select(x => x.TicketId)
                     .ToList(); 
                 return res.Where(x => tickets.Contains(x.Id));
