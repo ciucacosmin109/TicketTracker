@@ -234,8 +234,16 @@
     <text name="AddAComment">Add a comment</text>
     <text name="Comments">Comments</text>
     <text name="Reply">Reply</text>
-    
-    <text name="========================================">========</text>
+
+    <text name="LoginBeforeChangingPass">Please log in before attemping to change your password</text>
+    <text name="ExistingPasswordDidNotMatch">Your existing password did not match the one on record. Please try again</text>
+    <text name="TheServerDidNotReturnAMessage">The server did not return any message</text>
+    <text name="NetworkError">Network error</text>
+    <text name="ErrorCode">Error code</text>
+    <text name="RequestTimedOut">The request timed out</text>
+    <text name="CanNotConnectToServer">Can not connect to server</text>
+
+    <text name="========================================0">Backend</text>
 
     <text name="YouAreNotTheCreator{0}{1}">You are not the creator of the entity {0} with Id={1}</text>
     <text name="StaticEntityCantBeModified{0}{1}">The entity {0} with Id={1} can not be modified because it is marked as static</text>
@@ -254,6 +262,7 @@
     <text name="FailedToCheckPermissions">Failed to check the permissions</text>
     <text name="NotTheCreatorOrNoPermissions{0}{1}">You are not the creator of the entity {0} with Id={1}, or you don't have enough permissions</text>
     <text name="NoPermissions{0}{1}">You don't have enough permissions over the entity {0} with Id={1}</text>
+
 
 
   </texts>

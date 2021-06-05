@@ -47,9 +47,9 @@ class UserList extends AppComponentBase<IUserListProps, IUserListState> {
                         <ProfileAvatar 
                             key={i}
                             showToolTip 
-                            firstName={x.name} 
-                            lastName={x.surname} 
-                            userId={x.id}
+                            firstName={x.user.name} 
+                            lastName={x.user.surname} 
+                            userId={x.user.id}
                         />
                     )}
                 </Avatar.Group>

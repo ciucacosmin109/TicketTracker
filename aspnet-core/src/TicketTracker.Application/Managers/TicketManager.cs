@@ -56,7 +56,9 @@ namespace TicketTracker.Managers {
             TicketDto dto = mapper.Map<TicketDto>(entity);
             if (entity.Works != null) {
                 for (int i = 0; i < entity.Works.Count; i++) {
-                    dto.Works[i].User = mapper.Map<SimpleUserDto>(entity.Works[i].ProjectUser.User); 
+                    if(entity.Works[i].ProjectUser != null) {
+                        dto.Works[i].User = mapper.Map<SimpleUserDto>(entity.Works[i].ProjectUser.User);
+                    }
                 }
             }
             var comp = repoComponents.GetAllIncluding(x => x.Project).First(x => x.Id == entity.ComponentId);

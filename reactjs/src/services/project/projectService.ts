@@ -1,6 +1,5 @@
 import { ProjectDto } from './dto/projectDto';
-import { ProjectWithRolesDto } from './dto/projectWithRolesDto';
-import { ProjectWithRolesAndPermissionsDto } from './dto/projectWithRolesAndPermissionsDto';
+import { ProjectWithRolesDto } from './dto/projectWithRolesDto'; 
 import { CreateProjectInput } from './dto/createProjectInput';
 import { UpdateProjectInput } from './dto/updateProjectInput';
 import { EntityDto } from '../dto/entityDto';
@@ -20,11 +19,7 @@ class ProjectService {
     public async getAllIncludingRoles(input: GetAllProjectsInput) : Promise<PagedResultDto<ProjectWithRolesDto>> { 
         let result = await http.get('api/services/app/Project/GetAllIncludingRoles', { params: input });
         return result.data.result;
-    }
-    public async getAllIncludingRolesAndPermissions(input: GetAllProjectsInput) : Promise<PagedResultDto<ProjectWithRolesAndPermissionsDto>> { 
-        let result = await http.get('api/services/app/Project/GetAllIncludingRolesAndPermissions', { params: input });
-        return result.data.result;
-    }
+    } 
  
     public async create(input: CreateProjectInput) : Promise<ProjectDto> { 
         let result = await http.post('api/services/app/Project/Create', input);

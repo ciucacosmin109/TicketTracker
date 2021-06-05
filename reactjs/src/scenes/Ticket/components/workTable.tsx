@@ -1,5 +1,4 @@
-import React from 'react';
-//import './index.less'
+import React from 'react'; 
 
 import { inject, observer } from 'mobx-react';
 import Stores from '../../../stores/storeIdentifier'; 
@@ -14,13 +13,11 @@ import { ColumnsType } from 'antd/lib/table';
 import { WorkDto } from '../../../services/work/dto/workDto';
 import WorkStore from '../../../stores/workStore';
 import ProfileAvatar from '../../../components/SiderMenu/components/profileAvatar';
-import ProjectUserStore from '../../../stores/projectUserStore';
 import { UpdateWorkInput } from '../../../services/work/dto/updateWorkInput';
 import { UpdateIsWorkingInput } from '../../../services/work/dto/updateIsWorkingInput';
 
 export interface IWorkTableProps {
     workStore?: WorkStore;
-    projectUserStore?: ProjectUserStore;
 
     ticketId: number;
     editEnabled?: boolean;
@@ -34,7 +31,7 @@ export interface IWorkTableState {
     modalEstimated: number;
 }
  
-@inject(Stores.WorkStore, Stores.ProjectUserStore)
+@inject(Stores.WorkStore)
 @observer
 class WorkTable extends AppComponentBase<IWorkTableProps, IWorkTableState> {
     state = {
@@ -131,7 +128,10 @@ class WorkTable extends AppComponentBase<IWorkTableProps, IWorkTableState> {
                         showToolTip 
                         size="small"
                         userId={record.user?.id} />
-                    {`${record.user?.name} ${record.user?.surname}`}
+                    {record.user != null 
+                        ? `${record.user?.name} ${record.user?.surname}`
+                        : L("UnknownUser")
+                    }
                 </Space>
             },
             { title: L('AssignedAt'), key:'creationTime', dataIndex:"creationTime", render: (text: any, record: WorkDto, index: number) =>

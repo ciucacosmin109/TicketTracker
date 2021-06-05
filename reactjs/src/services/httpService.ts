@@ -48,9 +48,29 @@ http.interceptors.response.use(
         title: L('Error'),
         content: error.response.data.error.message,
       });
+    } else if (!!error.code && error.code === "ECONNABORTED") {
+      Modal.error({ 
+        title: L('NetworkError'),
+        content: L('RequestTimedOut'),
+      });
+    } else if (!!error.code) {
+      Modal.error({ 
+        title: L('NetworkError'),
+        content: L('ErrorCode') + ": " + error.code,
+      });
+    } else if (error.request.status === 0) {
+      Modal.error({ 
+        title: L('NetworkError'),
+        content: L('CanNotConnectToServer'),
+      });
     } else if (!error.response) {
-      Modal.error({ content: L('UnknownError') });
+      Modal.error({ 
+        title: L('UnknownError'),
+        content: L('TheServerDidNotReturnAMessage'),
+      });
     }
+
+    console.log({...error})
 
     setTimeout(() => {}, 1000);
 

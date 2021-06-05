@@ -86,7 +86,9 @@ namespace TicketTracker.Works {
                 workManager.CheckVisibility(session.UserId, entity.Id);
 
                 var dto = mapper.Map<WorkDto>(entity);
-                workManager.PopulateWorkDtoWithUser(dto, entity.ProjectUser.User);
+                if(entity.ProjectUser != null) {
+                    workManager.PopulateWorkDtoWithUser(dto, entity.ProjectUser.User);
+                }
                 return dto;
             } else {
                 return null;
@@ -122,16 +124,19 @@ namespace TicketTracker.Works {
             if (!input.Sorting.IsNullOrWhiteSpace()) {
                 query = query.OrderBy(input.Sorting);
             }
+            int totalCount = query.Count();
             query = query.PageBy(input);
 
             // Return the result  
             var entities = await query.ToListAsync();
             var dtos = entities.Select(mapper.Map<WorkDto>).ToList();
             for (int i = 0; i < dtos.Count; i++) {
-                workManager.PopulateWorkDtoWithUser(dtos[i], entities[i].ProjectUser.User);
+                if(entities[i].ProjectUser != null) {
+                    workManager.PopulateWorkDtoWithUser(dtos[i], entities[i].ProjectUser.User);
+                }
             }
             return new PagedResultDto<WorkDto>(
-                entities.Count, dtos
+                totalCount, dtos
             );
         }
         
@@ -160,7 +165,7 @@ namespace TicketTracker.Works {
                 throw new UserFriendlyException(l.GetString("UserIsAlreadyWorking{0}{1}", input.UserId, ticket.Id));
             }
 
-            await repoWork.SetIsWorkingFalse(input.TicketId); 
+            await repoWork.SetIsWorkingFalseAsync(input.TicketId); 
 
             // Insert
             Work entity = mapper.Map<Work>(input);
@@ -206,7 +211,7 @@ namespace TicketTracker.Works {
         public async Task UpdateIsWorkingAsync(UpdateIsWorkingInput input) {
             Ticket ticket = await repoTickets.GetAsync(input.TicketId);
             ticketManager.CheckTicketPermission(session.UserId, input.TicketId, StaticProjectPermissionNames.Ticket_AssignWork);
-            await repoWork.SetIsWorkingFalse(input.TicketId);
+            await repoWork.SetIsWorkingFalseAsync(input.TicketId);
 
             if(input.WorkId != null) {
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously 

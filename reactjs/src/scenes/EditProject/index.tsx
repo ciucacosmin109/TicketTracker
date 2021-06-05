@@ -23,7 +23,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { appRouters } from '../../components/Router/router.config';
 import { ProjectDto } from '../../services/project/dto/projectDto';
 import projectUserService from '../../services/projectUser/projectUserService';
-import { GetProjectUsersInput } from '../../services/projectUser/dto/getProjectUsersInput'; 
+import { GetAllProjectUsersInput } from '../../services/projectUser/dto/getAllProjectUsersInput'; 
 import { UpdateProjectInput } from '../../services/project/dto/updateProjectInput';
 import { EntityDto } from '../../services/dto/entityDto'; 
 
@@ -189,12 +189,12 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
             this.form.current?.setFieldsValue(project);
 
             // Get project users
-            const users = (await projectUserService.getUsersOfProject({projectId: intId} as GetProjectUsersInput)).users;  
+            const users = (await projectUserService.getAll({projectId: intId} as GetAllProjectUsersInput)).items;  
             
-            const hasPermissions = users.find(x => x.id === this.props.accountStore?.account.id)?.roleNames?.includes("ProjectManager");
+            const hasPermissions = users.find(x => x.id === this.props.accountStore?.account.id)?.roles?.map(x=>x.name)?.includes("ProjectManager");
             this.setState({
-                selectedUsers: users as SearchAccountOutput[],
-                userRoles: users as MinimalUserWithPRolesDto[],
+                selectedUsers: users.map(x=>x.user) as SearchAccountOutput[],
+                userRoles: users.map(x => ({id: x.user.id, roleNames: x.roles?.map(y=>y.name) }) as MinimalUserWithPRolesDto) as MinimalUserWithPRolesDto[],
                 creatorId: project.creatorUserId ?? 0,
                 loading: hasPermissions ? false : true,
             }); 

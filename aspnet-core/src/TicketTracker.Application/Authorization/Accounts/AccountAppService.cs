@@ -93,17 +93,17 @@ namespace TicketTracker.Authorization.Accounts {
         [AbpAuthorize]
         public async Task<bool> ChangePassword(ChangePasswordDto input) {
             if (_abpSession.UserId == null) {
-                throw new UserFriendlyException("Please log in before attemping to change your password.");
+                throw new UserFriendlyException(L("LoginBeforeChangingPass"));
             }
             long userId = _abpSession.UserId.Value;
             var user = await _userManager.GetUserByIdAsync(userId);
             var loginAsync = await _logInManager.LoginAsync(user.UserName, input.CurrentPassword, shouldLockout: false);
             if (loginAsync.Result != AbpLoginResultType.Success) {
-                throw new UserFriendlyException("Your 'Existing Password' did not match the one on record. Please try again or contact an administrator for assistance in resetting your password.");
+                throw new UserFriendlyException(L("ExistingPasswordDidNotMatch"));
             }
 
             if (!ValidationHelper.IsPassword(input.NewPassword)) {
-                throw new UserFriendlyException("Passwords must be at least 8 characters, contain a lowercase, uppercase, and number.");
+                throw new UserFriendlyException(L("PasswordsMustBeAtLeast8CharactersContainLowercaseUppercaseNumber"));
             }
             user.Password = _passwordHasher.HashPassword(user, input.NewPassword);
             CurrentUnitOfWork.SaveChanges();

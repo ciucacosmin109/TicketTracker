@@ -1,4 +1,4 @@
-export class GetRolesOfUserInput {
+export class GetProjectUserInput { 
     userId!: number;
     projectId!: number;
 }

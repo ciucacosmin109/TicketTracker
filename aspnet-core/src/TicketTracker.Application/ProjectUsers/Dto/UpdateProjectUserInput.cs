@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Abp.AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TicketTracker.Entities;
 
-namespace TicketTracker.ProjectUsers.Dto {
-    public class UpdateRolesOfUserInput {
+namespace TicketTracker.ProjectUsers.Dto { 
+    public class UpdateProjectUserInput {
         public long UserId { get; set; }
         public int ProjectId { get; set; }
 

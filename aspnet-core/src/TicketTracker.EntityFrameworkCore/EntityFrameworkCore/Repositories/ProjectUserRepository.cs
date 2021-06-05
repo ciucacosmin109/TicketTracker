@@ -14,10 +14,16 @@ namespace TicketTracker.EntityFrameworkCore.Repositories {
             : base(dbContextProvider) {
         }
 
+        public IQueryable<ProjectUser> GetAllIncludingUserAndRoles() {
+            return Context.ProjectUsers
+                .Include(x => x.User)
+                .Include(x => x.Roles)
+                    .ThenInclude(y => y.Permissions);
+        }
         public IQueryable<ProjectUser> GetAllIncludingRoles() {
             return Context.ProjectUsers
-                .Include(x=>x.Roles)
-                    .ThenInclude(y=>y.Permissions);
+                .Include(x => x.Roles)
+                    .ThenInclude(y => y.Permissions);
         }
     }
 }

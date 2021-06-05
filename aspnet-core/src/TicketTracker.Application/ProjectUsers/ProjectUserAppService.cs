@@ -20,11 +20,16 @@ using TicketTracker.Entities;
 using TicketTracker.Entities.ProjectAuthorization;
 using TicketTracker.Managers;
 using TicketTracker.ProjectUsers.Dto;
+using TicketTracker.EntityFrameworkCore.Repositories;
+
+using Abp.Linq.Extensions;
+using System.Linq.Dynamic.Core;
+using Abp.Extensions;
 
 namespace TicketTracker.ProjectUsers {
     [AbpAuthorize]
     public class ProjectUserAppService : IApplicationService {
-        private readonly IRepository<ProjectUser> repository;
+        private readonly ProjectUserRepository repository;
         private readonly IRepository<Project> repoProjects;
         private readonly IRepository<Ticket> repoTickets;
         private readonly IRepository<Component> repoComponents;
@@ -38,7 +43,7 @@ namespace TicketTracker.ProjectUsers {
         private readonly ILocalizationSource l;
 
         public ProjectUserAppService(
-            IRepository<ProjectUser> repository,
+            ProjectUserRepository repository,
             IRepository<Project> repoProjects,
             IRepository<Ticket> repoTickets,
             IRepository<Component> repoComponents,
@@ -66,30 +71,59 @@ namespace TicketTracker.ProjectUsers {
             this.l = loc.GetSource(TicketTrackerConsts.LocalizationSourceName);
         }
 
-        public GetProjectUsersOutput GetUsersOfProjectAsync(GetProjectUsersInput input) {
-            if(input.ProjectId == null && input.TicketId == null) {
-                throw new UserFriendlyException(l.GetString("Provide{0}{1}", "ProjectId", "TicketId"));
+        private void AddPermissions(ProjectUserDto pud, ProjectUser pu) {
+            foreach (var role in pud.Roles) {
+                var permissions = pu.Roles.SelectMany(x => x.Permissions);
+                if(permissions != null) {
+                    role.PermissionNames = permissions.Select(x => x.Name).ToList();
+                }
             }
-            if(input.ProjectId == null) {
-                int compId = repoTickets.Get(input.TicketId.Value).ComponentId;
-                input.ProjectId = repoComponents.Get(compId).ProjectId;
+        }
+        
+        public async Task<ProjectUserDto> GetAsync(GetProjectUserInput input) {
+            projectManager.CheckVisibility(session.UserId, input.ProjectId);
+            ProjectUser entity = await repository.GetAllIncludingUserAndRoles()
+                .Where(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId)
+                .FirstOrDefaultAsync();
+            if(entity == null) {
+                throw new UserFriendlyException(l.GetString("UserIsNotInProject{0}{1}", input.UserId, input.ProjectId));
             }
-
-            projectManager.CheckVisibility(session.UserId, input.ProjectId.Value);
-
-            var projectUsers = repository.GetAllIncluding(x => x.User, x => x.Roles).Where(x => x.ProjectId == input.ProjectId);
-            var users = projectUsers.Select(x => x.User);
-
-            GetProjectUsersOutput result = new GetProjectUsersOutput();
-            result.ProjectId = input.ProjectId.Value;
-            result.Users = mapper.Map<List<SimpleUserWithRolesDto>>(users);
-            foreach (var usr in result.Users) {
-                usr.RoleNames = projectUsers.First(x => x.UserId == usr.Id).Roles.Select(x => x.Name).ToList(); 
-            }
-
+            
+            var result = mapper.Map<ProjectUserDto>(entity);
+            AddPermissions(result, entity); 
             return result;
         }
-        public async Task<ProjectUserDto> AddUserToProjectAsync(CreateProjectUserInput input) {
+        public async Task<PagedResultDto<ProjectUserDto>> GetAllAsync(GetAllProjectUsersInput input) {
+            if (input.ProjectId == null && input.TicketId == null) {
+                throw new UserFriendlyException(l.GetString("Provide{0}{1}", "ProjectId", "TicketId"));
+            }
+            if (input.ProjectId == null) {
+                int compId = (await repoTickets.GetAsync(input.TicketId.Value)).ComponentId;
+                input.ProjectId = (await repoComponents.GetAsync(compId)).ProjectId;
+            }
+             
+            projectManager.CheckVisibility(session.UserId, input.ProjectId.Value);
+
+            var query = repository
+                .GetAllIncludingUserAndRoles() 
+                .Where(x => x.ProjectId == input.ProjectId); 
+            int totalCount = query.Count();
+            query = query.PageBy(input); 
+
+            List<ProjectUserDto> result = new List<ProjectUserDto>(); 
+            foreach (var entity in query) {
+                var dto = mapper.Map<ProjectUserDto>(entity);
+                AddPermissions(dto, entity);
+                result.Add(dto);
+            }
+
+            return new PagedResultDto<ProjectUserDto> {
+                Items = result,
+                TotalCount = totalCount
+            };
+        }
+        
+        public async Task<ProjectUserDto> CreateAsync(CreateProjectUserInput input) {
             projectManager.CheckProjectPermission(session.UserId, input.ProjectId, StaticProjectPermissionNames.Project_Edit);
 
             try { await repoUsers.GetAsync(input.UserId); }
@@ -107,10 +141,50 @@ namespace TicketTracker.ProjectUsers {
             entity.Roles = await repoPRoles.GetAllListAsync(x => input.RoleNames.Contains(x.Name));
             await repository.InsertAsync(entity);
             await uowManager.Current.SaveChangesAsync();
-
-            return mapper.Map<ProjectUserDto>(entity);
+             
+            entity = await repository.GetAllIncludingUserAndRoles()
+                .Where(x => x.Id == entity.Id)
+                .FirstOrDefaultAsync();
+            var result = mapper.Map<ProjectUserDto>(entity);
+            AddPermissions(result, entity);
+            return result;
         }
-        public async Task RemoveUserFromProject(DeleteProjectUserInput input) {
+        public async Task<ProjectUserDto> UpdateAsync(UpdateProjectUserInput input) {
+            projectManager.CheckProjectPermission(session.UserId, input.ProjectId, StaticProjectPermissionNames.Project_Edit);
+
+            var pUser = await repository
+                .GetAllIncludingUserAndRoles()
+                .FirstAsync(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId);
+            if (pUser == null) {
+                throw new UserFriendlyException(l.GetString("UserIsNotInProject{0}{1}", input.UserId, input.ProjectId));
+            }
+            if (input.RoleNames == null) {
+                input.RoleNames = new List<string>();
+            }
+
+            // Only the project creator can add roles to itself
+            long? projectCreatorId = (await repoProjects.GetAsync(pUser.ProjectId)).CreatorUserId;
+            if (projectManager.IsProjectCreator(input.UserId, input.ProjectId) && session.UserId != input.UserId) {
+                throw new UserFriendlyException(l.GetString("CantChangeRolesOfTheProjectCreator"));
+            }
+            
+            // The creator will always have the ProjectManager role
+            if (input.UserId == projectCreatorId && !input.RoleNames.Contains(StaticProjectRoleNames.ProjectManager)) {
+                input.RoleNames.Add(StaticProjectRoleNames.ProjectManager);
+            }
+
+            // Update
+            pUser.Roles = await repoPRoles.GetAllListAsync(x => input.RoleNames.Contains(x.Name));
+            await repository.UpdateAsync(pUser);
+            await uowManager.Current.SaveChangesAsync();
+
+            // Return
+            var result = mapper.Map<ProjectUserDto>(pUser);
+            AddPermissions(result, pUser);
+            return result;
+        }
+        
+        public async Task DeleteAsync(DeleteProjectUserInput input) {
             if (session.UserId != input.UserId) {
                 projectManager.CheckProjectPermission(session.UserId, input.ProjectId, StaticProjectPermissionNames.Project_Edit);
             }
@@ -119,51 +193,6 @@ namespace TicketTracker.ProjectUsers {
             }
             await repository.DeleteAsync(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId);
         }
-
-        public RolesOfUserDto GetRolesOfUserOfProject(GetRolesOfUserInput input) {
-            projectManager.CheckVisibility(session.UserId, input.ProjectId); 
-
-            var pUsers = repository.GetAllIncluding(x=>x.Roles).Where(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId); 
-            if (pUsers.Count() <= 0) {
-                throw new UserFriendlyException(l.GetString("UserIsNotInProject{0}{1}", input.UserId, input.ProjectId));
-            } 
-            ProjectUser pUser = pUsers.First(); 
-
-            var result = mapper.Map<RolesOfUserDto>(pUser);
-            result.RoleNames = pUser.Roles.Select(x => x.Name).ToList();
-            return result;
-        }
-        public async Task<RolesOfUserDto> UpdateRolesOfUserOfProject(UpdateRolesOfUserInput input) {
-            projectManager.CheckProjectPermission(session.UserId, input.ProjectId, StaticProjectPermissionNames.Project_Edit);
-            if (projectManager.IsProjectCreator(input.UserId, input.ProjectId)) {
-                throw new UserFriendlyException(l.GetString("CantChangeRolesOfTheProjectCreator"));
-            }
-
-            var pUser = await repository.GetAllIncluding(x => x.Roles).FirstAsync(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId);
-            if (pUser == null) {
-                throw new UserFriendlyException(l.GetString("UserIsNotInProject{0}{1}", input.UserId, input.ProjectId));
-            }
-
-            if(input.RoleNames == null) {
-                input.RoleNames = new List<string>();
-            }
-
-            // The creator will always have the ProjectManager role
-            long? projectCreatorId = (await repoProjects.GetAsync(pUser.ProjectId)).CreatorUserId;
-            if(input.UserId == projectCreatorId && !input.RoleNames.Contains(StaticProjectRoleNames.ProjectManager)) {
-                input.RoleNames.Add(StaticProjectRoleNames.ProjectManager);
-            }
-
-            // Update
-            if (input.RoleNames != null)
-                pUser.Roles = await repoPRoles.GetAllListAsync(x => input.RoleNames.Contains(x.Name));
-            await repository.UpdateAsync(pUser);
-            await uowManager.Current.SaveChangesAsync();
-
-            // Return
-            var result = mapper.Map<RolesOfUserDto>(pUser);
-            result.RoleNames = pUser.Roles.Select(x => x.Name).ToList();
-            return result;
-        }
+         
     }
 }

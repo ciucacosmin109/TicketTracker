@@ -93,13 +93,13 @@ class TicketWork extends AppComponentBase<ITicketWorkProps, ITicketWorkState> {
         //const worked = this.props.workStore?.works?.items?.filter(x => !x.isWorking) ?? [];
 
         const projectUsers = this.props.projectUserStore?.projectUsers ?? [];
-        const projectUsersMapped = projectUsers?.map(x => ({ value: x.id, label:
+        const projectUsersMapped = projectUsers?.map(x => ({ value: x.user.id, label:
             <Space style={{ cursor: 'pointer' }}>
                 <ProfileAvatar
-                    firstName={x.name}
-                    lastName={x.surname} 
+                    firstName={x.user.name}
+                    lastName={x.user.surname} 
                     size="small" />
-                {`${x.name} ${x.surname}`}
+                {`${x.user.name} ${x.user.surname}`}
             </Space>
         }));
         
@@ -127,7 +127,7 @@ class TicketWork extends AppComponentBase<ITicketWorkProps, ITicketWorkState> {
                                 notFoundContent={L("NoResultsFound")}
                                 placeholder={L("TypeUser")}
                                 filterOption={(input, option) =>
-                                    (projectUsers.find(x => x.id === option?.value)?.fullName?.toLowerCase().indexOf(input.toLowerCase()) ?? -1) >= 0
+                                    (projectUsers.find(x => x.id === option?.value)?.user.fullName?.toLowerCase().indexOf(input.toLowerCase()) ?? -1) >= 0
                                 }
                             /> 
                         :

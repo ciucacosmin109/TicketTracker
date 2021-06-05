@@ -25,6 +25,7 @@ namespace TicketTracker.Projects {
     public class ProjectAppService : AsyncCrudAppService<Project, ProjectDto, int, GetAllProjectsInput, CreateProjectInput, UpdateProjectInput> {
         private readonly ProjectRepository repoProjects;
         private readonly ProjectUserRepository repoPUsers;
+        private readonly WorkRepository repoWorks;
         private readonly IRepository<PRole> repoPRoles;
         private readonly ProjectManager projectManager;
         private readonly IAbpSession session;
@@ -33,6 +34,7 @@ namespace TicketTracker.Projects {
             IRepository<Project> repository,
             ProjectRepository repoProjects,
             ProjectUserRepository repoPUsers,
+            WorkRepository repoWorks,
             IRepository<PRole> repoPRoles,
             ProjectManager projectManager,
             IAbpSession session) 
@@ -40,6 +42,7 @@ namespace TicketTracker.Projects {
 
             this.repoProjects = repoProjects;
             this.repoPUsers = repoPUsers;
+            this.repoWorks = repoWorks;
             this.repoPRoles = repoPRoles;
             this.projectManager = projectManager;
             this.session = session;
@@ -56,7 +59,7 @@ namespace TicketTracker.Projects {
 
             return MapToEntityDto(entity);
         }
-        private async Task<ProjectWithRolesDto> GetIncludingRolesAsync(EntityDto<int> input) {
+        public async Task<ProjectWithRolesDto> GetIncludingRolesAsync(EntityDto<int> input) {
             CheckGetPermission();
 
             var entity = await repoProjects.GetAllIncludingRoles().FirstOrDefaultAsync(x => x.Id == input.Id);
@@ -84,7 +87,6 @@ namespace TicketTracker.Projects {
             var res = base.CreateFilteredQuery(input); 
             return projectManager.FilterProjectsByVisibility(res, session.UserId, input.IsPublic, input.IsAssigned);
         }
-
         public async Task<PagedResultDto<ProjectWithRolesDto>> GetAllIncludingRolesAsync(GetAllProjectsInput input) {
             CheckGetAllPermission();
 
@@ -110,38 +112,6 @@ namespace TicketTracker.Projects {
 
             //var entities = await AsyncQueryableExecuter.ToListAsync(query); 
             return new PagedResultDto<ProjectWithRolesDto>(
-                totalCount, result
-            );
-        }
-        public async Task<PagedResultDto<ProjectWithRolesAndPermissionsDto>> GetAllIncludingRolesAndPermissionsAsync(GetAllProjectsInput input) {
-            CheckGetAllPermission();
-
-            var query = repoProjects.GetAllIncludingRoles();
-            var totalCount = await AsyncQueryableExecuter.CountAsync(query);
-
-            query = projectManager.FilterProjectsByVisibility(query, session.UserId, input.IsPublic, input.IsAssigned);
-            query = ApplySorting(query, input);
-            query = ApplyPaging(query, input);
-
-            var result = new List<ProjectWithRolesAndPermissionsDto>();
-            foreach (Project proj in query) { 
-                List<PRole> roles = proj.ProjectUsers
-                    .Where(x => x.UserId == session.UserId)
-                    .SelectMany(x => x.Roles)
-                    .ToList();
-
-                ProjectWithRolesAndPermissionsDto p = ObjectMapper.Map<ProjectWithRolesAndPermissionsDto>(proj);
-                p.Roles = new List<PRoleWithPermissionsDto>();
-                foreach (PRole role in roles) {
-                    p.Roles.Add(ObjectMapper.Map<PRoleWithPermissionsDto>(role));
-                    p.Roles.Last().PermissionNames = role.Permissions.Select(x => x.Name).ToList();
-                } 
-
-                result.Add(p);
-            }
-
-            //var entities = await AsyncQueryableExecuter.ToListAsync(query); 
-            return new PagedResultDto<ProjectWithRolesAndPermissionsDto>(
                 totalCount, result
             );
         }
@@ -182,71 +152,60 @@ namespace TicketTracker.Projects {
 
             return MapToEntityDto(entity);
         }
-         
         public override async Task<ProjectDto> UpdateAsync(UpdateProjectInput input) {
             long? creatorId = (await Repository.GetAsync(input.Id)).CreatorUserId;
             if (session.UserId != creatorId)
                 projectManager.CheckProjectPermission(session.UserId, input.Id, StaticProjectPermissionNames.Project_Edit);
 
-            // Add the creator as a ProjectManager
-            /*if (input.Users == null) {
-                input.Users = new List<MinimalUserWithPRolesDto>();
-            }
-            var creatorDto = input.Users.FirstOrDefault(x => x.Id == creatorId);
-            if (creatorDto == null) {
-                creatorDto = new MinimalUserWithPRolesDto {
-                    Id = creatorId.Value,
-                    RoleNames = new List<string> { StaticProjectRoleNames.ProjectManager },
-                };
-                input.Users.Add(creatorDto);
-            } else if (creatorDto.RoleNames == null) {
-                creatorDto.RoleNames = new List<string> { StaticProjectRoleNames.ProjectManager };
-            } else {
-                // The creator will always be a ProjectManager
-                creatorDto.RoleNames.Add(StaticProjectRoleNames.ProjectManager);
-            }*/
-             
-            // Delete users (BUT NOT THE CREATOR !)
-            var inputIds = input.Users.Select(x => x.Id);
-            await repoPUsers.DeleteAsync(x => x.ProjectId == input.Id && !inputIds.Contains(x.UserId) && x.UserId != creatorId); // !!!
-            await CurrentUnitOfWork.SaveChangesAsync();
+            if (input.Users != null) {
+                // Delete users (BUT NOT THE CREATOR !)
+                var inputIds = input.Users.Select(x => x.Id);
+                //get the PU ids to set the FKs in the Works to NULL
+                var setNullPUIds = await repoPUsers.GetAll().Where(x => x.ProjectId == input.Id && !inputIds.Contains(x.UserId) && x.UserId != creatorId).Select(x => x.Id).ToListAsync();
+                foreach(var puid in setNullPUIds) {
+                    await repoWorks.SetProjectUserNullAsync(puid);
+                }
+                await CurrentUnitOfWork.SaveChangesAsync();
+                //delete the PU
+                await repoPUsers.DeleteAsync(x => x.ProjectId == input.Id && !inputIds.Contains(x.UserId) && x.UserId != creatorId); // !!!
+                await CurrentUnitOfWork.SaveChangesAsync();
 
-            // Update existing users
-            var existingPUs = await repoPUsers.GetAllIncludingRoles().Where(x => x.ProjectId == input.Id).ToListAsync();
-            foreach (var pu in existingPUs) {
-                var user = input.Users.FirstOrDefault(x => x.Id == pu.UserId);
-                     
-                // The creator will always have the ProjectManager role
-                if (user == null && pu.UserId != creatorId) { 
-                    // There is an entity in the DB, but not in the input, that is not the creator
-                    throw new Exception("There is an entity in the DB, but not in the input, that is not the creator");
-                } else if (user == null) { 
-                    // The creator was not provided
-                    continue;
-                } else if (pu.UserId == creatorId && !user.RoleNames.Contains(StaticProjectRoleNames.ProjectManager)) { 
-                    // The creator was provided but he doesn't have the ProjectManager role
-                    user.RoleNames.Add(StaticProjectRoleNames.ProjectManager);
+                // Update existing users
+                var existingPUs = await repoPUsers.GetAllIncludingRoles().Where(x => x.ProjectId == input.Id).ToListAsync();
+                foreach (var pu in existingPUs) {
+                    var user = input.Users.FirstOrDefault(x => x.Id == pu.UserId);
+
+                    // The creator will always have the ProjectManager role
+                    if (user == null && pu.UserId != creatorId) {
+                        // There is an entity in the DB, but not in the input, that is not the creator
+                        throw new Exception("There is an entity in the DB, but not in the input, that is not the creator");
+                    } else if (user == null) {
+                        // The creator was not provided
+                        continue;
+                    } else if (pu.UserId == creatorId && !user.RoleNames.Contains(StaticProjectRoleNames.ProjectManager)) {
+                        // The creator was provided but he doesn't have the ProjectManager role
+                        user.RoleNames.Add(StaticProjectRoleNames.ProjectManager);
+                    }
+
+                    if (user.RoleNames != null)
+                        pu.Roles = await repoPRoles.GetAllListAsync(x => user.RoleNames.Contains(x.Name));
+                    await repoPUsers.UpdateAsync(pu);
                 }
 
-                if (user.RoleNames != null)
-                    pu.Roles = await repoPRoles.GetAllListAsync(x => user.RoleNames.Contains(x.Name));
-                await repoPUsers.UpdateAsync(pu);
-            }
+                // Add new users
+                var assignedIds = projectManager.GetAssignedUserIds(input.Id);
+                var newUsers = input.Users.Where(x => !assignedIds.Contains(x.Id));
+                foreach (var user in newUsers) {
+                    ProjectUser pu = new ProjectUser { ProjectId = input.Id, UserId = user.Id };
+                    if (user.RoleNames != null)
+                        pu.Roles = await repoPRoles.GetAllListAsync(x => user.RoleNames.Contains(x.Name));
 
-            // Add new users
-            var assignedIds = projectManager.GetAssignedUserIds(input.Id);
-            var newUsers = input.Users.Where(x => !assignedIds.Contains(x.Id));
-            foreach (var user in newUsers) {
-                ProjectUser pu = new ProjectUser { ProjectId = input.Id, UserId = user.Id };
-                if (user.RoleNames != null)
-                    pu.Roles = await repoPRoles.GetAllListAsync(x => user.RoleNames.Contains(x.Name));
-
-                await repoPUsers.InsertAsync(pu);
+                    await repoPUsers.InsertAsync(pu);
+                }
             }
 
             return await base.UpdateAsync(input);
         }
-
         public override async Task DeleteAsync(EntityDto<int> input) {
             long? creatorId = (await Repository.GetAsync(input.Id)).CreatorUserId;
             if (session.UserId != creatorId)

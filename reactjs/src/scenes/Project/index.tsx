@@ -77,8 +77,8 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
         const project = this.props.projectStore?.project; 
         const myProfile = this.props.accountStore?.account; 
         const myRoles = this.props.projectUserStore?.projectUsers
-                        ?.find(x => x.id === myProfile?.id)
-                        ?.roleNames; 
+                        ?.find(x => x.user.id === myProfile?.id)
+                        ?.roles?.map(x => x.name); 
         const projectIdOk = project != null && 
                             this.props.match.params.id != null && 
                             (project.id === parseInt(this.props.match.params.id)); 

@@ -235,6 +235,14 @@
     <text name="Comments">Comentarii</text>
     <text name="Reply">Raspunde</text>
 
+    <text name="LoginBeforeChangingPass">Trebuie sa fiti autentificat pentru a putea schimba parola</text>
+    <text name="ExistingPasswordDidNotMatch">Parola curenta nu este corecta. Va rugam incercati din nou</text>
+    <text name="TheServerDidNotReturnAMessage">Serverul nu a returnat niciun mesaj</text>
+    <text name="NetworkError">Eroare de retea</text>
+    <text name="ErrorCode">cod de eroare</text>
+    <text name="RequestTimedOut">Cererea a durat prea mult</text>
+    <text name="CanNotConnectToServer">Nu se poate conecta la server</text>
+
     <text name="========================================0">Backend</text>
 
     <text name="YouAreNotTheCreator{0}{1}">Nu esti creatorul entitatii {0} cu Id={1}</text> 
@@ -274,6 +282,7 @@
     <text name="TicketPriorities">Prioritati ale tichetelor</text>
     <text name="TicketStatuses">Stari ale tichetelor</text>
     <text name="NoRole">Fara rol</text>
+    <text name="UnknownUser">Utilizator necunoscut</text>
 
 
   </texts>

@@ -1,24 +1,27 @@
-import { action, observable } from "mobx";  
-import { SimpleUserWithRolesDto } from "../services/projectUser/dto/simpleUserWithRolesDto"; 
+import { action, observable } from "mobx";   
 import projectUserService from "../services/projectUser/projectUserService";
-import { GetProjectUsersInput } from "../services/projectUser/dto/getProjectUsersInput"; 
+import { GetAllProjectUsersInput } from "../services/projectUser/dto/getAllProjectUsersInput"; 
+import { ProjectUserDto } from "../services/projectUser/dto/projectUserDto";
 
 export default class ProjectUserStore { 
-    @observable projectUsers!: SimpleUserWithRolesDto[];
+    @observable projectUsers!: ProjectUserDto[];
 
-    projectId!: number;
+    projectId?: number;
+    ticketId?: number;
  
     @action
     async getAll(projectId : number) { 
-        let puRes = await projectUserService.getUsersOfProject({projectId} as GetProjectUsersInput); 
-        this.projectUsers = puRes.users;
-        this.projectId = puRes.projectId;
+        let puRes = await projectUserService.getAll({projectId} as GetAllProjectUsersInput); 
+        this.projectUsers = puRes.items;
+        this.projectId = projectId;
+        this.ticketId = undefined;
     }
     @action
     async getAllByTicketId(ticketId : number) { 
-        let puRes = await projectUserService.getUsersOfProject({ticketId} as GetProjectUsersInput); 
-        this.projectUsers = puRes.users;
-        this.projectId = puRes.projectId;
+        let puRes = await projectUserService.getAll({ticketId} as GetAllProjectUsersInput); 
+        this.projectUsers = puRes.items;
+        this.projectId = undefined;
+        this.ticketId = ticketId;
     }
  
 }

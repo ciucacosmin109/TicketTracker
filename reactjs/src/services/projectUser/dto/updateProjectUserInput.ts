@@ -1,4 +1,4 @@
-export class UpdateRolesOfUserInput{
+export class UpdateProjectUserInput{
     userId!: number;
     projectId!: number;
 
