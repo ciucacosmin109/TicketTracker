@@ -6,6 +6,7 @@
     "@ant-design/icons": "^4.2.2",
     "@aspnet/signalr": "^1.1.4",
     "@craco/craco": "^5.6.2",
+    "@tinymce/tinymce-react": "^3.12.6",
     "abp-web-resources": "^5.1.1",
     "antd": "^4.6.4",
     "axios": "^0.19.0",

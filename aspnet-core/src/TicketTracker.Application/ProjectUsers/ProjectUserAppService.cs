@@ -72,6 +72,10 @@ namespace TicketTracker.ProjectUsers {
         }
 
         private void AddPermissions(ProjectUserDto pud, ProjectUser pu) {
+            if(pud == null || pu == null) {
+                return;
+            }
+
             foreach (var role in pud.Roles) {
                 var permissions = pu.Roles.SelectMany(x => x.Permissions);
                 if(permissions != null) {
@@ -85,9 +89,9 @@ namespace TicketTracker.ProjectUsers {
             ProjectUser entity = await repository.GetAllIncludingUserAndRoles()
                 .Where(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId)
                 .FirstOrDefaultAsync();
-            if(entity == null) {
+            /*if(entity == null) {
                 throw new UserFriendlyException(l.GetString("UserIsNotInProject{0}{1}", input.UserId, input.ProjectId));
-            }
+            }*/
             
             var result = mapper.Map<ProjectUserDto>(entity);
             AddPermissions(result, entity); 

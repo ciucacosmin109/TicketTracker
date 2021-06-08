@@ -10,6 +10,7 @@ export interface ICommentListProps{
     commentStore?: CommentStore;
 
     ticketId: number;
+    canReply?: boolean;
 }
 
 export interface ICommentListState{
@@ -33,7 +34,7 @@ export default class CommentList extends AppComponentBase<ICommentListProps> {
 
         return(<> 
             {comments?.map(x =>  
-                <CommentNode key={x.id} comment={x} /> 
+                <CommentNode key={x.id} comment={x} canReply={this.props.canReply} /> 
             )} 
         </>);
     }

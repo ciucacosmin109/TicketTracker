@@ -11,11 +11,16 @@ import commentService from '../../../services/comment/commentService';
 
 export interface ICommentNodeProps {   
     comment: CommentDto;
+    canReply?: boolean;
 }
 
 class CommentNode extends AppComponentBase<ICommentNodeProps> {
 
     newReply = async (e: any) => { 
+        if(this.props.canReply !== true){
+            return;
+        }
+
         let str = prompt(L("AddAComment"));
         if (str != null && str !== "") {  
             let newCom = {
@@ -51,15 +56,17 @@ class CommentNode extends AppComponentBase<ICommentNodeProps> {
 
                 <div style={{marginTop:"5px",marginBottom:"5px"}}>{this.props.comment.content}</div>
 
-                <Button size="small"
-                    style={{marginBottom:"5px", textTransform:'none'}}
-                    icon={<CommentOutlined style={{color: "gray"}}/>} 
-                    onClick={e => this.newReply(e)}>
-                    {L('Reply')}
-                </Button> 
+                {this.props.canReply ?
+                    <Button size="small"
+                        style={{marginBottom:"5px", textTransform:'none'}}
+                        icon={<CommentOutlined style={{color: "gray"}}/>} 
+                        onClick={e => this.newReply(e)}>
+                        {L('Reply')}
+                    </Button> : <></>
+                }
 
                 {this.props.comment.children != null ? this.props.comment.children.map(x =>
-                    <CommentNode key={x.id} comment={x} />
+                    <CommentNode key={x.id} comment={x} canReply={this.props.canReply} />
                 ) : <></>}
             </Card>
         );

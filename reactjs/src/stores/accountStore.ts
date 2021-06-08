@@ -33,7 +33,7 @@ class AccountStore {
     let a = await accountService.updateAccount(input);
     const userName = this.account.userName;
 
-    this.account = a as GetAccountOutput;
+    this.account = {...this.account, ...a} as GetAccountOutput;
     this.account.userName = userName;
      
     return a;

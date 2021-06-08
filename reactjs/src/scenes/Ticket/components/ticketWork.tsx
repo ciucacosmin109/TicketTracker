@@ -15,7 +15,8 @@ export interface ITicketWorkProps {
     workStore?: WorkStore;
     projectUserStore?: ProjectUserStore;
 
-    editEnabled: boolean;
+    editUserEnabled: boolean;
+    editEstimationEnabled: boolean;
     ticketId: number; 
 }
 export interface ITicketWorkState {  
@@ -92,7 +93,7 @@ class TicketWork extends AppComponentBase<ITicketWorkProps, ITicketWorkState> {
         const assignedTo = this.props.workStore?.assignedWork;
         //const worked = this.props.workStore?.works?.items?.filter(x => !x.isWorking) ?? [];
 
-        const projectUsers = this.props.projectUserStore?.projectUsers ?? [];
+        const projectUsers = this.props.projectUserStore?.ticketUsers ?? [];
         const projectUsersMapped = projectUsers?.map(x => ({ value: x.user.id, label:
             <Space style={{ cursor: 'pointer' }}>
                 <ProfileAvatar
@@ -114,7 +115,7 @@ class TicketWork extends AppComponentBase<ITicketWorkProps, ITicketWorkState> {
                 <Space>
                     {`${L("AssignedTo")}:`} 
 
-                    {this.props.editEnabled 
+                    {this.props.editUserEnabled 
                         ? 
                             <Select
                                 showSearch 
@@ -147,7 +148,7 @@ class TicketWork extends AppComponentBase<ITicketWorkProps, ITicketWorkState> {
                 <Row>
                     <Space>
                         {`${L("WorkedTime")}:`}
-                        {!this.props.editEnabled 
+                        {!this.props.editEstimationEnabled 
                             ? `${assignedTo.workedTime ?? 0} / ${assignedTo.estimatedTime ?? 0}`
                             : <>
                                 <InputNumber 

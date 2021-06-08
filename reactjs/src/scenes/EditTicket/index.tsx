@@ -9,6 +9,7 @@ import { L } from '../../lib/abpUtility';
 import { Button, Card, Col, Form, Input, message, Modal, Row, Select, Space, Spin } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined, FileOutlined, 
     FileTextOutlined, LoadingOutlined, SaveOutlined } from '@ant-design/icons'; 
+import { Editor as TinyMce } from '@tinymce/tinymce-react';
 
 import { RouteComponentProps, withRouter } from 'react-router';  
 import { EntityDto } from '../../services/dto/entityDto'; 
@@ -243,10 +244,35 @@ class EditTicket extends AppComponentBase<IEditTicketProps, IEditTicketState> {
                                 onChange={e => this.onInputChange("title", e.target.value)}/>
                         </Form.Item>
                         <Form.Item label={L('Description')}>
-                            <Input.TextArea 
+                            {/* <Input.TextArea 
                                 placeholder={L('Description')} 
                                 value={this.state.ticket.description} 
-                                onChange={e => this.onInputChange("description", e.target.value)}/>
+                                onChange={e => this.onInputChange("description", e.target.value)}/> */}
+                            
+                            <TinyMce  
+                                apiKey="7atcogyb8kct4rdja6x79f3i8cks6o2uxuggklo3pynla4la"
+                                init={{ 
+                                    menubar: true,
+                                    statusbar: true,
+                                    resize: true,
+                                    branding: false,
+                                    plugins: [
+                                        'advlist autolink lists link image charmap print preview anchor',
+                                        'searchreplace visualblocks code fullscreen',
+                                        'insertdatetime media table paste code help wordcount',
+                                        'codesample emoticons' // export
+                                    ],
+                                    toolbar:
+                                        'undo redo | fontselect fontsizeselect forecolor backcolor | ' +
+                                        'bold italic underline | removeformat | ' +
+                                        'bullist numlist | table codesample emoticons | ' +
+                                        'alignleft aligncenter alignright alignjustify | outdent indent | ' +
+                                        'help',
+                                }}
+                                //name="content"
+                                value={this.state.ticket.description}
+                                onEditorChange={text => this.onInputChange("description", text)}
+                            />
                         </Form.Item>
  
                         <Form.Item label={L('Type')}>

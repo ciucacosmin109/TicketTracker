@@ -282,7 +282,8 @@
     <text name="TicketPriorities">Prioritati ale tichetelor</text>
     <text name="TicketStatuses">Stari ale tichetelor</text>
     <text name="NoRole">Fara rol</text>
-    <text name="UnknownUser">Utilizator necunoscut</text>
+    <text name="UnknownUser">Utilizator necunoscut
+    </text>
 
 
   </texts>

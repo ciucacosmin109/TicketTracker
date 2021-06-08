@@ -20,6 +20,7 @@ import TicketStore from '../../stores/ticketStore';
 import TicketTypeChart from './chartComponents/ticketTypeChart';
 import TicketPriorityChart from './chartComponents/ticketPriorityChart';
 import TicketStatusChart from './chartComponents/ticketStatusChart';
+import {StaticProjectPermissionNames} from '../../models/ProjectUser/StaticProjectPermissionNames';
 
 export interface IProjectParams{
     id: string | undefined; 
@@ -61,14 +62,15 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
     async componentDidMount() { 
         const id = this.props.match.params.id;
         if(id != null){ // i have an id
-            const intId = parseInt(id);
+            const intId = parseInt(id); 
  
             await this.props.projectStore?.getProject(intId);
             await this.props.projectUserStore?.getAll(intId);
             await this.props.componentStore?.getAll(intId);
-            await this.props.ticketStore?.getAllByProjectId(intId);
+            await this.props.ticketStore?.getAllByProjectId(intId); 
  
-            this.setState({loading: false});
+            this.setState({loading: false}); 
+    
         } else { // hmmm
             this.props.history.replace('/exception?type=404');
         }
@@ -83,6 +85,11 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                             this.props.match.params.id != null && 
                             (project.id === parseInt(this.props.match.params.id)); 
         const tickets = this.props.ticketStore?.tickets; 
+
+        const canEdit = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_Edit)
+                        || myProfile?.id === project?.creatorUserId;
+        const canAddComp = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_AddComponents);
+        const canManageComp = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_ManageComponents);
 
         // Component content
         return ( 
@@ -99,7 +106,10 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                                 </Space> 
                             </Col>
                             <Col flex="none">
-                                <Button type="primary" onClick={() => this.editProject(project?.id ?? 0)} icon={<EditOutlined />}>{L('Edit')}</Button>
+                                {canEdit
+                                    ? <Button type="primary" onClick={() => this.editProject(project?.id ?? 0)} icon={<EditOutlined />}>{L('Edit')}</Button>
+                                    : <></>
+                                }
                             </Col>
                         </Row> 
                     }
@@ -154,16 +164,19 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                                 </Space> 
                             </Col>
                             <Col flex="none">
-                                <Button type="primary" onClick={() => this.setModal(true)} icon={<AppstoreAddOutlined />}>
-                                    {L('AddComponent')}
-                                </Button>
+                                {canAddComp ?
+                                    <Button type="primary" onClick={() => this.setModal(true)} icon={<AppstoreAddOutlined />}>
+                                        {L('AddComponent')}
+                                    </Button> : <></>
+                                }
+                                
                             </Col>
                         </Row> 
                     }
                 >    
                     <Row>  
                         {projectIdOk 
-                            ? <ComponentTable key={project?.id} projectId={project!.id} editEnabled />
+                            ? <ComponentTable key={project?.id} projectId={project!.id} editEnabled={canManageComp} />
                             : <></>
                         }  
                     </Row>

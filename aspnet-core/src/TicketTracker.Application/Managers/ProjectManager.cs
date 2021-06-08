@@ -63,17 +63,17 @@ namespace TicketTracker.Managers {
             return repoProjects.Get(projectId).CreatorUserId == userId;
         } 
 
-        public void CheckVisibility(long? userId, int projectId) {
-            Project project = repoProjects.Get(projectId);
-            if (!project.IsPublic) {
-                CheckProjectPermission(userId, projectId);
-            }
+        public void CheckVisibility(long? userId, int projectId) { 
+            CheckProjectPermission(userId, projectId); 
         }
 
         public void CheckProjectPermission(long? userId, int projectId, string permissionName = null) {
-            var isAssigned = repoPUsers.GetAll().Where(x => x.ProjectId == projectId && x.UserId == userId).Any();
-            if (!isAssigned) {
-                throw new AbpAuthorizationException(l.GetString("NotAssignedToProject{0}{1}", userId, projectId));
+            Project project = repoProjects.Get(projectId);
+            if (!project.IsPublic) {
+                var isAssigned = repoPUsers.GetAll().Where(x => x.ProjectId == projectId && x.UserId == userId).Any();
+                if (!isAssigned) {
+                    throw new AbpAuthorizationException(l.GetString("NotAssignedToProject{0}{1}", userId, projectId));
+                }
             }
 
             if (permissionName != null) {

@@ -14,6 +14,9 @@ import ComponentStore from '../../stores/componentStore';
 import EditComponent from '../Project/components/editComponent';
 import ProjectStore from '../../stores/projectStore';
 import TicketTable from './components/ticketTable';
+import ProjectUserStore from '../../stores/projectUserStore';
+import AccountStore from '../../stores/accountStore';
+import { StaticProjectPermissionNames } from '../../models/ProjectUser/StaticProjectPermissionNames';
 
 export interface IComponentParams{
     id: string | undefined; 
@@ -21,13 +24,19 @@ export interface IComponentParams{
 export interface IComponentProps extends RouteComponentProps<IComponentParams> { 
     componentStore?: ComponentStore;
     projectStore?: ProjectStore;
+    projectUserStore?: ProjectUserStore;
+    accountStore?: AccountStore;
 }
 export interface IComponentState {  
     loading: boolean; 
     editModal: boolean; 
 }
  
-@inject(Stores.ComponentStore, Stores.ProjectStore)
+@inject(
+    Stores.ComponentStore, 
+    Stores.ProjectStore, 
+    Stores.ProjectUserStore, 
+    Stores.AccountStore)
 @observer
 class Component extends AppComponentBase<IComponentProps, IComponentState> {
     state = {  
@@ -56,7 +65,12 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
             if(compProjId != null && compProjId !== this.props.projectStore?.project?.id){
                await this.props.projectStore?.getProject(compProjId);
             }
- 
+            
+            if(compProjId != null && compProjId !== this.props.projectUserStore?.projectId){
+                const myUserId = this.props.accountStore?.account?.id;
+                await this.props.projectUserStore?.get(myUserId, compProjId);
+            }
+
             this.setState({loading: false});
         } else {
             this.props.history.replace('/exception?type=404');
@@ -69,7 +83,13 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
         const componentIdOk = component != null && 
                             this.props.match.params.id != null && 
                             (component.id === parseInt(this.props.match.params.id));
-
+        
+        const myProfile = this.props.accountStore?.account;
+        const canEdit = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_ManageComponents)
+                        || myProfile?.id === component?.creatorUserId;
+        const canAddTickets = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Component_AddTickets);
+        const canManageTickets = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Component_ManageTickets);
+          
         // Component content
         return ( 
             <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}> 
@@ -83,13 +103,15 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                                 </Space> 
                             </Col>
                             <Col flex="none">
-                                <Button 
-                                    type="primary" 
-                                    onClick={() => this.setEditModal(true)} 
-                                    icon={<EditOutlined />}>
-                                        
-                                    {L('Edit')}
-                                </Button>
+                                {canEdit ?
+                                    <Button 
+                                        type="primary" 
+                                        onClick={() => this.setEditModal(true)} 
+                                        icon={<EditOutlined />}>
+                                            
+                                        {L('Edit')}
+                                    </Button> : <></>
+                                }
                             </Col>
                         </Row> 
                     }
@@ -130,16 +152,18 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                                 </Space> 
                             </Col>
                             <Col flex="none">
-                                <Button type="primary" onClick={this.addTicket} icon={<FileAddOutlined />}>
-                                    {L('AddTicket')}
-                                </Button>
+                                {canAddTickets ?
+                                    <Button type="primary" onClick={this.addTicket} icon={<FileAddOutlined />}>
+                                        {L('AddTicket')}
+                                    </Button> : <></>
+                                }
                             </Col>
                         </Row>
                     }
                 >
                     <Row>
                         {componentIdOk
-                            ? <TicketTable componentId={component!.id} editEnabled />
+                            ? <TicketTable componentId={component!.id} editEnabled={canManageTickets} />
                             : <></>
                         }  
                     </Row>

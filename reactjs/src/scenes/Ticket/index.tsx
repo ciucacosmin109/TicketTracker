@@ -1,5 +1,5 @@
 import React from 'react';
-//import './index.less'
+import './index.less'
 
 import { inject, observer } from 'mobx-react';
 import Stores from '../../stores/storeIdentifier'; 
@@ -10,6 +10,7 @@ import { Button, Card, Col, Row, Space, Spin, Switch } from 'antd';
 import { AppstoreOutlined, BugFilled,  BulbFilled,  
     CalendarOutlined, CloseOutlined, CommentOutlined, EditOutlined, FileTextOutlined, 
     FundOutlined, LoadingOutlined, MailOutlined, } from '@ant-design/icons'; 
+import { Editor as TinyMce } from '@tinymce/tinymce-react';
    
 import { RouteComponentProps, withRouter } from 'react-router';  
 import TicketStore from '../../stores/ticketStore';  
@@ -23,6 +24,8 @@ import AccountStore from '../../stores/accountStore';
 import { CreateSubscriptionInput } from '../../services/subscription/dto/createSubscriptionInput';
 import { DeleteSubscriptionInput } from '../../services/subscription/dto/deleteSubscriptionInput';
 import { CheckSubscriptionInput } from '../../services/subscription/dto/checkSubscriptionInput';
+import ProjectUserStore from '../../stores/projectUserStore';
+import { StaticProjectPermissionNames } from '../../models/ProjectUser/StaticProjectPermissionNames';
 
 export interface ITicketParams{
     id: string | undefined; 
@@ -31,6 +34,7 @@ export interface ITicketProps extends RouteComponentProps<ITicketParams> {
     accountStore?: AccountStore;
     ticketStore?: TicketStore; 
     commentStore?: CommentStore;
+    projectUserStore?: ProjectUserStore;
 }
 export interface ITicketState {  
     loading: boolean; 
@@ -43,7 +47,8 @@ export interface ITicketState {
 @inject(
     Stores.AccountStore, 
     Stores.TicketStore,  
-    Stores.CommentStore)
+    Stores.CommentStore,
+    Stores.ProjectUserStore)
 @observer
 class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
     state = {  
@@ -119,6 +124,15 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                             this.props.match.params.id != null && 
                             (ticket.id === parseInt(this.props.match.params.id));*/
  
+        const myProfile = this.props.accountStore?.account;
+        const canEdit = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Component_ManageTickets)
+                        || myProfile?.id === ticket?.creatorUserId;
+        const canAssignWork = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_AssignWork);
+        const canSelfAssignWork = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_SelfAssignWork);
+        const canAddComm = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_AddComments);
+        //const canManageComm = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_ManageComments);
+                              
+
         const workTabList = [
             {key: "active", tab: L("ActiveWork")},
             {key: "history", tab: L("History")},
@@ -127,7 +141,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
         // Ticket content
         return ( 
             <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}> 
-                <Card className="ticket ui-card"
+                <Card className="ticket ui-card readonly-editor-card"
                     title={
                         <Row>
                             <Col flex="auto">  
@@ -151,20 +165,41 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                                         checkedChildren={<Space><MailOutlined />{L("Subscribed")}</Space>}
                                         unCheckedChildren={<Space><CloseOutlined />{L("NotSubscribed")}</Space>} 
                                     />
-                                    <Button 
-                                        type="primary" 
-                                        onClick={this.editTicket} 
-                                        icon={<EditOutlined />}>
-                                            
-                                        {L('Edit')}
-                                    </Button>
+                                    {canEdit ? 
+                                        <Button 
+                                            type="primary" 
+                                            onClick={this.editTicket} 
+                                            icon={<EditOutlined />}>
+                                                
+                                            {L('Edit')}
+                                        </Button> : <></>
+                                    }
                                 </Space>
                             </Col>
                         </Row> 
                     }
                 >   
                     <Row> 
-                        {ticket?.description}  
+                        {/* {ticket?.description}
+                        <div dangerouslySetInnerHTML={{
+                            __html: ticket?.description ?? ""
+                        }}></div> */}
+                        {ticket?.description != null && ticket?.description !== "" ?
+                            <TinyMce
+                                apiKey="7atcogyb8kct4rdja6x79f3i8cks6o2uxuggklo3pynla4la"
+                                disabled={true}
+                                init={{ 
+                                    width:"100%",
+                                    menubar: false,
+                                    statusbar: true,
+                                    resize: true,
+                                    branding: false,
+                                    plugins: [ 'wordcount' ],
+                                    toolbar: false
+                                }}
+                                value={ticket?.description}
+                            /> : <></>
+                        }
                     </Row>
                 </Card>  
                 <Card className="ui-card">  
@@ -215,20 +250,29 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                                 </Space>
                             </Col>
                             <Col flex="none">
-                                <Space>
-                                    {L('Edit')}
-                                    <Switch checked={this.state.editWork} onChange={this.changeEditWork} />
-                                </Space>
+                                {canAssignWork || canSelfAssignWork ? 
+                                    <Space>
+                                        {L('Edit')}
+                                        <Switch checked={this.state.editWork} onChange={this.changeEditWork} />
+                                    </Space> : <></>
+                                }
                             </Col>
                         </Row> 
                     } 
                 >
                     {ticket && this.state.workTabKey === "active"
-                        ? <TicketWork key={ticket?.id} ticketId={ticket?.id} editEnabled={this.state.editWork} />
+                        ? <TicketWork 
+                            key={ticket?.id} 
+                            ticketId={ticket?.id} 
+                            editUserEnabled={this.state.editWork} 
+                            editEstimationEnabled={this.state.editWork} />
                         : <></>
                     } 
                     {ticket && this.state.workTabKey === "history"
-                        ? <WorkTable key={ticket?.id} ticketId={ticket?.id} editEnabled={this.state.editWork} />
+                        ? <WorkTable
+                            key={ticket?.id} 
+                            ticketId={ticket?.id} 
+                            editEnabled={this.state.editWork && (canAssignWork??false)} />
                         : <></>
                     }
                 </Card>
@@ -243,13 +287,17 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                                 </Space>
                             </Col>
                             <Col flex="none">
-                                <Button onClick={this.addNewComment}>{L('AddAComment')}</Button>  
+                                {canAddComm 
+                                    ? <Button onClick={this.addNewComment}>{L('AddAComment')}</Button> 
+                                    : <></>
+                                }
+                                
                             </Col>
                         </Row> 
                     } 
                 >
                     {ticket
-                        ? <CommentList key={ticket?.id} ticketId={ticket?.id} />
+                        ? <CommentList key={ticket?.id} ticketId={ticket?.id} canReply={canAddComm} />
                         : <></>
                     }  
                 </Card>
