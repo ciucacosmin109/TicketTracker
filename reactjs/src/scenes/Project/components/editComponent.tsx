@@ -22,32 +22,24 @@ export interface IEditComponentProps {
     onOk: () => void;
     onCancel: () => void;
 }
-export interface IEditComponentState {
-    loading: boolean;
+export interface IEditComponentState { 
 }
 
 @inject(Stores.ComponentStore)
 @observer 
 class EditComponent extends AppComponentBase<IEditComponentProps, IEditComponentState> {
-    form = React.createRef<FormInstance>();
-    state = {
-        loading: false, 
-    }
+    form = React.createRef<FormInstance>(); 
 
     resetModal = () => {
         this.form.current?.resetFields();
-        this.setState({
-            loading: false, 
-        });
     }
-    onOk = async () => { 
-        this.setState({loading: true});
+    onOk = async () => {
         const values = this.form.current?.getFieldsValue(); 
 
         if(this.props.componentId){ // edit
-            await this.props.componentStore?.update({id: this.props.componentId, ...values} as UpdateComponentInput);
+            this.props.componentStore?.update({id: this.props.componentId, ...values} as UpdateComponentInput);
         }else{ 
-            await this.props.componentStore?.create({projectId: this.props.projectId, ...values} as CreateComponentInput);
+            this.props.componentStore?.create({projectId: this.props.projectId, ...values} as CreateComponentInput);
         } 
 
         this.props.onOk(); 
@@ -59,28 +51,20 @@ class EditComponent extends AppComponentBase<IEditComponentProps, IEditComponent
     }
 
     async componentDidMount(){  
-        if(this.props.componentId){ // edit
-            this.setState({loading: true});
-
+        if(this.props.componentId){ // edit 
             if(this.props.componentStore?.component?.id !== this.props.componentId){
-                await this.props.componentStore?.get(this.props.componentId);
-            }
-            //const component = this.props.componentStore?.component;
-
-            //console.log(this.form.current)
-            //console.log(this.props.componentId)
-            //this.form.current?.setFieldsValue(component);
-            this.setState({loading: false});
+                this.props.componentStore?.get(this.props.componentId);
+            } 
         }
     }
 
     render() { 
+        const loading = this.props.componentStore?.loading;
         const component = this.props.componentStore?.component;  
         const isComponentOk = component && component?.id === this.props.componentId;
 
-        //console.log("sssss")
         const modalForm = (
-            <Form /*key={component?.id ?? 1}*/ ref={this.form} layout="vertical" 
+            <Form ref={this.form} layout="vertical" 
                 initialValues={isComponentOk ? component : undefined}>
 
                 <Form.Item label={L('Name')} name={'name'} rules={rules.name}> 
@@ -97,12 +81,12 @@ class EditComponent extends AppComponentBase<IEditComponentProps, IEditComponent
                 className="edit-component" 
                 title={this.props.componentId ? L('EditComponent') : L('AddComponent')} 
                 visible={this.props.visible} 
-                confirmLoading={this.state.loading}
+                confirmLoading={loading}
                 onOk={this.onOk} 
                 onCancel={this.onCancel} 
                 cancelText={L('Cancel')}>
                 
-                <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}> 
+                <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}> 
                     {isComponentOk || !this.props.componentId ? modalForm : <></>}
                 </Spin>
             </Modal>

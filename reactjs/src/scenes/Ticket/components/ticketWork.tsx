@@ -19,9 +19,7 @@ export interface ITicketWorkProps {
     editEstimationEnabled: boolean;
     ticketId: number; 
 }
-export interface ITicketWorkState {  
-    loading: boolean;
- 
+export interface ITicketWorkState {
     workedTime: number;
     estimatedTime: number;
 }
@@ -31,9 +29,7 @@ export interface ITicketWorkState {
     Stores.ProjectUserStore)
 @observer
 class TicketWork extends AppComponentBase<ITicketWorkProps, ITicketWorkState> {  
-    state = { 
-        loading: true,
- 
+    state = {
         workedTime: 0,
         estimatedTime: 0,
     }
@@ -64,7 +60,7 @@ class TicketWork extends AppComponentBase<ITicketWorkProps, ITicketWorkState> {
     }
     onTimeSave = async () => {
         if(this.props.workStore?.assignedWork){
-            await this.props.workStore?.update({
+            this.props.workStore?.update({
                 id: this.props.workStore?.assignedWork?.id,
                 workedTime: this.state.workedTime,
                 estimatedTime: this.state.estimatedTime,
@@ -74,22 +70,20 @@ class TicketWork extends AppComponentBase<ITicketWorkProps, ITicketWorkState> {
 
     async componentDidMount() {
         if(this.props.ticketId !== this.props.workStore?.ticketId){
-            await this.props.workStore?.getAll(this.props.ticketId);
-            await this.props.workStore?.getAssigned(this.props.ticketId);
+            this.props.workStore?.getAll(this.props.ticketId);
+            this.props.workStore?.getAssigned(this.props.ticketId);
         }
-        await this.props.projectUserStore?.getAllByTicketId(this.props.ticketId);
+        this.props.projectUserStore?.getAllByTicketId(this.props.ticketId);
 
-        const assignedWork = this.props.workStore?.assignedWork;
-
-        this.setState({
-            loading: false,  
+        const assignedWork = this.props.workStore?.assignedWork; 
+        this.setState({ 
             workedTime: assignedWork?.workedTime ?? 0,
             estimatedTime: assignedWork?.estimatedTime ?? 0,
         });
     }
 
     render() {
-        //const works = this.props.workStore?.works ?? [];
+        //const loading = this.props.workStore?.loading;
         const assignedTo = this.props.workStore?.assignedWork;
         //const worked = this.props.workStore?.works?.items?.filter(x => !x.isWorking) ?? [];
 

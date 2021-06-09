@@ -5,6 +5,8 @@ import { ProjectUserDto } from "../services/projectUser/dto/projectUserDto";
 import { GetProjectUserInput } from "../services/projectUser/dto/getProjectUserInput";
 
 export default class ProjectUserStore { 
+    @observable loading: boolean = false;
+
     @observable projectUser!: ProjectUserDto;
     @observable projectUsers!: ProjectUserDto[];
     @observable ticketUsers!: ProjectUserDto[];
@@ -14,12 +16,19 @@ export default class ProjectUserStore {
  
     @action
     async get(userId: number | undefined, projectId: number | undefined) { 
-        if(userId == null || projectId == null){
+        if(userId == null || projectId == null || Number.isNaN(userId) || Number.isNaN(projectId)){
             return;
         }
         
+        this.loading = true;
         let puRes = await projectUserService.get({userId, projectId} as GetProjectUserInput); 
         this.projectUser = puRes;
+        this.loading = false;
+    }
+    getMyRoles(userId: number | undefined): string[] {
+        return this.projectUsers
+            ?.find(x => x.user.id === userId)
+            ?.roles?.map(x => x.name) ?? [];
     }
     hasPermission(userId: number | undefined, projectId: number | undefined, permission : string): boolean {
         let projectUser;
@@ -48,15 +57,25 @@ export default class ProjectUserStore {
 
     @action
     async getAll(projectId : number) { 
+        if(Number.isNaN(projectId)){
+            return;
+        }
+        this.loading = true;
         let puRes = await projectUserService.getAll({projectId} as GetAllProjectUsersInput); 
         this.projectUsers = puRes.items;
-        this.projectId = projectId; 
+        this.projectId = projectId;
+        this.loading = false;
     }
     @action
     async getAllByTicketId(ticketId : number) { 
+        if(Number.isNaN(ticketId)){
+            return;
+        }
+        this.loading = true;
         let puRes = await projectUserService.getAll({ticketId} as GetAllProjectUsersInput); 
         this.ticketUsers = puRes.items; 
         this.ticketId = ticketId;
+        this.loading = false;
     } 
  
 }

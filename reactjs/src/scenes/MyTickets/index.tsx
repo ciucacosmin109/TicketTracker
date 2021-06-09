@@ -31,7 +31,7 @@ class MyTickets extends AppComponentBase<IMyTicketsProps, IMyTicketsState> {
     }
 
     render(){  
-        const tickets = this.props.ticketStore?.tickets;
+        const tickets = this.props.ticketStore?.userTickets;
 
         return ( 
             <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}>

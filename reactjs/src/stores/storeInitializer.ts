@@ -13,6 +13,7 @@ import WorkStore from './workStore';
 import CommentStore from './commentStore';
 import ActivityStore from './activityStore';
 import StatusStore from './statusStore';
+import SubscriptionStore from './subscriptionStore';
 
 export default function initializeStores() {
   return {
@@ -32,5 +33,6 @@ export default function initializeStores() {
     commentStore: new CommentStore(), 
     activityStore: new ActivityStore(), 
     statusStore: new StatusStore(), 
+    subscriptionStore: new SubscriptionStore(), 
   };
 }

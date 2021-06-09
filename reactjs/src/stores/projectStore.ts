@@ -7,19 +7,26 @@ import { EntityDto } from "../services/dto/entityDto";
 import { PagedResultDto } from "../services/dto/pagedResultDto";
 
 export default class ProjectStore {
-    @observable project!: ProjectDto;  
+    @observable loading: boolean = false;
 
+    @observable project!: ProjectDto;   
     @observable publicProjects!: PagedResultDto<ProjectWithRolesDto>; 
     @observable assignedProjects!: PagedResultDto<ProjectWithRolesDto>; 
  
     @action
     async getProject(id : number) {
+        if(Number.isNaN(id)){
+            return;
+        }
+        this.loading = true;
         this.project = await projectService.get({id: id} as EntityDto); 
-    }
-
+        this.loading = false;
+    } 
     @action
     async getAll() {
+        this.loading = true;
         this.publicProjects = await projectService.getAllIncludingRoles({isPublic: true} as GetAllProjectsInput); 
         this.assignedProjects = await projectService.getAllIncludingRoles({isAssigned: true} as GetAllProjectsInput); 
+        this.loading = false;
     }  
 }

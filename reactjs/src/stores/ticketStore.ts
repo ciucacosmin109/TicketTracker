@@ -8,72 +8,95 @@ import { CreateTicketInput } from "../services/ticket/dto/createTicketInput";
 import { UpdateTicketInput } from "../services/ticket/dto/updateTicketInput";
 
 export default class TicketStore {
-    @observable ticket!: TicketDto;
+    @observable loading: boolean = false;
 
-    @observable tickets!: PagedResultDto<TicketDto>; 
+    @observable ticket!: TicketDto;
+    @observable componentTickets!: PagedResultDto<TicketDto>; 
+    @observable projectTickets!: PagedResultDto<TicketDto>; 
+    @observable userTickets!: PagedResultDto<TicketDto>; 
+
     componentId?: number;
     projectId?: number;
     assignedUserId?: number;
  
     @action
-    async get(id : number) { 
-        this.ticket = await ticketService.get({id});  
+    async get(id : number) {
+        if(Number.isNaN(id)){
+            return;
+        }
+        this.loading = true; 
+        this.ticket = await ticketService.get({id});
+        this.loading = false;
     }  
     @action
     async getAllByComponentId(componentId : number) { 
-        this.tickets = await ticketService.getAll({componentId} as GetAllTicketsInput);  
-        this.componentId = componentId;
-        this.projectId = undefined;
-        this.assignedUserId = undefined;
+        if(Number.isNaN(componentId)){
+            return;
+        }
+        this.loading = true; 
+        this.componentTickets = await ticketService.getAll({componentId} as GetAllTicketsInput);
+        this.componentId = componentId; 
+        this.loading = false;
     }  
     @action
     async getAllByProjectId(projectId : number) { 
-        this.tickets = await ticketService.getAll({projectId} as GetAllTicketsInput);  
-        this.componentId = undefined;
-        this.projectId = projectId;
-        this.assignedUserId = undefined;
+        if(Number.isNaN(projectId)){
+            return;
+        }
+        this.loading = true; 
+        this.projectTickets = await ticketService.getAll({projectId} as GetAllTicketsInput);
+        this.projectId = projectId; 
+        this.loading = false;
     }  
     @action
     async getAllByAssignedUserId(assignedUserId : number) { 
-        this.tickets = await ticketService.getAll({assignedUserId} as GetAllTicketsInput);
-        this.componentId = undefined;
-        this.projectId = undefined;
-        this.assignedUserId = assignedUserId;  
+        if(Number.isNaN(assignedUserId)){
+            return;
+        }
+        this.loading = true; 
+        this.userTickets = await ticketService.getAll({assignedUserId} as GetAllTicketsInput);
+        this.assignedUserId = assignedUserId;
+        this.loading = false;
     }  
     
     @action
     async create(input : CreateTicketInput) : Promise<TicketDto> {
+        this.loading = true;
         const tc = await ticketService.create(input); 
-        if(this.tickets != null && input.componentId === this.componentId){
-            this.tickets.totalCount++;
-            this.tickets.items.push(tc); 
-            this.tickets.items = [...this.tickets.items]
+        if(this.componentTickets != null && input.componentId === this.componentId){
+            this.componentTickets.totalCount++;
+            this.componentTickets.items.push(tc); 
+            this.componentTickets.items = [...this.componentTickets.items]
         }
-
+        this.loading = false;
         return tc;
     }  
     @action
     async update(input : UpdateTicketInput) {
+        this.loading = true;
         const newTicket = await ticketService.update(input); 
         if(input.id === this.ticket.id){
             this.ticket = newTicket;
         }
 
-        const oldIdx = this.tickets?.items.findIndex(x => x.id === input.id);
+        const oldIdx = this.componentTickets?.items.findIndex(x => x.id === input.id);
         if(oldIdx != null && oldIdx !== -1){
-            this.tickets.items.splice(oldIdx, 1, newTicket); 
-            this.tickets.items = [...this.tickets.items]
+            this.componentTickets.items.splice(oldIdx, 1, newTicket); 
+            this.componentTickets.items = [...this.componentTickets.items]
         } 
+        this.loading = false;
     }  
     @action
     async delete(input : EntityDto) {
+        this.loading = true;
         await ticketService.delete(input); 
 
-        const oldIdx = this.tickets.items.findIndex(x => x.id === input.id);
+        const oldIdx = this.componentTickets.items.findIndex(x => x.id === input.id);
         if(oldIdx != null && oldIdx !== -1){
-            this.tickets.totalCount--;
-            this.tickets.items.splice(oldIdx, 1); 
-            this.tickets.items = [...this.tickets.items]
+            this.componentTickets.totalCount--;
+            this.componentTickets.items.splice(oldIdx, 1); 
+            this.componentTickets.items = [...this.componentTickets.items]
         }
+        this.loading = false;
     }  
 }

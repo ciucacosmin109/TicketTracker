@@ -27,8 +27,7 @@ export interface IComponentProps extends RouteComponentProps<IComponentParams> {
     projectUserStore?: ProjectUserStore;
     accountStore?: AccountStore;
 }
-export interface IComponentState {  
-    loading: boolean; 
+export interface IComponentState {
     editModal: boolean; 
 }
  
@@ -39,8 +38,7 @@ export interface IComponentState {
     Stores.AccountStore)
 @observer
 class Component extends AppComponentBase<IComponentProps, IComponentState> {
-    state = {  
-        loading: true, 
+    state = {
         editModal: false,
     }  
     setEditModal = (visible: boolean) => {
@@ -59,30 +57,28 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
         const id = this.props.match.params.id;
         if(id != null){ // i have an id
             const intId = parseInt(id); 
-            await this.props.componentStore?.get(intId);
+            this.props.componentStore?.get(intId).then(() => {
+                const compProjId = this.props.componentStore?.component?.projectId;
+                if(compProjId != null && compProjId !== this.props.projectStore?.project?.id){
+                   this.props.projectStore?.getProject(compProjId);
+                }
+                
+                if(compProjId != null && compProjId !== this.props.projectUserStore?.projectId){
+                    const myUserId = this.props.accountStore?.account?.id;
+                    this.props.projectUserStore?.get(myUserId, compProjId);
+                } 
+            });
 
-            const compProjId = this.props.componentStore?.component?.projectId;
-            if(compProjId != null && compProjId !== this.props.projectStore?.project?.id){
-               await this.props.projectStore?.getProject(compProjId);
-            }
-            
-            if(compProjId != null && compProjId !== this.props.projectUserStore?.projectId){
-                const myUserId = this.props.accountStore?.account?.id;
-                await this.props.projectUserStore?.get(myUserId, compProjId);
-            }
-
-            this.setState({loading: false});
         } else {
             this.props.history.replace('/exception?type=404');
         }
     }
 
     render(){
+        const loading = this.props.componentStore?.loading;
+
         const component = this.props.componentStore?.component;  
-        const project = this.props.projectStore?.project; 
-        const componentIdOk = component != null && 
-                            this.props.match.params.id != null && 
-                            (component.id === parseInt(this.props.match.params.id));
+        const project = this.props.projectStore?.project;  
         
         const myProfile = this.props.accountStore?.account;
         const canEdit = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_ManageComponents)
@@ -92,7 +88,7 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
           
         // Component content
         return ( 
-            <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}> 
+            <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}> 
                 <Card className="component ui-card"
                     title={
                         <Row>
@@ -162,7 +158,7 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                     }
                 >
                     <Row>
-                        {componentIdOk
+                        {component != null
                             ? <TicketTable componentId={component!.id} editEnabled={canManageTickets} />
                             : <></>
                         }  

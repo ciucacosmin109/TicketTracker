@@ -11,8 +11,7 @@ import { AppstoreAddOutlined, AppstoreOutlined, AreaChartOutlined, CalendarOutli
    
 import { RouteComponentProps, withRouter } from 'react-router'; 
 import ProjectStore from '../../stores/projectStore';
-import ProjectUserStore from '../../stores/projectUserStore';
-import ComponentStore from '../../stores/componentStore';
+import ProjectUserStore from '../../stores/projectUserStore'; 
 import UserList from './components/userList';
 import ComponentTable from './components/componentTable';
 import EditComponent from './components/editComponent'; 
@@ -29,24 +28,20 @@ export interface IProjectProps extends RouteComponentProps<IProjectParams> {
     accountStore?: AccountStore;
     projectStore?: ProjectStore;
     projectUserStore?: ProjectUserStore;
-    componentStore?: ComponentStore;
     ticketStore?: TicketStore;
 }
-export interface IProjectState {  
-    loading: boolean;
+export interface IProjectState {
     modal: boolean;
 }
  
 @inject(
     Stores.AccountStore, 
     Stores.ProjectStore, 
-    Stores.ProjectUserStore, 
-    Stores.ComponentStore,
+    Stores.ProjectUserStore,
     Stores.TicketStore)
 @observer
 class Project extends AppComponentBase<IProjectProps, IProjectState> {
-    state = {  
-        loading: true,
+    state = {
         modal: false,
     }
     setModal = (visible : boolean) => {
@@ -64,27 +59,21 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
         if(id != null){ // i have an id
             const intId = parseInt(id); 
  
-            await this.props.projectStore?.getProject(intId);
-            await this.props.projectUserStore?.getAll(intId);
-            await this.props.componentStore?.getAll(intId);
-            await this.props.ticketStore?.getAllByProjectId(intId); 
- 
-            this.setState({loading: false}); 
-    
-        } else { // hmmm
+            this.props.projectStore?.getProject(intId);
+            this.props.projectUserStore?.getAll(intId);
+            this.props.ticketStore?.getAllByProjectId(intId); 
+
+        } else { 
             this.props.history.replace('/exception?type=404');
         }
     }
-    render(){   
+    render(){
+        const loading = this.props.projectStore?.loading;
+        
         const project = this.props.projectStore?.project; 
         const myProfile = this.props.accountStore?.account; 
-        const myRoles = this.props.projectUserStore?.projectUsers
-                        ?.find(x => x.user.id === myProfile?.id)
-                        ?.roles?.map(x => x.name); 
-        const projectIdOk = project != null && 
-                            this.props.match.params.id != null && 
-                            (project.id === parseInt(this.props.match.params.id)); 
-        const tickets = this.props.ticketStore?.tickets; 
+        const myRoles = this.props.projectUserStore?.getMyRoles(myProfile?.id);  
+        const tickets = this.props.ticketStore?.projectTickets; 
 
         const canEdit = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_Edit)
                         || myProfile?.id === project?.creatorUserId;
@@ -93,7 +82,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
 
         // Component content
         return ( 
-            <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}> 
+            <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}> 
                 <Card className="project ui-card"
                     title={
                         <Row>
@@ -147,7 +136,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                             }
                         </Col>
                         <Col flex="none" style={{paddingTop: '15px'}}> 
-                            {projectIdOk 
+                            {project != null 
                                 ? <UserList projectId={project!.id ?? 0} />
                                 : <></>
                             } 
@@ -175,12 +164,12 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                     }
                 >    
                     <Row>  
-                        {projectIdOk 
+                        {project != null 
                             ? <ComponentTable key={project?.id} projectId={project!.id} editEnabled={canManageComp} />
                             : <></>
                         }  
                     </Row>
-                        {projectIdOk 
+                        {project != null 
                             ? <EditComponent
                                 visible={this.state.modal}
                                 projectId={project!.id}

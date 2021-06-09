@@ -22,8 +22,7 @@ export interface IComponentTableProps extends RouteComponentProps {
     projectId: number; 
     editEnabled?: boolean;
 }
-export interface IComponentTableState {  
-    loading: boolean;
+export interface IComponentTableState {
     modal: boolean;
     modalComponentId: number;
 }
@@ -31,8 +30,7 @@ export interface IComponentTableState {
 @inject(Stores.ComponentStore)
 @observer
 class ComponentTable extends AppComponentBase<IComponentTableProps, IComponentTableState> {
-    state = {  
-        loading: true,       
+    state = {     
         modal: false,
         modalComponentId: 0
     }
@@ -40,14 +38,13 @@ class ComponentTable extends AppComponentBase<IComponentTableProps, IComponentTa
         this.setState({modal: visible, modalComponentId: id});
     }
     modalOk = async () => { 
-        await this.props.componentStore?.getAll(this.props.projectId); 
+        //this.props.componentStore?.getAll(this.props.projectId); 
         this.setModal(false, 0);
     }
 
     // Load data
     async componentDidMount() {   
-        await this.props.componentStore?.getAll(this.props.projectId); 
-        this.setState({loading: false}); 
+        this.props.componentStore?.getAll(this.props.projectId);
     } 
 
     onRowClick = (e:any, rec:ComponentDto) => {  
@@ -75,7 +72,8 @@ class ComponentTable extends AppComponentBase<IComponentTableProps, IComponentTa
         }
     };
 
-    render() {    
+    render() { 
+        const loading = this.props.componentStore?.loading;
         const components = this.props.componentStore?.components?.items;
 
         // Table config
@@ -87,7 +85,7 @@ class ComponentTable extends AppComponentBase<IComponentTableProps, IComponentTa
             )
         }; 
         const tableLoading : SpinProps = {
-            spinning: this.state.loading,
+            spinning: loading,
             indicator: <LoadingOutlined />,
             size: 'large'
         }

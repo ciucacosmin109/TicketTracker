@@ -9,23 +9,36 @@ import { UpdateWorkInput } from "../services/work/dto/updateWorkInput";
 import { UpdateIsWorkingInput } from "../services/work/dto/updateIsWorkingInput";
 
 export default class WorkStore {
-    @observable assignedWork?: WorkDto;
+    @observable loading: boolean = false;
 
-    @observable works!: PagedResultDto<WorkDto>; 
+    @observable assignedWork?: WorkDto; 
+    @observable works!: PagedResultDto<WorkDto>;
+
     ticketId!: number;
  
     @action
     async getAssigned(ticketId : number) { 
-        this.assignedWork = await workService.getWorking({ticketId});  
+        if(Number.isNaN(ticketId)){
+            return;
+        }
+        this.loading = true; 
+        this.assignedWork = await workService.getWorking({ticketId});
+        this.loading = false;
     }  
     @action
     async getAll(ticketId : number) {
+        if(Number.isNaN(ticketId)){
+            return;
+        }
+        this.loading = true; 
         this.ticketId = ticketId;
-        this.works = await workService.getAll({ticketId} as GetAllWorksInput);  
+        this.works = await workService.getAll({ticketId} as GetAllWorksInput);
+        this.loading = false;
     }  
     
     @action
     async create(input : CreateWorkInput) {
+        this.loading = true;
         const tc = await workService.create(input); 
         
         this.works?.items?.forEach(e => {
@@ -44,9 +57,11 @@ export default class WorkStore {
         }
         
         this.assignedWork = tc;
+        this.loading = false;
     }  
     @action
     async update(input : UpdateWorkInput) {
+        this.loading = true;
         const newW = await workService.update(input); 
         if(input.id === this.assignedWork?.id){
             this.assignedWork = newW;
@@ -57,9 +72,11 @@ export default class WorkStore {
             this.works.items.splice(oldIdx, 1, newW); 
             this.works.items = [...this.works.items]
         } 
+        this.loading = false;
     } 
     @action
     async updateIsWorking(input: UpdateIsWorkingInput) { 
+        this.loading = true;
         await workService.updateIsWorking(input); 
 
         this.works?.items?.forEach(e => {
@@ -78,9 +95,11 @@ export default class WorkStore {
         }else{
             this.assignedWork = undefined;
         }
+        this.loading = false;
     }   
     @action
     async delete(input : EntityDto) {
+        this.loading = true;
         await workService.delete(input); 
 
         if(input.id === this.assignedWork?.id){
@@ -93,5 +112,6 @@ export default class WorkStore {
             this.works.items.splice(oldIdx, 1); 
             this.works.items = [...this.works.items]
         }
+        this.loading = false;
     }  
 }

@@ -13,20 +13,14 @@ export interface ICommentListProps{
     canReply?: boolean;
 }
 
-export interface ICommentListState{
-    loading: boolean;
+export interface ICommentListState{ 
 }
 
 @inject(Stores.CommentStore)
 @observer
-export default class CommentList extends AppComponentBase<ICommentListProps> {
-    state = {
-        loading: true,
-    }
-
+export default class CommentList extends AppComponentBase<ICommentListProps> { 
     async componentDidMount(){ 
-        await this.props.commentStore?.getAll(this.props.ticketId); 
-        this.setState({loading: false})
+        this.props.commentStore?.getAll(this.props.ticketId);
     }
 
     render(){ 

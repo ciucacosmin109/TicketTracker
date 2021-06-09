@@ -183,7 +183,7 @@
     <text name="Tickets">Tichete</text>
     <text name="Ticket">Tichet</text>
     <text name="AddTicket">Adauga tichet</text>
-    <text name="NoTicketsAdded">Nu exista tichete adaugate la aceasta componenta</text>
+    <text name="NoTickets">Nu s-au gasit tichete</text>
     <text name="Type">Tip</text>
     <text name="OTHER">Altul</text>
     <text name="BUG">Problema</text>

@@ -8,17 +8,25 @@ import { CreateCommentInput } from "../services/comment/dto/createCommentInput";
 import { UpdateCommentInput } from "../services/comment/dto/updateCommentInput";
 
 export default class CommentStore { 
+    @observable loading: boolean = false;
+    
     @observable comments!: PagedResultDto<CommentDto>; 
     ticketId!: number;
   
     @action
     async getAll(ticketId : number) {
+        if(Number.isNaN(ticketId)){
+            return;
+        }
+        this.loading = true;
         this.ticketId = ticketId;
         this.comments = await commentService.getAll({ticketId} as GetAllCommentsInput);  
+        this.loading = false;
     }  
     
     @action
     async create(input : CreateCommentInput) {
+        this.loading = true;
         const newC = await commentService.create(input);   
 
         if(input.parentId != null && this.comments != null && this.comments.items.length > 0){
@@ -53,9 +61,11 @@ export default class CommentStore {
                 this.getAll(input.ticketId);
             }
         } 
+        this.loading = false;
     }  
     @action
     async update(input : UpdateCommentInput) {
+        this.loading = true;
         const newComment = await commentService.update(input); 
         
         if(this.comments != null && this.comments.items.length > 0){
@@ -73,9 +83,11 @@ export default class CommentStore {
                 }
             } 
         }
+        this.loading = false;
     }  
     @action
     async delete(input : EntityDto) {
+        this.loading = true;
         await commentService.delete(input); 
 
         if(this.comments == null || this.comments.items.length === 0)
@@ -103,5 +115,6 @@ export default class CommentStore {
                 }
             } 
         } 
+        this.loading = false;
     }  
 }

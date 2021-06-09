@@ -18,30 +18,26 @@ export interface IUserListProps extends RouteComponentProps {
     projectId: number;
     maxCount?: number;
 }
-export interface IUserListState {  
-    loading: boolean;
+export interface IUserListState {   
 }
  
 @inject(Stores.ProjectUserStore)
 @observer
 class UserList extends AppComponentBase<IUserListProps, IUserListState> {
-    state = {  
-        loading: true,
-    } 
-
     // Load data
     async componentDidMount() {  
-        const id = this.props.projectId;  
-        await this.props.projectUserStore?.getAll(id); 
-    
-        this.setState({loading: false}); 
+        const id = this.props.projectId;
+        if(id !== this.props.projectUserStore?.projectId){
+            this.props.projectUserStore?.getAll(id);
+        }
     }
-    render(){   
+    render(){
+        const loading = this.props.projectUserStore?.loading;
         const users = this.props.projectUserStore?.projectUsers;
 
         // Component content
         return ( 
-            <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}> 
+            <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}> 
                 <Avatar.Group maxCount={this.props.maxCount ?? 5} maxStyle={{cursor: 'pointer'}}>  
                     {users?.map((x, i) => 
                         <ProfileAvatar 

@@ -16,9 +16,7 @@ import TicketStore from '../../../stores/ticketStore';
 import { TicketDto } from '../../../services/ticket/dto/ticketDto';
 import { TicketType } from '../../../services/ticket/dto/ticketType';
 import ComponentStore from '../../../stores/componentStore';
-import ProjectStore from '../../../stores/projectStore';
-import componentService from '../../../services/component/componentService';
-import projectService from '../../../services/project/projectService';
+import ProjectStore from '../../../stores/projectStore'; 
 
 export interface ITicketTableProps extends RouteComponentProps { 
     ticketStore?: TicketStore; 
@@ -32,8 +30,7 @@ export interface ITicketTableProps extends RouteComponentProps {
     editEnabled?: boolean;
     detailed?: boolean;
 }
-export interface ITicketTableState {  
-    loading: boolean; 
+export interface ITicketTableState {
 }
  
 @inject(
@@ -41,22 +38,16 @@ export interface ITicketTableState {
     Stores.ComponentStore,
     Stores.ProjectStore)
 @observer
-class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState> {
-    state = {  
-        loading: true,
-    } 
-
+class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState> { 
     // Load data
     async componentDidMount() {   
         if(this.props.componentId != null){
-            await this.props.ticketStore?.getAllByComponentId(this.props.componentId); 
+            this.props.ticketStore?.getAllByComponentId(this.props.componentId); 
         }else if(this.props.projectId != null){
-            await this.props.ticketStore?.getAllByProjectId(this.props.projectId); 
+            this.props.ticketStore?.getAllByProjectId(this.props.projectId); 
         }else if(this.props.assignedUserId != null){
-            await this.props.ticketStore?.getAllByAssignedUserId(this.props.assignedUserId); 
-        }
-
-        this.setState({loading: false}); 
+            this.props.ticketStore?.getAllByAssignedUserId(this.props.assignedUserId); 
+        } 
     } 
 
     onRowClick = (e:any, rec:TicketDto) => {
@@ -64,25 +55,14 @@ class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState>
         this.props.history.push(path);
     }
     goToProject = async (e:any, rec:TicketDto) => {
-        const comp = await componentService.get({id: rec.component.id});
-
-        const path = this.getPath("project").replace('/:id', `/${comp.projectId}`);
+        const path = this.getPath("project").replace('/:id', `/${rec.project.id}`);
         this.props.history.push(path);
     }
     goToComponent = (e:any, rec:TicketDto) => {
         const path = this.getPath("component").replace('/:id', `/${rec.component.id}`);
         this.props.history.push(path);
     }
-
-    getProjectName = async (rec:TicketDto) => {
-        const comp = await componentService.get({id: rec.component.id});
-        const proj = await projectService.get({id: comp.projectId});
-        return proj.name;
-    }
-    getComponentName = async (rec:TicketDto) => {
-        const comp = await componentService.get({id: rec.component.id});
-        return comp.name;
-    }
+ 
     getActionsMenu = (id : number) => {
         return (
             <Menu onClick={e => this.onActionsMenuClick(e, id)}> 
@@ -104,19 +84,20 @@ class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState>
         }
     };
 
-    render() {    
-        const tickets = this.props.ticketStore?.tickets?.items;
+    render() {
+        const loading = this.props.ticketStore?.loading;
+        const tickets = this.props.ticketStore?.componentTickets?.items;
 
         // Table config
         const noDataLocale = { 
             emptyText: (
                 <Empty 
                     image={Empty.PRESENTED_IMAGE_SIMPLE} 
-                    description={this.L('NoTicketsAdded')}/>
+                    description={this.L('NoTickets')}/>
             )
         }; 
         const tableLoading : SpinProps = {
-            spinning: this.state.loading,
+            spinning: loading,
             indicator: <LoadingOutlined />,
             size: 'large'
         }
@@ -165,7 +146,7 @@ class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState>
                 }
             );
         }
-console.log(this.props.assignedUserId)
+        
         // Component content
         return (  
             <div style={{ width: '100%' }}>

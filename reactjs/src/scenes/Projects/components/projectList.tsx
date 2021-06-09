@@ -20,19 +20,20 @@ export interface IProjectListProps {
     category: ProjectCategory;
     showNewProjectButton?: boolean;
 }
-export interface IProjectListState {
-    loading: boolean;
+export interface IProjectListState { 
 }
  
 @inject(Stores.ProjectStore)
 @observer
 export default class ProjectList extends AppComponentBase<IProjectListProps, IProjectListState> {
-    async componentDidMount(){
-        await this.props.projectStore?.getAll(); 
+    componentDidMount(){
+        this.props.projectStore?.getAll(); 
     }
     render() {
         const newProjectPath = appRouters.find((x : any) => x.name === 'newproject')?.path;
         const projectPath : string = appRouters.find((x : any) => x.name === 'project')?.path.replace('/:id', '/'); 
+
+        const store = this.props.projectStore;
 
         const projects = this.props.category === ProjectCategory.ASSIGNED
             ? this.props.projectStore?.assignedProjects 
@@ -58,44 +59,45 @@ export default class ProjectList extends AppComponentBase<IProjectListProps, IPr
             }
         >   
             <Row>
-                {projects == null ? 
+                {store?.loading ? 
                     <Col flex="1 1 200px" className="project">
                         <Card type="inner" size="small" loading></Card>
                     </Col>
-                :<></>}
-                {projects?.items.map((x : ProjectWithRolesDto, index: number) =>
-                    <Col flex="1 1 200px" className="project" key={index}>
-                        <Link to={projectPath + x.id}>
-                            <Card type="inner" 
-                                size="small" 
-                                title={
+                :
+                    projects?.items.map((x : ProjectWithRolesDto, index: number) =>
+                        <Col flex="1 1 200px" className="project" key={index}>
+                            <Link to={projectPath + x.id}>
+                                <Card type="inner" 
+                                    size="small" 
+                                    title={
+                                        <Space>
+                                            {x.isPublic 
+                                                ? <ProjectOutlined style={{color:"#1da57a"}}/> 
+                                                : <LockOutlined style={{color:"orange"}}/> }  
+                                            {x.name} 
+                                        </Space>
+                                    } 
+                                    extra={"#" + x.id}
+                                    style={{ height: "100%"}}> 
+
+                                    <Row className="description">{x.description}</Row>
+                                    <br />
+
                                     <Space>
-                                        {x.isPublic 
-                                            ? <ProjectOutlined style={{color:"#1da57a"}}/> 
-                                            : <LockOutlined style={{color:"orange"}}/> }  
-                                        {x.name} 
-                                    </Space>
-                                } 
-                                extra={"#" + x.id}
-                                style={{ height: "100%"}}> 
-
-                                <Row className="description">{x.description}</Row>
-                                <br />
-
-                                <Space>
-                                    {x.roles != null && x.roles.length > 0 ? <UserOutlined /> : <></>}
-                                    {x.roles?.map(r => L(r.name)).join(", ")}
-                                </Space> 
-                                <Row>
-                                    <Col flex="auto"> </Col>
-                                    <Col flex="none">
-                                        {new Date(x.creationTime!).toLocaleDateString("ro-RO")} 
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Link>
-                    </Col>
-                )}
+                                        {x.roles != null && x.roles.length > 0 ? <UserOutlined /> : <></>}
+                                        {x.roles?.map(r => L(r.name)).join(", ")}
+                                    </Space> 
+                                    <Row>
+                                        <Col flex="auto"> </Col>
+                                        <Col flex="none">
+                                            {new Date(x.creationTime!).toLocaleDateString("ro-RO")} 
+                                        </Col>
+                                    </Row>
+                                </Card>
+                            </Link>
+                        </Col>
+                    )
+                }
             </Row>
         </Card>;
     }

@@ -183,7 +183,7 @@
     <text name="Tickets">Tickets</text>
     <text name="Ticket">Ticket</text>
     <text name="AddTicket">Add ticket</text>
-    <text name="NoTicketsAdded">There are no tickets added to this component</text>
+    <text name="NoTickets">There are no tickets here</text>
     <text name="Type">Type</text>
     <text name="OTHER">Other</text>
     <text name="BUG">Bug</text>

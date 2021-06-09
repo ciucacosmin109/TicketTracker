@@ -8,31 +8,46 @@ import { UpdateComponentInput } from "../services/component/dto/updateComponentI
 import { EntityDto } from "../services/dto/entityDto";
 
 export default class ComponentStore {
-    @observable component!: ComponentDto;
+    @observable loading: boolean = false;
 
-    @observable components!: PagedResultDto<ComponentDto>; 
+    @observable component!: ComponentDto; 
+    @observable components!: PagedResultDto<ComponentDto>;
+
     projectId!: number;
  
     @action
     async get(id : number) { 
-        this.component = await componentService.get({id});  
+        if(Number.isNaN(id)){
+            return;
+        }
+        this.loading = true;
+        this.component = await componentService.get({id});
+        this.loading = false;
     }  
     @action
     async getAll(projectId : number) {
+        if(Number.isNaN(projectId)){
+            return;
+        }
+        this.loading = true;
         this.projectId = projectId;
         this.components = await componentService.getAll({projectId: projectId} as GetAllComponentsInput);  
+        this.loading = false;
     }  
     
     @action
     async create(input : CreateComponentInput) {
+        this.loading = true;
         const comp = await componentService.create(input); 
         if(this.components != null && input.projectId === this.projectId){
             this.components.totalCount++; 
             this.components.items = [...this.components.items, comp]
         }
+        this.loading = false;
     }  
     @action
-    async update(input : UpdateComponentInput) { 
+    async update(input : UpdateComponentInput) {
+        this.loading = true;
         const newComp = await componentService.update(input); 
         if(input.id === this.component.id){
             this.component = newComp;
@@ -43,9 +58,11 @@ export default class ComponentStore {
             this.components.items.splice(oldCompIndex, 1, newComp); 
             this.components.items = [...this.components.items]
         } 
+        this.loading = false;
     }  
     @action
     async delete(input : EntityDto) { 
+        this.loading = true;
         await componentService.delete(input); 
 
         const oldCompIndex = this.components?.items.findIndex(x => x.id === input.id);
@@ -54,5 +71,6 @@ export default class ComponentStore {
             this.components.items.splice(oldCompIndex, 1); 
             this.components.items = [...this.components.items]
         }
+        this.loading = false;
     }  
 }

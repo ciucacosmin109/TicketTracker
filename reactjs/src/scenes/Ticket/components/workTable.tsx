@@ -23,8 +23,7 @@ export interface IWorkTableProps {
     editEnabled?: boolean;
     includeWorking?: boolean;
 }
-export interface IWorkTableState {
-    loading: boolean;
+export interface IWorkTableState { 
     modal: boolean;
     modalId: number; 
     modalWorked: number;
@@ -34,8 +33,7 @@ export interface IWorkTableState {
 @inject(Stores.WorkStore)
 @observer
 class WorkTable extends AppComponentBase<IWorkTableProps, IWorkTableState> {
-    state = {
-        loading: true,
+    state = { 
         modal: false,
         modalId: 0, 
         modalWorked: 0,
@@ -56,7 +54,7 @@ class WorkTable extends AppComponentBase<IWorkTableProps, IWorkTableState> {
 
     modalOk = async () => { 
         // update work 
-        await this.props.workStore?.update({
+        this.props.workStore?.update({
             id: this.state.modalId,
             workedTime: this.state.modalWorked,
             estimatedTime: this.state.modalEstimated,
@@ -70,8 +68,7 @@ class WorkTable extends AppComponentBase<IWorkTableProps, IWorkTableState> {
     async componentDidMount() {
         if(this.props.workStore?.ticketId !== this.props.ticketId){
             await this.props.workStore?.getAll(this.props.ticketId);
-        }
-        this.setState({loading: false}); 
+        } 
     } 
  
     getActionsMenu = (work : WorkDto) => {
@@ -101,7 +98,8 @@ class WorkTable extends AppComponentBase<IWorkTableProps, IWorkTableState> {
         }
     };
 
-    render() {    
+    render() {
+        const loading = this.props.workStore?.loading;
         const works = this.props.workStore?.works?.items?.filter(x => this.props.includeWorking || !x.isWorking);
         const modalWork = works?.find(x => x.id === this.state.modalId);
 
@@ -114,7 +112,7 @@ class WorkTable extends AppComponentBase<IWorkTableProps, IWorkTableState> {
             )
         }; 
         const tableLoading : SpinProps = {
-            spinning: this.state.loading,
+            spinning: loading,
             indicator: <LoadingOutlined />,
             size: 'large'
         }

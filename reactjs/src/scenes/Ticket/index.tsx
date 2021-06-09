@@ -18,14 +18,11 @@ import TicketInfo from './components/ticketInfo';
 import TicketWork from './components/ticketWork';
 import WorkTable from './components/workTable';
 import CommentList from './components/commentList';
-import CommentStore from '../../stores/commentStore';
-import subscriptionService from '../../services/subscription/subscriptionService';
-import AccountStore from '../../stores/accountStore';
-import { CreateSubscriptionInput } from '../../services/subscription/dto/createSubscriptionInput';
-import { DeleteSubscriptionInput } from '../../services/subscription/dto/deleteSubscriptionInput';
-import { CheckSubscriptionInput } from '../../services/subscription/dto/checkSubscriptionInput';
+import CommentStore from '../../stores/commentStore'; 
+import AccountStore from '../../stores/accountStore'; 
 import ProjectUserStore from '../../stores/projectUserStore';
 import { StaticProjectPermissionNames } from '../../models/ProjectUser/StaticProjectPermissionNames';
+import SubscriptionStore from '../../stores/subscriptionStore';
 
 export interface ITicketParams{
     id: string | undefined; 
@@ -35,28 +32,24 @@ export interface ITicketProps extends RouteComponentProps<ITicketParams> {
     ticketStore?: TicketStore; 
     commentStore?: CommentStore;
     projectUserStore?: ProjectUserStore;
+    subscriptionStore?: SubscriptionStore;
 }
-export interface ITicketState {  
-    loading: boolean; 
-    subscribed: boolean;
+export interface ITicketState { 
     editWork: boolean;
-    workTabKey: string;
-    assignedUserId: number; 
+    workTabKey: string; 
 }
  
 @inject(
     Stores.AccountStore, 
     Stores.TicketStore,  
     Stores.CommentStore,
-    Stores.ProjectUserStore)
+    Stores.ProjectUserStore,
+    Stores.SubscriptionStore)
 @observer
 class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
-    state = {  
-        loading: true,
-        subscribed: false,
+    state = { 
         editWork: false,
-        workTabKey: "active",
-        assignedUserId: 0,
+        workTabKey: "active", 
     }
 
     editTicket = () => {
@@ -84,17 +77,15 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
         }
     }
 
-    setSubscribed = async (val: boolean) => {
-        let subscription = {
-            userId: this.props.accountStore?.account?.id,
-            ticketId: this.props.ticketStore?.ticket?.id
-        }
+    setSubscribed = async (val: boolean) => { 
+        const userId = this.props.accountStore?.account?.id;
+        const ticketId = this.props.ticketStore?.ticket?.id;
+            
         if(val){
-            await subscriptionService.create(subscription as CreateSubscriptionInput);
+            this.props.subscriptionStore?.subscribe(userId, ticketId);
         }else{
-            await subscriptionService.delete(subscription as DeleteSubscriptionInput);
-        }
-        this.setState({subscribed: val});
+            this.props.subscriptionStore?.unsubscribe(userId, ticketId);
+        } 
     }
 
     // Load data
@@ -102,37 +93,36 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
         const id = this.props.match.params.id;
         if(id != null){ // i have an id
             const intId = parseInt(id); 
-            await this.props.ticketStore?.get(intId);
-  
-            const assignedUserId = this.props.ticketStore?.ticket?.works?.find(x => x.isWorking)?.user?.id; 
+            this.props.ticketStore?.get(intId).then(() => {
+                const myUserId = this.props.accountStore?.account?.id;
 
-            const sub = await subscriptionService.check({
-                userId: this.props.accountStore?.account?.id,
-                ticketId: this.props.ticketStore?.ticket?.id
-            } as CheckSubscriptionInput);
+                const projId = this.props.ticketStore?.ticket?.project?.id;
+                if(projId != null && projId !== this.props.projectUserStore?.projectId){
+                    this.props.projectUserStore?.get(myUserId, projId);
+                }  
 
-            this.setState({loading: false, subscribed: sub, assignedUserId: assignedUserId ?? 0});
+                this.props.subscriptionStore?.check(myUserId, intId);
+            });
+ 
         } else {
             this.props.history.replace('/exception?type=404');
         }
     }
 
     render() {
+        const loading = this.props.ticketStore?.loading;
+        const subscribed = this.props.subscriptionStore?.subscribed ?? false;
         const ticket = this.props.ticketStore?.ticket; 
- 
-        /*const ticketIdOk = ticket != null && 
-                            this.props.match.params.id != null && 
-                            (ticket.id === parseInt(this.props.match.params.id));*/
- 
+  
         const myProfile = this.props.accountStore?.account;
+
         const canEdit = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Component_ManageTickets)
                         || myProfile?.id === ticket?.creatorUserId;
         const canAssignWork = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_AssignWork);
         const canSelfAssignWork = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_SelfAssignWork);
         const canAddComm = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_AddComments);
         //const canManageComm = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_ManageComments);
-                              
-
+        
         const workTabList = [
             {key: "active", tab: L("ActiveWork")},
             {key: "history", tab: L("History")},
@@ -140,7 +130,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
         
         // Ticket content
         return ( 
-            <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}> 
+            <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}> 
                 <Card className="ticket ui-card readonly-editor-card"
                     title={
                         <Row>
@@ -160,7 +150,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                                 <Space>
                                     <Switch 
                                         size="default"
-                                        checked={this.state.subscribed}
+                                        checked={subscribed}
                                         onChange={this.setSubscribed}
                                         checkedChildren={<Space><MailOutlined />{L("Subscribed")}</Space>}
                                         unCheckedChildren={<Space><CloseOutlined />{L("NotSubscribed")}</Space>} 
