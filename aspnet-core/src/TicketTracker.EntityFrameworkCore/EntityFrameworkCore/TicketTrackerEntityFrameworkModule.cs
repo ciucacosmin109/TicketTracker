@@ -1,30 +1,32 @@
 ﻿using Abp.EntityFrameworkCore.Configuration;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Abp.Modules;
 using Abp.Reflection.Extensions;
 using Abp.Zero.EntityFrameworkCore;
-using System.Transactions;
-using TicketTracker.Configuration;
+using System.Transactions; 
 using TicketTracker.EntityFrameworkCore.Seed;
-using TicketTracker.Web;
+using Microsoft.Extensions.Hosting;
+using TicketTracker.Configuration;
 
 namespace TicketTracker.EntityFrameworkCore
 {
     [DependsOn(
         typeof(TicketTrackerCoreModule), 
         typeof(AbpZeroCoreEntityFrameworkCoreModule))]
-    public class TicketTrackerEntityFrameworkModule : AbpModule
-    {
-        /* Used it tests to skip dbcontext registration, in order to use in-memory database of EF Core */
-        public bool SkipDbContextRegistration { get; set; }
+    public class TicketTrackerEntityFrameworkModule : AbpModule { 
+        private readonly IConfigurationRoot _appConfiguration; 
+        public TicketTrackerEntityFrameworkModule(IWebHostEnvironment env) { 
+            _appConfiguration = AppConfigurations.Get(env.ContentRootPath, env.EnvironmentName, env.IsDevelopment());
+        }
 
+        /* Used it tests to skip dbcontext registration, in order to use in-memory database of EF Core */
+        public bool SkipDbContextRegistration { get; set; } 
         public bool SkipDbSeed { get; set; }
 
         public override void PreInitialize(){
-            var config = AppConfigurations.Get(WebContentDirectoryFinder.CalculateContentRootFolder());
-            var type = config.GetSection("DatabaseConfig").GetSection("Type").Value;
-            if (type == "ORACLE") {
-                Configuration.UnitOfWork.IsolationLevel = IsolationLevel.ReadCommitted;
-            }
+            // Oracle database
+            //Configuration.UnitOfWork.IsolationLevel = IsolationLevel.ReadCommitted;
 
             if (!SkipDbContextRegistration)
             {

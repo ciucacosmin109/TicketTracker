@@ -15,9 +15,14 @@ using System;
 namespace TicketTracker.EntityFrameworkCore.Seed.Host {
     public class DefaultSettingsCreator {
         private readonly TicketTrackerDbContext _context;
+        private readonly IConfiguration configuration;
 
-        public DefaultSettingsCreator(TicketTrackerDbContext context) {
-            _context = context;
+        public DefaultSettingsCreator(
+            TicketTrackerDbContext context,
+            IConfiguration configuration
+        ) {
+            this._context = context;
+            this.configuration = configuration;
         }
 
         public void Create() {
@@ -25,10 +30,10 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Host {
 
             if (TicketTrackerConsts.MultiTenancyEnabled == false) {
                 tenantId = MultiTenancyConsts.DefaultTenantId;
-            } 
-             
+            }
+
             // Get values  
-            var configuration = AppConfigurations.Get(WebContentDirectoryFinder.CalculateContentRootFolder());
+            //var configuration = AppConfigurations.Get(WebContentDirectoryFinder.CalculateContentRootFolder());
             string DefaultFromAddress = configuration.GetValue<string>("DbSeedValues:Smtp:DefaultFromAddress");
             string DefaultFromDisplayName = configuration.GetValue<string>("DbSeedValues:Smtp:DefaultFromDisplayName");
             string Host = configuration.GetValue<string>("DbSeedValues:Smtp:Host");

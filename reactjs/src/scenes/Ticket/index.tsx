@@ -8,7 +8,7 @@ import AppComponentBase from '../../components/AppComponentBase';
 import { L } from '../../lib/abpUtility';
 import { Button, Card, Col, Row, Space, Spin, Switch } from 'antd';
 import { AppstoreOutlined, BugFilled,  BulbFilled,  
-    CalendarOutlined, CloseOutlined, CommentOutlined, EditOutlined, FileTextOutlined, 
+    CalendarOutlined, CloseOutlined, CommentOutlined, EditOutlined, FileOutlined, FileTextOutlined, 
     FundOutlined, LoadingOutlined, MailOutlined, } from '@ant-design/icons'; 
 import { Editor as TinyMce } from '@tinymce/tinymce-react';
    
@@ -23,6 +23,7 @@ import AccountStore from '../../stores/accountStore';
 import ProjectUserStore from '../../stores/projectUserStore';
 import { StaticProjectPermissionNames } from '../../models/ProjectUser/StaticProjectPermissionNames';
 import SubscriptionStore from '../../stores/subscriptionStore';
+import FileTable from './components/fileTable';
 
 export interface ITicketParams{
     id: string | undefined; 
@@ -122,6 +123,8 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
         const canSelfAssignWork = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_SelfAssignWork);
         const canAddComm = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_AddComments);
         //const canManageComm = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_ManageComments);
+        const canAddFiles = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_AddAttachments);
+        const canManageFiles = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_ManageAttachments);
         
         const workTabList = [
             {key: "active", tab: L("ActiveWork")},
@@ -266,6 +269,24 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                         : <></>
                     }
                 </Card>
+                
+                <Card className="ui-card"
+                    title={ 
+                        <Space>
+                            <FileOutlined />
+                            {L("Files")}
+                        </Space>  
+                    } 
+                >
+                    {ticket
+                        ? <FileTable 
+                            key={ticket?.id} 
+                            ticketId={ticket?.id}
+                            uploadEnabled={canAddFiles}
+                            editEnabled={canManageFiles}/>
+                        : <></>
+                    }  
+                </Card>
 
                 <Card className="ui-card"
                     title={
@@ -291,6 +312,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                         : <></>
                     }  
                 </Card>
+
             </Spin>  
         ); 
     }

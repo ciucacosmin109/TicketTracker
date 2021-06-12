@@ -16,4 +16,5 @@ export default class Stores {
   static ActivityStore: string = 'activityStore';
   static StatusStore: string = 'statusStore';
   static SubscriptionStore: string = 'subscriptionStore';
+  static FileStore: string = 'fileStore';
 }

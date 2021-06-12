@@ -67,7 +67,7 @@ class WorkTable extends AppComponentBase<IWorkTableProps, IWorkTableState> {
     // Load data
     async componentDidMount() {
         if(this.props.workStore?.ticketId !== this.props.ticketId){
-            await this.props.workStore?.getAll(this.props.ticketId);
+            this.props.workStore?.getAll(this.props.ticketId);
         } 
     } 
  

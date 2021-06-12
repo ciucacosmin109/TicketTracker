@@ -157,10 +157,12 @@ namespace TicketTracker.Web.Host.Startup
             app.UseSwagger(c => { c.RouteTemplate = "swagger/{documentName}/swagger.json"; });
 
             // Enable middleware to serve swagger-ui assets (HTML, JS, CSS etc.)
+            var basePath = _appConfiguration.GetValue<string>("App:ServerRootAddress", "");
+            basePath = basePath.EndsWith("/") ? basePath.RemovePostFix("/") : basePath;
             app.UseSwaggerUI(options =>
             {
                 // specifying the Swagger JSON endpoint.
-                options.SwaggerEndpoint($"/swagger/{_apiVersion}/swagger.json", $"TicketTracker API {_apiVersion}");
+                options.SwaggerEndpoint($"{basePath}/swagger/{_apiVersion}/swagger.json", $"TicketTracker API {_apiVersion}");
                 options.IndexStream = () => Assembly.GetExecutingAssembly()
                     .GetManifestResourceStream("TicketTracker.Web.Host.wwwroot.swagger.ui.index.html");
                 options.DisplayRequestDuration(); // Controls the display of the request duration (in milliseconds) for "Try it out" requests.  

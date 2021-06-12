@@ -14,6 +14,9 @@ using TicketTracker.EntityFrameworkCore;
 using TicketTracker.EntityFrameworkCore.Seed.Host;
 using TicketTracker.EntityFrameworkCore.Seed.Tenants;
 using TicketTracker.MultiTenancy;
+using Microsoft.Extensions.Configuration;
+using TicketTracker.Configuration;
+using TicketTracker.Web;
 
 namespace TicketTracker.Tests
 {
@@ -28,12 +31,15 @@ namespace TicketTracker.Tests
                 context.SuppressAutoSetTenantId = true;
             }
 
+            // appsettings.json
+            IConfiguration config = AppConfigurations.Get(WebContentDirectoryFinder.CalculateContentRootFolder()); 
+
             // Seed initial data for host
             AbpSession.TenantId = null;
             UsingDbContext(context =>
             {
                 NormalizeDbContext(context);
-                new InitialHostDbBuilder(context).Create();
+                new InitialHostDbBuilder(context, config).Create();
                 new DefaultTenantBuilder(context).Create();
             });
 

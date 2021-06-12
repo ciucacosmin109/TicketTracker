@@ -14,6 +14,7 @@ import CommentStore from './commentStore';
 import ActivityStore from './activityStore';
 import StatusStore from './statusStore';
 import SubscriptionStore from './subscriptionStore';
+import FileStore from './fileStore';
 
 export default function initializeStores() {
   return {
@@ -34,5 +35,6 @@ export default function initializeStores() {
     activityStore: new ActivityStore(), 
     statusStore: new StatusStore(), 
     subscriptionStore: new SubscriptionStore(), 
+    fileStore: new FileStore(), 
   };
 }

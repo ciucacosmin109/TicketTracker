@@ -6,21 +6,28 @@ using Abp.Notifications;
 using Abp.Timing;
 using Abp.Web.Security.AntiForgery;
 using TicketTracker.Controllers;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using TicketTracker.Configuration;
 
 namespace TicketTracker.Web.Host.Controllers
 {
-    public class HomeController : TicketTrackerControllerBase
-    {
+    public class HomeController : TicketTrackerControllerBase {
+        private readonly IConfigurationRoot _appConfiguration;
         private readonly INotificationPublisher _notificationPublisher;
 
-        public HomeController(INotificationPublisher notificationPublisher)
-        {
+        public HomeController(
+            IWebHostEnvironment env,
+            INotificationPublisher notificationPublisher
+        ) {
+            _appConfiguration = env.GetAppConfiguration();
             _notificationPublisher = notificationPublisher;
         }
 
-        public IActionResult Index()
-        {
-            return Redirect("/swagger");
+        public IActionResult Index() {
+            var basePath = _appConfiguration.GetValue<string>("App:ServerRootAddress", "");
+            basePath = basePath.EndsWith("/") ? basePath.RemovePostFix("/") : basePath;
+            return Redirect($"{basePath}/swagger");
         }
 
         /// <summary>

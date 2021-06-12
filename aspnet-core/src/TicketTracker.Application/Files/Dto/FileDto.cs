@@ -13,7 +13,7 @@ namespace TicketTracker.Files.Dto {
     public class FileDto : CreationAuditedEntityDto<int> {
         public string Name { get; set; }
         public int Size { get; set; }
-        public int? TicketId { get; set; }
+        public int TicketId { get; set; }
 
         public SimpleUserDto CreatorUser { get; set; }
     }

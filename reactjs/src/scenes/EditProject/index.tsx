@@ -191,7 +191,7 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
             // Get project users
             const users = (await projectUserService.getAll({projectId: intId} as GetAllProjectUsersInput)).items;  
             
-            const hasPermissions = users.find(x => x.id === this.props.accountStore?.account.id)?.roles?.map(x=>x.name)?.includes("ProjectManager");
+            const hasPermissions = users.find(x => x.user.id === this.props.accountStore?.account.id)?.roles?.map(x=>x.name)?.includes("ProjectManager");
             this.setState({
                 selectedUsers: users.map(x=>x.user) as SearchAccountOutput[],
                 userRoles: users.map(x => ({id: x.user.id, roleNames: x.roles?.map(y=>y.name) }) as MinimalUserWithPRolesDto) as MinimalUserWithPRolesDto[],

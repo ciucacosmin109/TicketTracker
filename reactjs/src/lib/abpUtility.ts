@@ -20,3 +20,7 @@ export function L(key: string, ...args: string[]): string {
 export function isGranted(permissionName: string): boolean {
   return abp.auth.isGranted(permissionName);
 }
+
+export function getEncriptedAuthToken(): string {
+  return abp.utils.getCookieValue("enc_auth_token");
+}

@@ -282,8 +282,14 @@
     <text name="TicketPriorities">Prioritati ale tichetelor</text>
     <text name="TicketStatuses">Stari ale tichetelor</text>
     <text name="NoRole">Fara rol</text>
-    <text name="UnknownUser">Utilizator necunoscut
-    </text>
+    <text name="UnknownUser">Utilizator necunoscut</text>
+    <text name="InvalidFile">Fisier invalid</text>
+    <text name="ThereIsAlreadyAFileWithThisName">Exista deja un fisier cu acelasi nume</text>
+    <text name="Download">Descarca</text>
+    <text name="Size">Dimensiune</text>
+    <text name="UploadedAt">Incarcat la</text>
+    <text name="Files">Fisiere</text>
+    
 
 
   </texts>

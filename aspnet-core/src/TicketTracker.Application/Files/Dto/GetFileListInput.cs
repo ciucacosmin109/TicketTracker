@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TicketTracker.Files.Dto {
-    public class GetFilesInfoInput {
+    public class GetFileListInput {
         public int TicketId { get; set; }
     }
 }

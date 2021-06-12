@@ -40,7 +40,7 @@ export interface ITicketTableState {
 @observer
 class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState> { 
     // Load data
-    async componentDidMount() {   
+    componentDidMount() {   
         if(this.props.componentId != null){
             this.props.ticketStore?.getAllByComponentId(this.props.componentId); 
         }else if(this.props.projectId != null){
@@ -49,6 +49,15 @@ class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState>
             this.props.ticketStore?.getAllByAssignedUserId(this.props.assignedUserId); 
         } 
     } 
+    getTicketsFromStore = () => {
+        if(this.props.componentId != null){
+            return this.props.ticketStore?.componentTickets?.items;
+        }else if(this.props.projectId != null){
+            return this.props.ticketStore?.projectTickets?.items;
+        }else if(this.props.assignedUserId != null){
+            return this.props.ticketStore?.userTickets?.items;
+        }else return [];
+    }
 
     onRowClick = (e:any, rec:TicketDto) => {
         const path = this.getPath("ticket").replace('/:id', `/${rec.id}`);
@@ -86,7 +95,7 @@ class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState>
 
     render() {
         const loading = this.props.ticketStore?.loading;
-        const tickets = this.props.ticketStore?.componentTickets?.items;
+        const tickets = this.getTicketsFromStore();
 
         // Table config
         const noDataLocale = { 

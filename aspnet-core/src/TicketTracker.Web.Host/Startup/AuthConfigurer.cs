@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Abp.Runtime.Security;
+using TicketTracker.Web.Host.Custom;
 
 namespace TicketTracker.Web.Host.Startup
 {
@@ -19,8 +20,8 @@ namespace TicketTracker.Web.Host.Startup
                 services.AddAuthentication(options => {
                     options.DefaultAuthenticateScheme = "JwtBearer";
                     options.DefaultChallengeScheme = "JwtBearer";
-                }).AddJwtBearer("JwtBearer", options =>
-                {
+                }).AddJwtBearer("JwtBearer", options => {
+
                     options.Audience = configuration["Authentication:JwtBearer:Audience"];
 
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -46,26 +47,32 @@ namespace TicketTracker.Web.Host.Startup
 
                     options.Events = new JwtBearerEvents
                     {
-                        OnMessageReceived = QueryStringTokenResolver
+                        OnMessageReceived = CookieOrQueryStringTokenResolver,
                     };
                 });
             }
-        }
+        }  
 
-        /* This method is needed to authorize SignalR javascript client.
+        /* This method is needed to authorize SignalR javascript client and download requests.
          * SignalR can not send authorization header. So, we are getting it from query string as an encrypted text. */
-        private static Task QueryStringTokenResolver(MessageReceivedContext context)
-        {
+        private static Task CookieOrQueryStringTokenResolver(MessageReceivedContext context) {
             if (!context.HttpContext.Request.Path.HasValue ||
-                !context.HttpContext.Request.Path.Value.StartsWith("/signalr"))
-            {
-                // We are just looking for signalr clients
+                !context.HttpContext.Request.Path.Value.StartsWith("/signalr") &&
+                !context.HttpContext.Request.Path.Value.Contains("/Files/Download") ) {
+
+                // We are just looking for signalr clients or download requests
                 return Task.CompletedTask;
             }
 
+            // Download request
+            var tOk = context.HttpContext.Request.Cookies.TryGetValue("Abp.AuthToken", out string token);
+            //var etOk = context.HttpContext.Request.Cookies.TryGetValue("enc_auth_token", out string encToken);
+            if (tOk) {
+                context.Token = token;
+            }
+
             var qsAuthToken = context.HttpContext.Request.Query["enc_auth_token"].FirstOrDefault();
-            if (qsAuthToken == null)
-            {
+            if (qsAuthToken == null) {
                 // Cookie value does not matches to querystring value
                 return Task.CompletedTask;
             }
