@@ -54,11 +54,10 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
     } 
 
     // Load the project details
-    async componentDidMount() { 
-        const id = this.props.match.params.id;
-        if(id != null){ // i have an id
-            const intId = parseInt(id); 
- 
+    async componentDidMount() {
+        const intId = parseInt(this.props.match.params.id!); 
+        if(!Number.isNaN(intId)){ // i have an id 
+
             this.props.projectStore?.getProject(intId);
             this.props.projectUserStore?.getAll(intId);
             this.props.ticketStore?.getAllByProjectId(intId); 
@@ -67,10 +66,11 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
             this.props.history.replace('/exception?type=404');
         }
     }
-    render(){
+    render(){ 
         const loading = this.props.projectStore?.loading;
-        
-        const project = this.props.projectStore?.project; 
+        const project = this.props.projectStore?.project;
+        const isOk = this.props.projectStore?.project?.id === parseInt(this.props.match.params.id!);
+
         const myProfile = this.props.accountStore?.account; 
         const myRoles = this.props.projectUserStore?.getMyRoles(myProfile?.id);  
         const tickets = this.props.ticketStore?.projectTickets; 
@@ -88,14 +88,14 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                         <Row>
                             <Col flex="auto">  
                                 <Space> 
-                                    {project?.isPublic
+                                    {isOk && project?.isPublic
                                         ? <ProjectFilled style={{color:"#1da57a"}}/> 
                                         : <LockFilled style={{color:"orange"}}/> }
-                                    {`${project?.name} (#${project?.id})`}
+                                    {isOk ? `${project?.name} (#${project?.id})` : ""}
                                 </Space> 
                             </Col>
                             <Col flex="none">
-                                {canEdit
+                                {isOk && canEdit
                                     ? <Button type="primary" onClick={() => this.editProject(project?.id ?? 0)} icon={<EditOutlined />}>{L('Edit')}</Button>
                                     : <></>
                                 }
@@ -104,7 +104,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                     }
                 >
                     <Row style={{marginBottom: '15px'}}> 
-                        {project?.description}  
+                        {isOk ? project?.description : ""}  
                     </Row> 
                     <Row>
                         <Col flex="auto">
@@ -114,7 +114,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                                     {`${L('Created')}: ${new Date(project?.creationTime!).toLocaleString("ro-RO")}`}  
                                 </Space>
                             </Row>
-                            {project?.lastModificationTime ? 
+                            {isOk && project?.lastModificationTime ? 
                                 <Row> 
                                     <Space>
                                         <EditOutlined />
@@ -122,7 +122,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                                     </Space>
                                 </Row> : <></>
                             }
-                            {myRoles != null ?
+                            {isOk && myRoles != null ?
                                 <Row> 
                                     <Space>
                                         <UserOutlined />
@@ -136,7 +136,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                             }
                         </Col>
                         <Col flex="none" style={{paddingTop: '15px'}}> 
-                            {project != null 
+                            {isOk
                                 ? <UserList projectId={project!.id ?? 0} />
                                 : <></>
                             } 
@@ -153,7 +153,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                                 </Space> 
                             </Col>
                             <Col flex="none">
-                                {canAddComp ?
+                                {isOk && canAddComp ?
                                     <Button type="primary" onClick={() => this.setModal(true)} icon={<AppstoreAddOutlined />}>
                                         {L('AddComponent')}
                                     </Button> : <></>
@@ -164,12 +164,15 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                     }
                 >    
                     <Row>  
-                        {project != null 
-                            ? <ComponentTable key={project?.id} projectId={project!.id} editEnabled={canManageComp} />
+                        {isOk
+                            ? <ComponentTable 
+                                key={project!.id} 
+                                projectId={project!.id} 
+                                editEnabled={canManageComp} />
                             : <></>
                         }  
                     </Row>
-                        {project != null 
+                        {isOk
                             ? <EditComponent
                                 visible={this.state.modal}
                                 projectId={project!.id}

@@ -77,10 +77,10 @@ class EditTicket extends AppComponentBase<IEditTicketProps, IEditTicketState> {
     }
 
     save = async () => {
-        const id = this.props.match.params.id;
         const compId = this.getQueryParam("componentId");
 
-        if(id != null){ // update
+        const intId = parseInt(this.props.match.params.id!); 
+        if(!Number.isNaN(intId)){ // i have an id 
             this.update();
         }else if(compId != null){ // create
             this.create();

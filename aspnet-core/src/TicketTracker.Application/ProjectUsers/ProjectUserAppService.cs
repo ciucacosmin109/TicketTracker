@@ -35,6 +35,7 @@ namespace TicketTracker.ProjectUsers {
         private readonly IRepository<Component> repoComponents;
         private readonly IRepository<User, long> repoUsers;
         private readonly IRepository<PRole> repoPRoles;
+        private readonly WorkRepository repoWorks;
         private readonly IObjectMapper mapper;
         private readonly IUnitOfWorkManager uowManager;
         private readonly ProjectManager projectManager;
@@ -49,6 +50,7 @@ namespace TicketTracker.ProjectUsers {
             IRepository<Component> repoComponents,
             IRepository<User, long> repoUsers,
             IRepository<PRole> repoPRoles,
+            WorkRepository repoWorks,
             IObjectMapper mapper,
             IUnitOfWorkManager uowManager,
             ProjectManager projectManager,
@@ -62,6 +64,7 @@ namespace TicketTracker.ProjectUsers {
             this.repoComponents = repoComponents;
             this.repoUsers = repoUsers;
             this.repoPRoles = repoPRoles;
+            this.repoWorks = repoWorks;
             this.mapper = mapper;
             this.uowManager = uowManager;
             this.projectManager = projectManager;
@@ -195,6 +198,8 @@ namespace TicketTracker.ProjectUsers {
             if (projectManager.IsProjectCreator(input.UserId, input.ProjectId)) {
                 throw new UserFriendlyException(l.GetString("CantRemoveTheProjectCreator"));
             }
+            var projUser = await repository.FirstOrDefaultAsync(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId);
+            await repoWorks.SetProjectUserNullAsync(projUser.Id);
             await repository.DeleteAsync(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId);
         }
          

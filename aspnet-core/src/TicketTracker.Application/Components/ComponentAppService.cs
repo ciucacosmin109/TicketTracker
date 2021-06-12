@@ -4,6 +4,7 @@ using Abp.Authorization;
 using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
 using Abp.Runtime.Session;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,20 +13,23 @@ using System.Threading.Tasks;
 using TicketTracker.Components.Dto;
 using TicketTracker.Entities;
 using TicketTracker.Entities.ProjectAuthorization;
+using TicketTracker.EntityFrameworkCore.Repositories;
 using TicketTracker.Managers;
 
 namespace TicketTracker.Components {
 
     [AbpAuthorize]
     public class ComponentAppService : AsyncCrudAppService<Component, ComponentDto, int, GetAllComponentsInput, CreateComponentInput, UpdateComponentInput> {
+        private readonly WorkRepository repoWorks;
         private readonly ProjectManager projectManager;
         private readonly IAbpSession session;
 
         public ComponentAppService(
             IRepository<Component, int> repository,
+            WorkRepository repoWorks,
             ProjectManager projectManager,
             IAbpSession session) : base(repository) {
-
+            this.repoWorks = repoWorks;
             this.projectManager = projectManager;
             this.session = session;
 
@@ -67,13 +71,28 @@ namespace TicketTracker.Components {
             return await base.UpdateAsync(input);
         }
 
-        public override async Task DeleteAsync(EntityDto<int> input) { 
-            long? creatorId = (await Repository.GetAsync(input.Id)).CreatorUserId;
-            if (session.UserId != creatorId) {
+        public override async Task DeleteAsync(EntityDto<int> input) {
+            var comp = await Repository
+                .GetAllIncluding(x => x.Tickets)
+                .FirstOrDefaultAsync(x => x.Id == input.Id); 
+            if(comp == null) {
+                throw new EntityNotFoundException(typeof(Component), input.Id);
+            }
+
+            // Check permissions
+            if (session.UserId != comp.CreatorUserId) {
                 int pId = Repository.Get(input.Id).ProjectId;
                 projectManager.CheckProjectPermission(session.UserId, pId, StaticProjectPermissionNames.Project_ManageComponents);
             }
 
+            // Set the ticketId for Work to null
+            if (comp.Tickets != null) {
+                foreach(var ticket in comp.Tickets){
+                    await repoWorks.SetTicketNullAsync(ticket.Id);
+                }
+            }
+
+            // Delete
             await base.DeleteAsync(input);
         }
     }

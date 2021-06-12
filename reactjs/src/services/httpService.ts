@@ -58,10 +58,15 @@ http.interceptors.response.use(
         title: L('NetworkError'),
         content: L('ErrorCode') + ": " + error.code,
       });
-    } else if (error.request.status === 0) {
+    } else if (error.request.status === 0 && L('CanNotConnectToServer').includes(" ")) {
       Modal.error({ 
         title: L('NetworkError'),
         content: L('CanNotConnectToServer'),
+      });
+    } else if (error.request.status === 0) {
+      Modal.error({ 
+        title: "Network error",
+        content: "Can't connect to the server",
       });
     } else if (!error.response) {
       Modal.error({ 

@@ -207,12 +207,31 @@ namespace TicketTracker.Projects {
             return await base.UpdateAsync(input);
         }
         public override async Task DeleteAsync(EntityDto<int> input) {
-            long? creatorId = (await Repository.GetAsync(input.Id)).CreatorUserId;
-            if (session.UserId != creatorId)
+            var proj = await repoProjects
+                .GetAllIncludingCompAndTickets()
+                .FirstOrDefaultAsync(x => x.Id == input.Id);
+            if(proj == null) {
+                throw new EntityNotFoundException(typeof(Project), input.Id);
+            }
+
+            // Check permissions
+            if (session.UserId != proj.CreatorUserId)
                 throw new UserFriendlyException(
                     L("YouAreNotTheCreator{0}{1}", "Project", input.Id)
                 );
 
+            // Delete the Works
+            if (proj.Components != null) {
+                foreach (var comp in proj.Components) {
+                    if (comp.Tickets != null) {
+                        foreach (var ticket in comp.Tickets) {
+                            await repoWorks.DeleteAsync(x => x.TicketId == ticket.Id);
+                        }
+                    }
+                }
+            }
+
+            // Delete
             await base.DeleteAsync(input);
         }
 

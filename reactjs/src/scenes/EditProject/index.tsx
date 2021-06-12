@@ -91,22 +91,23 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
         }); 
     }
     onProjectUpdate = async (formValues: any) => {
-        const id = this.props.match.params.id;
-        if(id != null){
-            this.update(parseInt(id), formValues);
+        const intId = parseInt(this.props.match.params.id!); 
+        if(!Number.isNaN(intId)){ // i have an id  
+            this.update(intId, formValues);
         }else{
             this.create(formValues);
         }
     }
     onProjectDelete = async () => {
-        const id = this.props.match.params.id;
-        if(id != null){
+        const intId = parseInt(this.props.match.params.id!); 
+        if(!Number.isNaN(intId)){ // i have an id 
+
             Modal.confirm({
                 title: L("AreYouSureDeleteProject"),
                 icon: <ExclamationCircleOutlined />,
                 content: L('ActionCantBeUndone'),
                 onOk: async () => {  
-                    await projectService.delete({id: parseInt(id)} as EntityDto); 
+                    await projectService.delete({id: intId} as EntityDto); 
                     
                     const myProjectsPath : string = appRouters.find((x : any) => x.name === 'myprojects')?.path;
                     this.props.history.replace(myProjectsPath); 
@@ -167,8 +168,8 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
         this.forceUpdate();
     }
     isTooltipVisible = (userId: number) : boolean => {
-        const id = this.props.match.params.id;
-        if(id != null){ // update
+        const intId = parseInt(this.props.match.params.id!); 
+        if(!Number.isNaN(intId)){ // i have an id  
             return userId === this.state.creatorId;
         }else{ // create
             const currentUserId = this.props.accountStore?.account.id;
@@ -180,9 +181,8 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
     async componentDidMount() {
         await this.props.projectRoleStore?.getAllWithPermissions();
 
-        const id = this.props.match.params.id;
-        if(id != null){ // update
-            const intId = parseInt(id);
+        const intId = parseInt(this.props.match.params.id!); 
+        if(!Number.isNaN(intId)){ // i have an id 
 
             // Get project details
             const project : ProjectDto = await projectService.get({id: intId});
@@ -201,9 +201,9 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
             if(!hasPermissions){
                 message.error(L("YouDontHaveRequiredPermission")); 
             }
- 
-
+  
         }else{ // create
+            
             const currentUser = this.props.accountStore?.account;
             this.setState({
                 selectedUsers: [currentUser] as SearchAccountOutput[],

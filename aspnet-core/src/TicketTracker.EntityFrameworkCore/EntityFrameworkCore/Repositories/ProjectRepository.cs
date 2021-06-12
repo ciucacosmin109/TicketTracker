@@ -19,9 +19,12 @@ namespace TicketTracker.EntityFrameworkCore.Repositories {
                 .Include(x => x.ProjectUsers)
                     .ThenInclude(x => x.Roles)
                         .ThenInclude(x => x.Permissions);
-        }
-        public Project GetIncludingRoles(int id) {
-            return GetAllIncludingRoles().First(x => x.Id == id);
+        } 
+
+        public IQueryable<Project> GetAllIncludingCompAndTickets() {
+            return Context.Projects
+                .Include(x => x.Components)
+                    .ThenInclude(x => x.Tickets);
         } 
     }
 }

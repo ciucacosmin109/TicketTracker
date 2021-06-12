@@ -54,9 +54,9 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
     }
 
     editTicket = () => {
-        const id = this.props.match.params.id;
-        if(id != null){ // i have an id
-            const path = this.getPath("editticket").replace(':id', id);
+        const intId = parseInt(this.props.match.params.id!); 
+        if(!Number.isNaN(intId)){ // i have an id 
+            const path = this.getPath("editticket").replace(':id', intId.toString());
             this.props.history.push(path);
         }
     }
@@ -65,13 +65,13 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
         this.setState({editWork: value})
     }
     
-    addNewComment = async (event: any) => {  
-        const id = this.props.match.params.id;
-        if(id != null) {
+    addNewComment = async (event: any) => { 
+        const intId = parseInt(this.props.match.params.id!); 
+        if(!Number.isNaN(intId)){ // i have an id 
             let str = prompt(this.L("AddAComment"));
             if (str != null && str !== "") {   
                 this.props.commentStore?.create({
-                    ticketId: parseInt(id),
+                    ticketId: intId,
                     content: str
                 });
             }
@@ -91,9 +91,9 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
 
     // Load data
     async componentDidMount() { 
-        const id = this.props.match.params.id;
-        if(id != null){ // i have an id
-            const intId = parseInt(id); 
+        const intId = parseInt(this.props.match.params.id!); 
+        if(!Number.isNaN(intId)){ // i have an id 
+
             this.props.ticketStore?.get(intId).then(() => {
                 const myUserId = this.props.accountStore?.account?.id;
 
@@ -112,9 +112,10 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
 
     render() {
         const loading = this.props.ticketStore?.loading;
-        const subscribed = this.props.subscriptionStore?.subscribed ?? false;
         const ticket = this.props.ticketStore?.ticket; 
+        const isOk = this.props.ticketStore?.ticket?.id === parseInt(this.props.match.params.id!);
   
+        const subscribed = this.props.subscriptionStore?.subscribed ?? false;
         const myProfile = this.props.accountStore?.account;
 
         const canEdit = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Component_ManageTickets)
@@ -146,7 +147,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                                             <BulbFilled style={{color: 'green'}} /> :
                                         <FileTextOutlined />
                                     }  
-                                    {`${ticket?.title} (#${ticket?.id})`} 
+                                    {isOk ? `${ticket?.title} (#${ticket?.id})` : ""} 
                                 </Space> 
                             </Col>
                             <Col flex="none">
@@ -158,7 +159,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                                         checkedChildren={<Space><MailOutlined />{L("Subscribed")}</Space>}
                                         unCheckedChildren={<Space><CloseOutlined />{L("NotSubscribed")}</Space>} 
                                     />
-                                    {canEdit ? 
+                                    {isOk && canEdit ? 
                                         <Button 
                                             type="primary" 
                                             onClick={this.editTicket} 
@@ -176,27 +177,28 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                         {/* {ticket?.description}
                         <div dangerouslySetInnerHTML={{
                             __html: ticket?.description ?? ""
-                        }}></div> */}
-                        {ticket?.description != null && ticket?.description !== "" ?
-                            <TinyMce
-                                apiKey="7atcogyb8kct4rdja6x79f3i8cks6o2uxuggklo3pynla4la"
-                                disabled={true}
-                                init={{ 
-                                    width:"100%",
-                                    menubar: false,
-                                    statusbar: true,
-                                    resize: true,
-                                    branding: false,
-                                    plugins: [ 'wordcount' ],
-                                    toolbar: false
-                                }}
-                                value={ticket?.description}
-                            /> : <></>
-                        }
+                        }}></div> */} 
+                        <TinyMce
+                            apiKey="7atcogyb8kct4rdja6x79f3i8cks6o2uxuggklo3pynla4la"
+                            disabled={true}
+                            init={{ 
+                                width:"100%",
+                                menubar: false,
+                                statusbar: true,
+                                resize: true,
+                                branding: false,
+                                plugins: [ 'wordcount' ],
+                                toolbar: false
+                            }}
+                            value={isOk && ticket?.description != null && ticket?.description !== "" 
+                                ? ticket?.description
+                                : ""
+                            }
+                        />
                     </Row>
                 </Card>  
                 <Card className="ui-card">  
-                    {ticket 
+                    {isOk && ticket
                         ? <TicketInfo ticketDto={ticket} /> 
                         : <></>
                     } 
@@ -208,7 +210,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                             {`${L('Created')}: ${new Date(ticket?.creationTime!).toLocaleString("ro-RO")}`}  
                         </Space>
                     </Row>
-                    {ticket?.lastModificationTime ? 
+                    {isOk && ticket?.lastModificationTime ? 
                         <Row> 
                             <Space>
                                 <EditOutlined />
@@ -243,7 +245,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                                 </Space>
                             </Col>
                             <Col flex="none">
-                                {canAssignWork || canSelfAssignWork ? 
+                                {isOk && ( canAssignWork || canSelfAssignWork ) ? 
                                     <Space>
                                         {L('Edit')}
                                         <Switch checked={this.state.editWork} onChange={this.changeEditWork} />
@@ -253,7 +255,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                         </Row> 
                     } 
                 >
-                    {ticket && this.state.workTabKey === "active"
+                    {isOk && ticket && this.state.workTabKey === "active"
                         ? <TicketWork 
                             key={ticket?.id} 
                             ticketId={ticket?.id} 
@@ -261,7 +263,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                             editEstimationEnabled={this.state.editWork} />
                         : <></>
                     } 
-                    {ticket && this.state.workTabKey === "history"
+                    {isOk && ticket && this.state.workTabKey === "history"
                         ? <WorkTable
                             key={ticket?.id} 
                             ticketId={ticket?.id} 
@@ -278,7 +280,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                         </Space>  
                     } 
                 >
-                    {ticket
+                    {isOk && ticket
                         ? <FileTable 
                             key={ticket?.id} 
                             ticketId={ticket?.id}
@@ -298,7 +300,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                                 </Space>
                             </Col>
                             <Col flex="none">
-                                {canAddComm 
+                                {isOk && canAddComm 
                                     ? <Button onClick={this.addNewComment}>{L('AddAComment')}</Button> 
                                     : <></>
                                 }
@@ -307,7 +309,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                         </Row> 
                     } 
                 >
-                    {ticket
+                    {isOk && ticket
                         ? <CommentList key={ticket?.id} ticketId={ticket?.id} canReply={canAddComm} />
                         : <></>
                     }  

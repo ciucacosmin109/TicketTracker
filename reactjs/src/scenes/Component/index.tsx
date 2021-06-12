@@ -54,9 +54,9 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
 
     // Load dada
     async componentDidMount() { 
-        const id = this.props.match.params.id;
-        if(id != null){ // i have an id
-            const intId = parseInt(id); 
+        const intId = parseInt(this.props.match.params.id!); 
+        if(!Number.isNaN(intId)){ // i have an id 
+
             this.props.componentStore?.get(intId).then(() => {
                 const compProjId = this.props.componentStore?.component?.projectId;
                 if(compProjId != null && compProjId !== this.props.projectStore?.project?.id){
@@ -75,12 +75,13 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
     }
 
     render(){
-        const loading = this.props.componentStore?.loading;
-
+        const loading = this.props.componentStore?.loading; 
         const component = this.props.componentStore?.component;  
-        const project = this.props.projectStore?.project;  
-        
+        const isOk = this.props.componentStore?.component?.id === parseInt(this.props.match.params.id!);
+
+        const project = this.props.projectStore?.project;   
         const myProfile = this.props.accountStore?.account;
+
         const canEdit = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_ManageComponents)
                         || myProfile?.id === component?.creatorUserId;
         const canAddTickets = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Component_AddTickets);
@@ -95,11 +96,11 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                             <Col flex="auto">  
                                 <Space> 
                                     <AppstoreFilled style={{color: 'purple'}} />
-                                    {`${component?.name} (#${component?.id})`} 
+                                    {isOk ? `${component?.name} (#${component?.id})` : ""} 
                                 </Space> 
                             </Col>
                             <Col flex="none">
-                                {canEdit ?
+                                {isOk && canEdit ?
                                     <Button 
                                         type="primary" 
                                         onClick={() => this.setEditModal(true)} 
@@ -113,7 +114,7 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                     }
                 >   
                     <Row style={{marginBottom: '15px'}}> 
-                        {component?.description}  
+                        {isOk ? component?.description : ""}  
                     </Row>  
                 </Card>    
                 <Card className="ui-card">   
@@ -123,7 +124,7 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                             {`${L('Created')}: ${new Date(component?.creationTime!).toLocaleString("ro-RO")}`}  
                         </Space>
                     </Row>
-                    {component?.lastModificationTime ? 
+                    {isOk && component?.lastModificationTime ? 
                         <Row> 
                             <Space>
                                 <EditOutlined />
@@ -131,12 +132,14 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                             </Space>
                         </Row> : <></>
                     } 
-                    <Row> 
-                        <Space> 
-                            <FundOutlined />  
-                            {`${L('Project')}: ${project?.name}`}   
-                        </Space>
-                    </Row> 
+                    {isOk ?
+                        <Row> 
+                            <Space> 
+                                <FundOutlined />  
+                                {`${L('Project')}: ${project?.name}`}   
+                            </Space>
+                        </Row> : <></>
+                    }
                 </Card>    
                 <Card className="component-tickets ui-card"
                     title={
@@ -148,7 +151,7 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                                 </Space> 
                             </Col>
                             <Col flex="none">
-                                {canAddTickets ?
+                                {isOk && canAddTickets ?
                                     <Button type="primary" onClick={this.addTicket} icon={<FileAddOutlined />}>
                                         {L('AddTicket')}
                                     </Button> : <></>
@@ -158,12 +161,16 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                     }
                 >
                     <Row>
-                        {component != null
-                            ? <TicketTable componentId={component!.id} editEnabled={canManageTickets} />
+                        {isOk && component
+                            ? <TicketTable 
+                                key={component!.id} 
+                                componentId={component!.id} 
+                                editEnabled={canManageTickets} 
+                            />
                             : <></>
                         }  
                     </Row>
-                    {component?.id ? 
+                    {isOk && component ? 
                         <EditComponent 
                             key={component?.id}
                             visible={this.state.editModal}

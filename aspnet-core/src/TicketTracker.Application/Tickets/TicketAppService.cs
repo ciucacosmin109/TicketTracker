@@ -144,6 +144,7 @@ namespace TicketTracker.Tickets {
             if (session.UserId != creatorId)
                 ticketManager.CheckTicketPermission(session.UserId, input.Id, StaticProjectPermissionNames.Component_ManageTickets);
 
+            await repoWorks.SetTicketNullAsync(input.Id);
             await base.DeleteAsync(input);
         }
     }
