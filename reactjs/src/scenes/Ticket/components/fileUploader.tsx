@@ -104,8 +104,6 @@ export default class FileUploader extends AppComponentBase<IFileUploaderProps> {
         return (
             // relative
             <div className="drag-drop" ref={this.dragDropRef} onClick={()=> this.fileBrowserRef ? this.fileBrowserRef.click() : null}> 
-                <p style={{padding: '16px'}}>Upload files:</p>
-
                 <div style={{
                     position: 'absolute', 
                     top: '50%', 
@@ -113,6 +111,7 @@ export default class FileUploader extends AppComponentBase<IFileUploaderProps> {
                     transform: 'translate(-50%, -50%)'
                 }}>
                     <CloudUploadOutlined style={{ 
+                        fontSize:'2em',
                         position: 'relative',
                         left: '50%',
                         transform: 'translateX(-50%)',
@@ -139,10 +138,7 @@ export default class FileUploader extends AppComponentBase<IFileUploaderProps> {
                             position: 'absolute',
                             top: '50%',
                             left: '50%',
-                            transform: 'translate(-50%, -50%)', 
-                            //right: 0,
-                            //left: 0,
-                            //textAlign: 'center',
+                            transform: 'translate(-50%, -50%)',  
                             color: 'grey',
                             fontSize: 50
                         }} /> 
@@ -151,7 +147,7 @@ export default class FileUploader extends AppComponentBase<IFileUploaderProps> {
 
                 {this.state.loading &&
                     <div style={{
-                        border: 'dashed grey 4px',
+                        border: 'dashed grey 3px',
                         backgroundColor: 'rgba(255,255,255,.95)',
                         position: 'absolute', 
                         top: 0,

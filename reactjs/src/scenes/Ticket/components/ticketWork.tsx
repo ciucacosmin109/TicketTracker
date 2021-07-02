@@ -7,9 +7,9 @@ import ProjectUserStore from '../../../stores/projectUserStore';
 
 import AppComponentBase from '../../../components/AppComponentBase'; 
 import { L } from '../../../lib/abpUtility';
-import { Button, InputNumber, Row, Select, Space } from 'antd';
-import ProfileAvatar from '../../../components/SiderMenu/components/profileAvatar'; 
-//import { SimpleWorkDto } from '../../../services/work/dto/simpleWorkDto';
+import { Button, InputNumber, Row, Select, Space, Spin } from 'antd';
+import ProfileAvatar from '../../../components/SiderMenu/components/profileAvatar';  
+import { LoadingOutlined } from '@ant-design/icons'; 
 
 export interface ITicketWorkProps {   
     workStore?: WorkStore;
@@ -83,7 +83,7 @@ class TicketWork extends AppComponentBase<ITicketWorkProps, ITicketWorkState> {
     }
 
     render() {
-        //const loading = this.props.workStore?.loading;
+        const loading = this.props.workStore?.loading;
         const assignedTo = this.props.workStore?.assignedWork;
         //const worked = this.props.workStore?.works?.items?.filter(x => !x.isWorking) ?? [];
 
@@ -104,71 +104,75 @@ class TicketWork extends AppComponentBase<ITicketWorkProps, ITicketWorkState> {
             ...projectUsersMapped
         ];
 
-        return (<Space direction="vertical"> 
-            <Row> 
-                <Space>
-                    {`${L("AssignedTo")}:`} 
+        return (
+            <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}> 
+                <Space direction="vertical"> 
+                    <Row> 
+                        <Space>
+                            {`${L("AssignedTo")}:`} 
 
-                    {this.props.editUserEnabled 
-                        ? 
-                            <Select
-                                showSearch 
-                                style={{ 
-                                    width: 210
-                                }}  
-                                options={options}
-                                value={assignedTo?.user?.id ?? 0} 
-                                onSelect={this.onAssign}
-                                notFoundContent={L("NoResultsFound")}
-                                placeholder={L("TypeUser")}
-                                filterOption={(input, option) =>
-                                    (projectUsers.find(x => x.id === option?.value)?.user.fullName?.toLowerCase().indexOf(input.toLowerCase()) ?? -1) >= 0
-                                }
-                            /> 
-                        :
-                            assignedTo?.user ? <>
-                                <ProfileAvatar
-                                    firstName={assignedTo?.user?.name} 
-                                    lastName={assignedTo?.user?.surname} 
-                                    showToolTip 
-                                    size="small"
-                                    userId={assignedTo?.user?.id} />
-                                {`${assignedTo?.user?.name} ${assignedTo?.user?.surname}`}
-                            </> : L("NoUserAssigned")
+                            {this.props.editUserEnabled 
+                                ? 
+                                    <Select
+                                        showSearch 
+                                        style={{ 
+                                            width: "300px"
+                                        }}  
+                                        options={options}
+                                        value={assignedTo?.user?.id ?? 0} 
+                                        onSelect={this.onAssign}
+                                        notFoundContent={L("NoResultsFound")}
+                                        placeholder={L("TypeUser")}
+                                        filterOption={(input, option) =>
+                                            (projectUsers.find(x => x.id === option?.value)?.user.fullName?.toLowerCase().indexOf(input.toLowerCase()) ?? -1) >= 0
+                                        }
+                                    /> 
+                                :
+                                    assignedTo?.user ? <>
+                                        <ProfileAvatar
+                                            firstName={assignedTo?.user?.name} 
+                                            lastName={assignedTo?.user?.surname} 
+                                            showToolTip 
+                                            size="small"
+                                            userId={assignedTo?.user?.id} />
+                                        {`${assignedTo?.user?.name} ${assignedTo?.user?.surname}`}
+                                    </> : L("NoUserAssigned")
+                            }
+                        </Space>
+                    </Row>
+                    {assignedTo ?
+                        <Row>
+                            <Space>
+                                {`${L("WorkedTime")}:`}
+                                {!this.props.editEstimationEnabled 
+                                    ? `${assignedTo.workedTime ?? 0} / ${assignedTo.estimatedTime ?? 0}`
+                                    : <>
+                                        <InputNumber 
+                                            style={{ width: 60 }}  
+                                            min={0} 
+                                            max={65000} 
+                                            size='small' 
+                                            value={this.state.workedTime} 
+                                            onChange={this.onWorkedChange} 
+                                        />
+                                        {"/"}
+                                        <InputNumber 
+                                            style={{ width: 60 }} 
+                                            min={0} 
+                                            max={65000} 
+                                            size='small' 
+                                            value={this.state.estimatedTime} 
+                                            onChange={this.onEstimatedChange} 
+                                        />
+                                        <Button size="small" onClick={this.onTimeSave}>{L("SaveTime")}</Button>
+                                    </>
+                                } 
+                            </Space>
+                        </Row> : <></>
                     }
                 </Space>
-            </Row>
-            {assignedTo ?
-                <Row>
-                    <Space>
-                        {`${L("WorkedTime")}:`}
-                        {!this.props.editEstimationEnabled 
-                            ? `${assignedTo.workedTime ?? 0} / ${assignedTo.estimatedTime ?? 0}`
-                            : <>
-                                <InputNumber 
-                                    style={{ width: 60 }}  
-                                    min={0} 
-                                    max={65000} 
-                                    size='small' 
-                                    value={this.state.workedTime} 
-                                    onChange={this.onWorkedChange} 
-                                />
-                                {"/"}
-                                <InputNumber 
-                                    style={{ width: 60 }} 
-                                    min={0} 
-                                    max={65000} 
-                                    size='small' 
-                                    value={this.state.estimatedTime} 
-                                    onChange={this.onEstimatedChange} 
-                                />
-                                <Button size="small" onClick={this.onTimeSave}>{L("Save")}</Button>
-                            </>
-                        } 
-                    </Space>
-                </Row> : <></>
-            }
-        </Space>); 
+            </Spin>
+        ); 
     }
 }
  

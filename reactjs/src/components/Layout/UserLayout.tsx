@@ -1,5 +1,4 @@
-import './UserLayout.less';
-
+import './Layout.less'
 import * as React from 'react';
 
 import { Redirect, Route, Switch } from 'react-router-dom';
@@ -19,19 +18,20 @@ class UserLayout extends React.Component<any> {
 
     const layout = (
       <Layout style={{ minHeight: '100vh' }} >
-        <Header noUser={true}/> 
+        <Header noUser />  
 
-        <Layout className="header-margin container-w-bg">  
-          <Switch>
-            {/* {pathname === '/user' && <Redirect from="/user" to="/user/login" />} */}
-            {userRouter
-              .filter((item: any) => !item.isLayout)
-              .map((item: any, index: number) => (
-                <Route key={index} path={item.path} component={item.component} exact={item.exact} />
-              ))}
+        <Layout className="header-margin" /*container-w-bg*/ >  
+          <Layout className="content-margin">   
+            <Switch> 
+              {userRouter
+                .filter((item: any) => !item.isLayout)
+                .map((item: any, index: number) => (
+                  <Route key={index} path={item.path} component={item.component} exact={item.exact} />
+                ))}
 
-            <Redirect from="/user" to="/user/login" />
-          </Switch>
+              <Redirect from="/user" to="/user/login" />
+            </Switch>
+          </Layout>
         </Layout>
         
         <Footer />

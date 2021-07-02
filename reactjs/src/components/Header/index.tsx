@@ -4,19 +4,19 @@ import * as React from 'react';
 
 import { Avatar, Button, /*Badge,*/ Col, Layout, Row, Space } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import InfoToggle from '../InfoToggle'
 
 import Logo from '../../images/logo.png'; 
 import LanguageSelect from '../LanguageSelect';
 import UserOptions from '../UserOptions'; 
 import { L } from '../../lib/abpUtility';
 
-
 export interface IHeaderProps {
   collapsed?: any;
   toggle?: any;
   noUser?: boolean;
 }
- 
+
 export class Header extends React.Component<IHeaderProps> {
   render() {
     return ( 
@@ -38,9 +38,10 @@ export class Header extends React.Component<IHeaderProps> {
             </Space>
           </Col>
           
-          <Col style={{ padding: '0px 5px 0px 5px', textAlign: 'right' }} span={12}>  
-            <LanguageSelect noUser={this.props.noUser}/> 
-
+          <Col style={{ padding: '0px 5px 0px 5px', textAlign: 'right' }} span={12}>
+            <LanguageSelect noUser={this.props.noUser} hidden /> 
+            <InfoToggle />
+            
             {!this.props.noUser ?  
               <UserOptions /> : <></>
             }

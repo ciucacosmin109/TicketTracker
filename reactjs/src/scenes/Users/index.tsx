@@ -112,7 +112,7 @@ class User extends AppComponentBase<IUserProps, IUserState> {
     const { users } = this.props.userStore;
     const columns = [
       { title: L('UserName'), dataIndex: 'userName', key: 'userName', width: 150, render: (text: string) => <div>{text}</div> },
-      { title: L('FullName'), dataIndex: 'name', key: 'name', width: 150, render: (text: string) => <div>{text}</div> },
+      { title: L('FullName'), dataIndex: 'fullName', key: 'fullName', width: 150, render: (text: string) => <div>{text}</div> },
       { title: L('EmailAddress'), dataIndex: 'emailAddress', key: 'emailAddress', width: 150, render: (text: string) => <div>{text}</div> },
       {
         title: L('IsActive'),

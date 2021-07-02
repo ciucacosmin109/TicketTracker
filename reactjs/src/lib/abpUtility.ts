@@ -24,3 +24,7 @@ export function isGranted(permissionName: string): boolean {
 export function getEncriptedAuthToken(): string {
   return abp.utils.getCookieValue("enc_auth_token");
 }
+
+export function getCultureName(): string {
+  return abp.utils.getCookieValue('Abp.Localization.CultureName');
+}

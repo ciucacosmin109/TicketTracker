@@ -2,8 +2,7 @@ import { Rule } from 'antd/lib/form';
 import { L } from '../../lib/abpUtility';
 
 const rules = { 
-  name: [{ required: true, message: L('ThisFieldIsRequired') }],
-  surname: [{ required: true, message: L('ThisFieldIsRequired') }], 
+  required: [{ required: true, message: L('ThisFieldIsRequired') }], 
   emailAddress: [
     { required: true, message: L('ThisFieldIsRequired') },
     {

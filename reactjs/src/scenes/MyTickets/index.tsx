@@ -14,6 +14,7 @@ import TicketTypeChart from '../Project/chartComponents/ticketTypeChart';
 import TicketStatusChart from '../Project/chartComponents/ticketStatusChart';
 import TicketStore from '../../stores/ticketStore';
 import TicketPriorityChart from '../Project/chartComponents/ticketPriorityChart';
+import InfoCard from '../../components/InfoCard';
  
 export interface IMyTicketsProps extends RouteComponentProps { 
     accountStore?: AccountStore; 
@@ -34,8 +35,9 @@ class MyTickets extends AppComponentBase<IMyTicketsProps, IMyTicketsState> {
         const tickets = this.props.ticketStore?.userTickets;
 
         return ( 
-            <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}>
-                <Card className="ui-card"
+            <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}> 
+                <InfoCard text={this.L("InfoAssignedTickets")} />
+                <Card className="ui-table-card"
                     title={ 
                         <Space>
                             <FileTextOutlined />

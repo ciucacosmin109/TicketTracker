@@ -66,12 +66,7 @@ namespace TicketTracker.Comments {
             );
         }
 
-        public async override Task<CommentDto> CreateAsync(CreateCommentInput input) {
-            if(input.TicketId != null)
-                ticketManager.CheckTicketPermission(session.UserId, input.TicketId.Value, StaticProjectPermissionNames.Ticket_AddComments);
-            else if(input.ParentId != null)
-                commentManager.CheckCommentPermission(session.UserId, input.ParentId.Value, StaticProjectPermissionNames.Ticket_AddComments);
-
+        public async override Task<CommentDto> CreateAsync(CreateCommentInput input) { 
             if (input.TicketId != null)
                 ticketManager.CheckVisibility(session.UserId, input.TicketId.Value);
             else if(input.ParentId != null)

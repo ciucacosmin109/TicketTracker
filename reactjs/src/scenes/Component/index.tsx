@@ -11,19 +11,18 @@ import { AppstoreFilled,  CalendarOutlined, EditOutlined, FileAddOutlined, FileT
    
 import { RouteComponentProps, withRouter } from 'react-router';  
 import ComponentStore from '../../stores/componentStore';
-import EditComponent from '../Project/components/editComponent';
-import ProjectStore from '../../stores/projectStore';
+import EditComponent from '../Project/components/editComponent'; 
 import TicketTable from './components/ticketTable';
 import ProjectUserStore from '../../stores/projectUserStore';
 import AccountStore from '../../stores/accountStore';
 import { StaticProjectPermissionNames } from '../../models/ProjectUser/StaticProjectPermissionNames';
+import InfoCard from '../../components/InfoCard'; 
 
 export interface IComponentParams{
     id: string | undefined; 
 }
 export interface IComponentProps extends RouteComponentProps<IComponentParams> { 
-    componentStore?: ComponentStore;
-    projectStore?: ProjectStore;
+    componentStore?: ComponentStore; 
     projectUserStore?: ProjectUserStore;
     accountStore?: AccountStore;
 }
@@ -32,8 +31,7 @@ export interface IComponentState {
 }
  
 @inject(
-    Stores.ComponentStore, 
-    Stores.ProjectStore, 
+    Stores.ComponentStore,
     Stores.ProjectUserStore, 
     Stores.AccountStore)
 @observer
@@ -58,11 +56,7 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
         if(!Number.isNaN(intId)){ // i have an id 
 
             this.props.componentStore?.get(intId).then(() => {
-                const compProjId = this.props.componentStore?.component?.projectId;
-                if(compProjId != null && compProjId !== this.props.projectStore?.project?.id){
-                   this.props.projectStore?.getProject(compProjId);
-                }
-                
+                const compProjId = this.props.componentStore?.component?.project.id; 
                 if(compProjId != null && compProjId !== this.props.projectUserStore?.projectId){
                     const myUserId = this.props.accountStore?.account?.id;
                     this.props.projectUserStore?.get(myUserId, compProjId);
@@ -79,17 +73,23 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
         const component = this.props.componentStore?.component;  
         const isOk = this.props.componentStore?.component?.id === parseInt(this.props.match.params.id!);
 
-        const project = this.props.projectStore?.project;   
+        const project = component?.project;   
         const myProfile = this.props.accountStore?.account;
 
         const canEdit = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_ManageComponents)
                         || myProfile?.id === component?.creatorUserId;
         const canAddTickets = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Component_AddTickets);
         const canManageTickets = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Component_ManageTickets);
-          
+        
+        if(isOk){
+            this.setCustomTitle(component?.name);
+        }
+
         // Component content
         return ( 
-            <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}> 
+            <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}>
+                <InfoCard text={this.L("InfoComponent")} />
+
                 <Card className="component ui-card"
                     title={
                         <Row>
@@ -141,7 +141,7 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                         </Row> : <></>
                     }
                 </Card>    
-                <Card className="component-tickets ui-card"
+                <Card className="ui-table-card"
                     title={
                         <Row>
                             <Col flex="auto">
@@ -174,7 +174,7 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                         <EditComponent 
                             key={component?.id}
                             visible={this.state.editModal}
-                            projectId={component?.projectId}
+                            projectId={component?.project.id}
                             componentId={component?.id}
                             onOk={() => this.setEditModal(false)}
                             onCancel={() => this.setEditModal(false)}

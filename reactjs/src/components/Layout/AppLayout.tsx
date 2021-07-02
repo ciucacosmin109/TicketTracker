@@ -1,4 +1,4 @@
-import './AppLayout.less';
+import './Layout.less';
 
 import * as React from 'react';
 
@@ -50,7 +50,7 @@ class AppLayout extends React.Component<any> {
         <div className={"blur-filter " + (collapsed ? "" : "blur-filter-on")} onClick={()=>this.onCollapse(true)}></div>
 
         <Layout className={"header-margin " + (this.state.collapsed ? "sider-margin-m" : "sider-margin")}> 
-          <Content style={{ margin: 16 }}>
+          <Content className="content-margin">
             <Switch>
               {pathname === '/' && <Redirect from="/" to={homePath} />}
               {appRouters

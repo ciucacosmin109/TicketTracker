@@ -5,6 +5,8 @@ import CommentStore from '../../../stores/commentStore';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../../stores/storeIdentifier'; 
 import CommentNode from './commentNode';
+import { Space, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 export interface ICommentListProps{
     commentStore?: CommentStore;
@@ -24,12 +26,17 @@ export default class CommentList extends AppComponentBase<ICommentListProps> {
     }
 
     render(){ 
+        const loading = this.props.commentStore?.loading;
         const comments = this.props.commentStore?.comments?.items;
 
-        return(<> 
-            {comments?.map(x =>  
-                <CommentNode key={x.id} comment={x} canReply={this.props.canReply} /> 
-            )} 
-        </>);
+        return(
+            <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}>
+                <Space direction="vertical" style={{width: '100%'}}> 
+                    {comments?.map(x =>  
+                        <CommentNode key={x.id} comment={x} canReply={this.props.canReply} /> 
+                    )} 
+                </Space>
+            </Spin>
+        );
     }
 }

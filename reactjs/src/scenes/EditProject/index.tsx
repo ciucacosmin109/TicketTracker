@@ -257,6 +257,10 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
                 />
             },
         ];
+         
+        if(this.props.match.params.id != null){
+            this.setCustomTitle(L("EditProject"));
+        } 
 
         // Component content
         const content = ( 

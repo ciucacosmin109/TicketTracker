@@ -35,6 +35,8 @@ class Exception extends AppComponentBase {
     if (error == null) {
       error = exception[0];
     }
+     
+    this.setCustomTitle(error.errorCode); 
 
     return (
       <Row style={{ marginTop: 150 }}>

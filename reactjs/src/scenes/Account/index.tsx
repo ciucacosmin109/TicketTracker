@@ -1,5 +1,4 @@
-import * as React from 'react';
-import './index.less'
+import * as React from 'react'; 
 
 import { Button, Card,  Col,  Form,  Input, message, Row, Space } from 'antd';
 import { inject, observer } from 'mobx-react';
@@ -48,56 +47,56 @@ class Account extends AppComponentBase<IAccountProps, IAccountState> {
     return (
       <Row> 
         <Col flex="1 1 400px">
-          <Card className="account-details ui-card">
             <Form initialValues={account} onFinish={this.onAccountUpdate} layout="vertical"> 
-              <Row>
-                <Col flex="auto"> 
-                  <h2><Space><UserOutlined />{L('AccountDetails')}</Space></h2>  
-                </Col>
-                <Col flex="none">
-                  <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
-                </Col>
-              </Row>  
-  
-              <Form.Item label={L('UserName')} name={'userName'} >
-                <Input disabled placeholder={L('UserName')} prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
-              </Form.Item> 
+                <Card className="ui-card" title={
+                    <Row>
+                        <Col flex="auto"> 
+                        <Space><UserOutlined />{L('AccountDetails')}</Space>  
+                        </Col>
+                        <Col flex="none">
+                        <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
+                        </Col>
+                    </Row>  
+                }> 
+                    <Form.Item label={L('UserName')} name={'userName'} rules={rules.required}>
+                        <Input disabled placeholder={L('UserName')} prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
+                    </Form.Item> 
 
-              <Form.Item label={L('Name')} name={'name'} rules={rules.name}>
-                <Input placeholder={L('Name')} prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
-              </Form.Item> 
-              <Form.Item label={L('Surname')} name={'surname'} rules={rules.surname}>
-                <Input placeholder={L('Surname')} prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
-              </Form.Item> 
+                    <Form.Item label={L('Name')} name={'name'} rules={rules.required}>
+                        <Input placeholder={L('Name')} prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
+                    </Form.Item> 
+                    <Form.Item label={L('Surname')} name={'surname'} rules={rules.required}>
+                        <Input placeholder={L('Surname')} prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
+                    </Form.Item> 
 
-              <Form.Item label={L('EmailAddress')} name={'emailAddress'} rules={rules.emailAddress as Rule[]}>
-                <Input placeholder={L('EmailAddress')} prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
-              </Form.Item> 
-              
+                    <Form.Item label={L('EmailAddress')} name={'emailAddress'} rules={rules.emailAddress as Rule[]}>
+                        <Input placeholder={L('EmailAddress')} prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
+                    </Form.Item> 
+                    
+                </Card>
             </Form>  
-          </Card>
         </Col>
 
         <Col flex="1 1 400px">
-          <Card className="change-password ui-card">
-            <Form ref={this.changePassForm} onFinish={this.onPasswordUpdate} layout="vertical">  
-              <Row>
-                <Col flex="auto"> 
-                  <h2><Space><KeyOutlined />{L('ChangePassword')}</Space></h2>  
-                </Col>
-                <Col flex="none">
-                  <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
-                </Col>
-              </Row>  
-  
-              <Form.Item label={L('CurrentPassword')} name={'currentPassword'}>
-                <Input placeholder={L('CurrentPassword')} autoComplete="new-password" prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" size="large" />
-              </Form.Item> 
-              <Form.Item label={L('NewPassword')} name={'newPassword'} rules={rules.password} >
-                <Input placeholder={L('NewPassword')} autoComplete="new-password" prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" size="large" />
-              </Form.Item>  
-            </Form> 
-          </Card>
+          <Form ref={this.changePassForm} onFinish={this.onPasswordUpdate} layout="vertical">  
+            <Card className="ui-card" title={
+                <Row>
+                    <Col flex="auto"> 
+                        <Space><KeyOutlined />{L('ChangePassword')}</Space>
+                    </Col>
+                    <Col flex="none">
+                        <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
+                    </Col>
+                </Row> 
+            }>  
+                <Form.Item label={L('CurrentPassword')} name={'currentPassword'} rules={rules.required}>
+                    <Input placeholder={L('CurrentPassword')} prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" size="large" />
+                </Form.Item> 
+                <Form.Item label={L('NewPassword')} name={'newPassword'} rules={rules.password} >
+                    <Input placeholder={L('NewPassword')} autoComplete="new-password" prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" size="large" />
+                </Form.Item>  
+            </Card>
+          </Form> 
         </Col>
         
       </Row>

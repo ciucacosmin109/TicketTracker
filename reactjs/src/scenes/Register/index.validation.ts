@@ -32,6 +32,7 @@ const rules = {
       };
     },
   ], 
+  captcha: [{ required: true, message: L('ProveYouAreHuman') }],
  
 };
 

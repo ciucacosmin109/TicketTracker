@@ -15,6 +15,7 @@ declare var abp: any;
 export interface ILanguageSelectProps {
   accountStore?: AccountStore;
   noUser?: boolean;
+  hidden?: boolean;
 }
 
 @inject(Stores.AccountStore)
@@ -57,8 +58,10 @@ class LanguageSelect extends React.Component<ILanguageSelectProps> {
     return ( 
       <Dropdown overlay={langMenu} placement="bottomRight" trigger={['click']}>
         <Button type="dashed" size="large" style={{border: 0, height:"100%", marginLeft: '5px'}} icon={
-          <GlobalOutlined style={{fontSize: '20px'}} />
-        } />
+          !this.props.hidden 
+            ? <GlobalOutlined style={{fontSize: '20px'}} /> 
+            : undefined
+        }>{this.props.hidden ? " " : ""}</Button>
       </Dropdown> 
     );
   }

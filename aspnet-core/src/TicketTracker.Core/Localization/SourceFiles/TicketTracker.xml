@@ -217,7 +217,8 @@
     <text name="Unknown">Unknown</text>
     <text name="TicketWork">Work</text>
     <text name="NoData">No data</text>
-    <text name="WorkedTime">Worked time</text>
+    <text name="WorkedTime">Worked time (minutes)</text>
+    <text name="SaveTime">Save time</text>
     <text name="Worked">Worked</text>
     <text name="Estimated">Estimated</text>
     <text name="EditWork">Edit work</text>

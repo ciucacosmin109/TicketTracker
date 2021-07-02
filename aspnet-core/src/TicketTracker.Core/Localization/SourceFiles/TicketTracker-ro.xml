@@ -217,7 +217,8 @@
     <text name="Unknown">Necunoscut</text>
     <text name="TicketWork">Munca</text>
     <text name="NoData">Fara date</text>
-    <text name="WorkedTime">Timp lucrat</text>
+    <text name="WorkedTime">Timp lucrat (minute)</text>
+    <text name="SaveTime">Salvează timp</text>
     <text name="Worked">Lucrat</text>
     <text name="Estimated">Estimat</text>
     <text name="EditWork">Editeaza munca</text>
@@ -289,6 +290,17 @@
     <text name="Size">Dimensiune</text>
     <text name="UploadedAt">Incarcat la</text>
     <text name="Files">Fisiere</text>
+    <text name="ProveYouAreHuman">Trebuie sa demonstrati ca sunteti om</text>
+    <text name="ShowReplies">Afisează răspunsuri</text>
+    <text name="AreYouSureDeleteComment">Sunteti sigur ca vreti sa stergeti acest comentariu ?</text>
+	
+    <text name="Info">Informatii</text>
+    <text name="InfoPublicProjects">Aici se află toate proiectele publice corespunzătoare unor soluții informatice. În cazul în care faceți parte dintr-un astfel de proiect, sunt afisate și rolurile pe care le dețineți în cadrul fiecăruia.</text>
+    <text name="InfoAssignedProjects">Aici se află toate proiectele corespunzătoare unor soluții informatice, din care faceți parte, împreună cu rolurile pe care le dețineți în cadrul fiecărui proiect.\n\nDin această pagină puteți crea un nou proiect în care veți avea rolul de manager de proiect sau puteți accesa un proiect din care faceți parte.</text>
+    <text name="InfoAssignedTickets">Aici se află toate tichetele care vă sunt atribuite cu scopul rezolvării, împreună cu niște statistici generale despre acestea.\n\nDe asemenea, sunt specificate si proiectele, respectiv componentele, din care tichetele fac parte</text>
+    <text name="InfoProject">Aceasta este pagina principală a unui proiect, unde veti găsi descrierea acestuia (a solutiei căreia îi corespunde), componentele in care se află tichetele (acestea pot fi asociate cu categoriile), dar si niște statistici referitoare la toate tichetele din toate componentele din cadrul proiectului.\n\nAccesând o componentă veți fi redirectionat catre pagina acesteia, care contine toate tichetele care se incadreaza in acea componenta/categorie.</text>
+    <text name="InfoComponent">Aceasta este pagina unei componente din cadrul proiectului. Aceasta contine tichetele care se incadreaza in acea componenta.</text>
+    <text name="InfoTicket">Vă aflați in pagina unui tichet. Aici veti gasi descrierea acestuia, caracteristicile lui, proiectul si componenta din care face parte, cine lucreaza sau a lucrat la el (cardul "Munca"), fisierele atasate si comentariile. Daca aveti suficiente drepturi in cadrul proiectului, veti putea edita diverse caracteristici ale tichetului.</text>
     
 
 

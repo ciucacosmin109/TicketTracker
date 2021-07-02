@@ -3,12 +3,11 @@ using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
-using Abp.Runtime.Session;
-using Microsoft.EntityFrameworkCore;
-using System;
+using Abp.ObjectMapping;
+using Abp.Runtime.Session; 
+using Microsoft.EntityFrameworkCore; 
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Linq; 
 using System.Threading.Tasks;
 using TicketTracker.Components.Dto;
 using TicketTracker.Entities;
@@ -23,34 +22,50 @@ namespace TicketTracker.Components {
         private readonly WorkRepository repoWorks;
         private readonly ProjectManager projectManager;
         private readonly IAbpSession session;
+        private readonly IObjectMapper mapper;
 
         public ComponentAppService(
-            IRepository<Component, int> repository,
+            IRepository<Component> repository,
             WorkRepository repoWorks,
             ProjectManager projectManager,
-            IAbpSession session) : base(repository) {
+            IAbpSession session,
+            IObjectMapper mapper
+        ) : base(repository) {
             this.repoWorks = repoWorks;
             this.projectManager = projectManager;
             this.session = session;
-
+            this.mapper = mapper;
             LocalizationSourceName = TicketTrackerConsts.LocalizationSourceName;
         }
 
         public override async Task<ComponentDto> GetAsync(EntityDto<int> input) {
             CheckGetPermission();
 
-            var entity = await GetEntityByIdAsync(input.Id);
-            projectManager.CheckVisibility(session.UserId, entity.ProjectId);
+            var entity = await Repository.GetAllIncluding(x => x.Project).FirstOrDefaultAsync(x => x.Id == input.Id);
+            if(entity == null) {
+                throw new EntityNotFoundException(typeof(Component), input.Id);
+            }
 
+            projectManager.CheckVisibility(session.UserId, entity.ProjectId); 
             return MapToEntityDto(entity);
         }
 
         public override async Task<PagedResultDto<ComponentDto>> GetAllAsync(GetAllComponentsInput input) {
             projectManager.CheckVisibility(session.UserId, input.ProjectId);
-            return await base.GetAllAsync(input);
+            var query = CreateFilteredQuery(input);
+            var totalCount = await query.CountAsync();
+
+            query = ApplySorting(query, input);
+            query = ApplyPaging(query, input);
+
+            var res = await query.ToListAsync();
+            return new PagedResultDto<ComponentDto> {
+                Items = mapper.Map<List<ComponentDto>>(res),
+                TotalCount = totalCount
+            };
         }
         protected override IQueryable<Component> CreateFilteredQuery(GetAllComponentsInput input) {
-            var query = base.CreateFilteredQuery(input);
+            var query = Repository.GetAllIncluding(x => x.Project);
 
             query = query.Where(x => x.ProjectId == input.ProjectId);
             return query;

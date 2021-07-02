@@ -24,6 +24,7 @@ import ProjectUserStore from '../../stores/projectUserStore';
 import { StaticProjectPermissionNames } from '../../models/ProjectUser/StaticProjectPermissionNames';
 import SubscriptionStore from '../../stores/subscriptionStore';
 import FileTable from './components/fileTable';
+import InfoCard from '../../components/InfoCard';
 
 export interface ITicketParams{
     id: string | undefined; 
@@ -98,7 +99,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                 const myUserId = this.props.accountStore?.account?.id;
 
                 const projId = this.props.ticketStore?.ticket?.project?.id;
-                if(projId != null && projId !== this.props.projectUserStore?.projectId){
+                if(projId != null && projId !== this.props.projectUserStore?.projectUser?.projectId){
                     this.props.projectUserStore?.get(myUserId, projId);
                 }  
 
@@ -117,13 +118,13 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
   
         const subscribed = this.props.subscriptionStore?.subscribed ?? false;
         const myProfile = this.props.accountStore?.account;
+        const comments = this.props.commentStore?.comments;
 
+        const isAssignedToProject = this.props.projectUserStore?.projectUser != null;
         const canEdit = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Component_ManageTickets)
                         || myProfile?.id === ticket?.creatorUserId;
         const canAssignWork = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_AssignWork);
-        const canSelfAssignWork = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_SelfAssignWork);
-        const canAddComm = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_AddComments);
-        //const canManageComm = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_ManageComments);
+        const canSelfAssignWork = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_SelfAssignWork);  
         const canAddFiles = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_AddAttachments);
         const canManageFiles = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_ManageAttachments);
         
@@ -132,9 +133,14 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
             {key: "history", tab: L("History")},
         ];
         
+        if(isOk){
+            this.setCustomTitle(ticket?.title);
+        }
+        
         // Ticket content
         return ( 
             <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}> 
+                <InfoCard text={this.L("InfoTicket")} />
                 <Card className="ticket ui-card readonly-editor-card"
                     title={
                         <Row>
@@ -173,11 +179,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                         </Row> 
                     }
                 >   
-                    <Row> 
-                        {/* {ticket?.description}
-                        <div dangerouslySetInnerHTML={{
-                            __html: ticket?.description ?? ""
-                        }}></div> */} 
+                    <Row>  
                         <TinyMce
                             apiKey="7atcogyb8kct4rdja6x79f3i8cks6o2uxuggklo3pynla4la"
                             disabled={true}
@@ -197,42 +199,51 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                         />
                     </Row>
                 </Card>  
-                <Card className="ui-card">  
-                    {isOk && ticket
-                        ? <TicketInfo ticketDto={ticket} /> 
-                        : <></>
-                    } 
-                </Card> 
-                <Card className="ui-card">   
-                    <Row> 
-                        <Space>
-                            <CalendarOutlined />
-                            {`${L('Created')}: ${new Date(ticket?.creationTime!).toLocaleString("ro-RO")}`}  
-                        </Space>
-                    </Row>
-                    {isOk && ticket?.lastModificationTime ? 
-                        <Row> 
-                            <Space>
-                                <EditOutlined />
-                                {`${L('Modified')}: ${new Date(ticket?.lastModificationTime!).toLocaleString("ro-RO")}`}  
-                            </Space>
-                        </Row> : <></>
-                    } 
-                    <Row> 
-                        <Space> 
-                            <FundOutlined />  
-                            {`${L('Project')}: ${ticket?.project.name}`}   
-                        </Space>
-                    </Row> 
-                    <Row> 
-                        <Space> 
-                            <AppstoreOutlined />  
-                            {`${L('Component')}: ${ticket?.component.name}`}   
-                        </Space>
-                    </Row> 
-                </Card> 
-  
-                <Card className="ticket-work-details ui-card" 
+
+                <Row>
+                    <Col flex="1 1 300px">
+                        <Card className="ui-card">  
+                            {isOk && ticket
+                                ? <TicketInfo ticketDto={ticket} /> 
+                                : <></>
+                            } 
+                        </Card> 
+                    </Col>
+                    <Col flex="1 1 300px">
+                        <Card className="ui-card">
+                            <div style={{marginBottom: '15px'}}>
+                                <Row> 
+                                    <Space>
+                                        <CalendarOutlined />
+                                        {`${L('Created')}: ${new Date(ticket?.creationTime!).toLocaleString("ro-RO")}`}  
+                                    </Space>
+                                </Row>
+                                {isOk && ticket?.lastModificationTime ? 
+                                    <Row> 
+                                        <Space>
+                                            <EditOutlined />
+                                            {`${L('Modified')}: ${new Date(ticket?.lastModificationTime!).toLocaleString("ro-RO")}`}  
+                                        </Space>
+                                    </Row> : <></>
+                                } 
+                            </div>
+                            <Row> 
+                                <Space> 
+                                    <FundOutlined />  
+                                    {`${L('Project')}: ${ticket?.project.name}`}   
+                                </Space>
+                            </Row> 
+                            <Row> 
+                                <Space> 
+                                    <AppstoreOutlined />  
+                                    {`${L('Component')}: ${ticket?.component.name}`}   
+                                </Space>
+                            </Row> 
+                        </Card> 
+                    </Col>
+                </Row>
+ 
+                <Card className={this.state.workTabKey === "history" ? "ui-table-card" : "ui-card"}
                     tabList={workTabList}
                     activeTabKey={this.state.workTabKey}
                     onTabChange={k => this.setState({workTabKey: k})}
@@ -272,7 +283,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                     }
                 </Card>
                 
-                <Card className="ui-card"
+                <Card className="ui-table-card"
                     title={ 
                         <Space>
                             <FileOutlined />
@@ -297,12 +308,18 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                                 <Space>
                                     <CommentOutlined />
                                     {L("Comments")}
+                                    {"(" + (comments?.totalCount ?? 0) + ")"}
                                 </Space>
                             </Col>
                             <Col flex="none">
-                                {isOk && canAddComm 
-                                    ? <Button onClick={this.addNewComment}>{L('AddAComment')}</Button> 
-                                    : <></>
+                                {isOk && isAssignedToProject ? 
+                                    <Button 
+                                        icon={<CommentOutlined />} 
+                                        type="primary" 
+                                        onClick={this.addNewComment}
+                                    > 
+                                        {L('AddAComment')}
+                                    </Button> : <></>
                                 }
                                 
                             </Col>
@@ -310,7 +327,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                     } 
                 >
                     {isOk && ticket
-                        ? <CommentList key={ticket?.id} ticketId={ticket?.id} canReply={canAddComm} />
+                        ? <CommentList key={ticket?.id} ticketId={ticket?.id} canReply={isAssignedToProject} />
                         : <></>
                     }  
                 </Card>

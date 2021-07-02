@@ -7,6 +7,7 @@ const rules = {
       message: L('ThisFieldIsRequired'),
     },
   ],
+  captcha: [{ required: true, message: L('ProveYouAreHuman') }],
   password: [{ required: true, message: L('ThisFieldIsRequired') }],
 };
 

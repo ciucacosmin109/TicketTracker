@@ -14,7 +14,7 @@ import { L } from '../../../lib/abpUtility';
 import { ColumnsType } from 'antd/lib/table';
 import TicketStore from '../../../stores/ticketStore';
 import { TicketDto } from '../../../services/ticket/dto/ticketDto';
-import { TicketType } from '../../../services/ticket/dto/ticketType';
+//import { TicketType } from '../../../services/ticket/dto/ticketType';
 import ComponentStore from '../../../stores/componentStore';
 import ProjectStore from '../../../stores/projectStore'; 
 
@@ -112,6 +112,9 @@ class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState>
         }
 
         const columns : ColumnsType<TicketDto> = [ 
+            { key:'padding', width:'10px', render: (text: any, record: TicketDto, index: number) =>
+                <div onClick={e => this.onRowClick(e, record)}> </div>
+            },
             { title: L('Type'), key:'type', width:'1%', render: (text: any, record: TicketDto, index: number) =>
                 <div onClick={e => this.onRowClick(e, record)}>
                     <Space key={index}>
@@ -122,7 +125,7 @@ class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState>
                                 <BulbFilled style={{color: 'green'}} /> :
                             <FileTextOutlined />
                         } 
-                        {L(TicketType[record.type])}  
+                        {/*L(TicketType[record.type])*/}
                     </Space>
                 </div>
             },

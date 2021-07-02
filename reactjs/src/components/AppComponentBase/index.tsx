@@ -3,6 +3,7 @@ import './index.less';
 
 import { L, isGranted } from '../../lib/abpUtility';
 import { appRouters } from '../Router/router.config';
+import utils from '../../utils/utils';
 
 class AppComponentBase<P = {}, S = {}, SS = any> extends React.Component<P, S, SS> {
   L_original(key: string, sourceName?: string): string {
@@ -34,6 +35,12 @@ class AppComponentBase<P = {}, S = {}, SS = any> extends React.Component<P, S, S
   }
   getDateTimeString(date: Date){ 
     return new Date(date).toLocaleString("ro-RO");
+  }
+
+  setCustomTitle(title: string | undefined){
+    if(title != null){
+      document.title = title + ' | ' + utils.getPageTitle("");
+    } 
   }
 }
 

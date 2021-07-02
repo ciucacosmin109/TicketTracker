@@ -1,4 +1,4 @@
-import { LockOutlined, PlusOutlined, ProjectOutlined, UserOutlined } from '@ant-design/icons';
+import { FundProjectionScreenOutlined, LockOutlined, PlusOutlined, ProjectOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Card, Col, Row, Space } from 'antd';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -39,13 +39,13 @@ export default class ProjectList extends AppComponentBase<IProjectListProps, IPr
             ? this.props.projectStore?.assignedProjects 
             : this.props.projectStore?.publicProjects;
         
-        return <Card className="project-list"
+        return <Card className="project-list ui-card"
             title={
                 <Row>
                     <Col flex="auto">   
                         {this.props.category === ProjectCategory.ASSIGNED 
-                            ? <><Space><UserOutlined />{L('AssignedProjects')}</Space></>
-                            : <><Space><UserOutlined />{L('PublicProjects')}</Space></> 
+                            ? <><Space><FundProjectionScreenOutlined />{L('AssignedProjects')}</Space></>
+                            : <><Space><FundProjectionScreenOutlined />{L('PublicProjects')}</Space></> 
                         } 
                     </Col>
                     {this.props.showNewProjectButton ?

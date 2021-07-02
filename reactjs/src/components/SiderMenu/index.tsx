@@ -36,18 +36,7 @@ const SiderMenu = (props: ISiderMenuProps) => {
       trigger={null} className={'sidebar ' + (collapsed ? 'sidebar-collapsed' : '')} width={256} 
       collapsible collapsed={collapsed} onCollapse={onCollapse}>
       
-      {/* {collapsed ? (
-        <Col style={{ textAlign: 'center', marginTop: 15, marginBottom: 10 }}>
-          <Avatar shape="square" style={{ height: 27, width: 64 }} src={AbpLogo} />
-        </Col>
-      ) : (
-        <Col style={{ textAlign: 'center', marginTop: 15, marginBottom: 10 }}>
-          <Avatar shape="square" style={{ height: 54, width: 128 }} src={AbpLogo} />
-        </Col>
-      )} */}
-
-      <SideUserInfo collapsed={collapsed} />
-      
+      <SideUserInfo collapsed={collapsed} /> 
       <Menu mode="inline" selectedKeys={[currentRoute ? currentRoute.path : '']}>
         <Menu.Divider />
 

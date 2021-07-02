@@ -12,6 +12,7 @@ namespace TicketTracker.Projects.Dto {
     [AutoMap(typeof(Project))]
     public class SimpleProjectDto : EntityDto<int> {
         [Required]
-        public string Name { get; set; } 
+        public string Name { get; set; }
+        public bool IsPublic { get; set; }
     }
 }

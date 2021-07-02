@@ -215,6 +215,10 @@ class EditTicket extends AppComponentBase<IEditTicketProps, IEditTicketState> {
 
         activityOptions.push({value: 0, label: L("NoActivity")});
 
+        if(this.props.match.params.id != null){
+            this.setCustomTitle(L("EditTicket"));
+        }
+            
         return (
             <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}>   
                 <Card className="edit-ticket"

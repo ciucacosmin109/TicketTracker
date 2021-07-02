@@ -20,6 +20,7 @@ import TicketTypeChart from './chartComponents/ticketTypeChart';
 import TicketPriorityChart from './chartComponents/ticketPriorityChart';
 import TicketStatusChart from './chartComponents/ticketStatusChart';
 import {StaticProjectPermissionNames} from '../../models/ProjectUser/StaticProjectPermissionNames';
+import InfoCard from '../../components/InfoCard';
 
 export interface IProjectParams{
     id: string | undefined; 
@@ -80,9 +81,14 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
         const canAddComp = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_AddComponents);
         const canManageComp = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_ManageComponents);
 
+        if(isOk){
+            this.setCustomTitle(project?.name);
+        }
+
         // Component content
         return ( 
             <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}> 
+                <InfoCard text={this.L("InfoProject")} /> 
                 <Card className="project ui-card"
                     title={
                         <Row>
@@ -143,7 +149,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                         </Col>
                     </Row>
                 </Card>
-                <Card className="project-components ui-card"
+                <Card className="ui-table-card"
                     title={
                         <Row>
                             <Col flex="auto">  

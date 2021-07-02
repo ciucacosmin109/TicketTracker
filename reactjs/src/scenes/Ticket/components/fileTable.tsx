@@ -114,6 +114,7 @@ class FileTable extends AppComponentBase<IFileTableProps, IFileTableState> {
         }
 
         const columns : ColumnsType<FileDto> = [ 
+            { key:'padding', width:'10px' },
             { title: L('Id'), key:'id', dataIndex:"id", width:'1%' },
             { title: L('Name'), key:'name', dataIndex:"name", render: (text: any, record: FileDto, index: number) =>
                 <Space>
@@ -157,7 +158,10 @@ class FileTable extends AppComponentBase<IFileTableProps, IFileTableState> {
                 dataSource={files}
                 columns={columns}
             /> 
-            <FileUploader onNewFiles={this.onNewFiles} />
+            {this.props.uploadEnabled 
+                ? <FileUploader onNewFiles={this.onNewFiles} />
+                : <></>
+            } 
         </div>); 
     }
 }

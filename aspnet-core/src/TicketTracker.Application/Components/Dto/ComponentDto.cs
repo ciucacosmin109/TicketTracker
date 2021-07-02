@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TicketTracker.Entities;
+using TicketTracker.Projects.Dto;
 
 namespace TicketTracker.Components.Dto {
     [AutoMap(typeof(Component))]
@@ -14,7 +15,7 @@ namespace TicketTracker.Components.Dto {
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
-         
-        public int ProjectId { get; set; }
+
+        public SimpleProjectDto Project { get; set; } 
     }
 }

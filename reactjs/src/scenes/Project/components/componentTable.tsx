@@ -91,6 +91,9 @@ class ComponentTable extends AppComponentBase<IComponentTableProps, IComponentTa
         }
 
         const columns : ColumnsType<ComponentDto> = [ 
+            { key:'padding', width:"10px", render: (text: any, record: ComponentDto, index: number) =>
+                <div onClick={e => this.onRowClick(e, record)}> </div>
+            },
             { title: L('Name'), key:'name', render: (text: any, record: ComponentDto, index: number) =>
                 <div onClick={e => this.onRowClick(e, record)}>
                     <Space key={index}>

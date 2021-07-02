@@ -118,6 +118,7 @@ class WorkTable extends AppComponentBase<IWorkTableProps, IWorkTableState> {
         }
 
         const columns : ColumnsType<WorkDto> = [ 
+            { key: 'padding', width: "10px" },
             { title: L('AssignedTo'), key:'type', render: (text: any, record: WorkDto, index: number) =>
                 <Space key={index}> 
                     <ProfileAvatar
@@ -140,7 +141,7 @@ class WorkTable extends AppComponentBase<IWorkTableProps, IWorkTableState> {
             },
             { title: L('Estimated'), key:'estimatedTime', dataIndex:"estimatedTime", width:'1%', render: (text: any, record: WorkDto, index: number) =>
                 text ?? 0
-            },
+            }, 
         ];
         if(this.props.editEnabled){
             columns.push(
