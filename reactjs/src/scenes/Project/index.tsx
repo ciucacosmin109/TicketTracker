@@ -124,14 +124,14 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                             <Row> 
                                 <Space>
                                     <CalendarOutlined />
-                                    {`${L('Created')}: ${new Date(project?.creationTime!).toLocaleString("ro-RO")}`}  
+                                    {`${L('Created')}: ${this.getDateTimeString(project?.creationTime!)}`}  
                                 </Space>
                             </Row>
                             {project?.lastModificationTime ? 
                                 <Row> 
                                     <Space>
                                         <EditOutlined />
-                                        {`${L('Modified')}: ${new Date(project?.lastModificationTime!).toLocaleString("ro-RO")}`}  
+                                        {`${L('Modified')}: ${this.getDateTimeString(project?.lastModificationTime!)}`}  
                                     </Space>
                                 </Row> : <></>
                             }

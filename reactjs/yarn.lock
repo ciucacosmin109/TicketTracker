@@ -7769,10 +7769,10 @@
   "resolved" "https://registry.npmjs.org/mobx/-/mobx-5.15.4.tgz"
   "version" "5.15.4"
 
-"moment-timezone@^0.5.27":
-  "integrity" "sha512-+GgHNg8xRhMXfEbv81iDtrVeTcWt0kWmTEY1XQK14dICTXnWJnT0dxdlPspwqF3keKMVPXwayEsk1DI0AA/jdA=="
-  "resolved" "https://registry.npmjs.org/moment-timezone/-/moment-timezone-0.5.31.tgz"
-  "version" "0.5.31"
+"moment-timezone@^0.5.33":
+  "integrity" "sha512-PTc2vcT8K9J5/9rDEPe5czSIKgLoGsH8UNpA4qZTVw0Vd/Uz19geE9abbIOQKaAQFcnQ3v5YEXrbSc5BpshH+w=="
+  "resolved" "https://registry.npmjs.org/moment-timezone/-/moment-timezone-0.5.33.tgz"
+  "version" "0.5.33"
   dependencies:
     "moment" ">= 2.9.0"
 

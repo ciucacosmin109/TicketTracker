@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
@@ -18,11 +18,16 @@ declare var abp: any;
 Utils.setLocalization();
 
 abpUserConfigurationService.getAll().then(data => {
+  // Populate abp variable
   Utils.extend(true, abp, data.data.result);
-  abp.clock.provider = Utils.getCurrentClockProvider(data.data.result.clock.provider);
 
+  // Sets th clock provider from a string ... now(), normalize(...), supportsMultipleTimezone
+  abp.clock.provider = Utils.getCurrentClockProvider(abp.clock.provider);
+
+  // Sets the language the dates will be formated to
   moment.locale(abp.localization.currentLanguage.name);
 
+  // Sets the timezone dates (asumed to  be utc) will be converted to
   if (abp.clock.provider.supportsMultipleTimezone) {
     moment.tz.setDefault(abp.timing.timeZoneInfo.iana.timeZoneId);
   }

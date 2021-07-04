@@ -21,14 +21,14 @@ class TicketMeta extends AppComponentBase<ITicketMetaProps> {
                 <Row> 
                     <Space>
                         <CalendarOutlined />
-                        {`${L('Created')}: ${new Date(ticket?.creationTime!).toLocaleString("ro-RO")}`}  
+                        {`${L('Created')}: ${this.getDateTimeString(ticket?.creationTime!)}`}  
                     </Space>
                 </Row>
                 {ticket?.lastModificationTime ? 
                     <Row> 
                         <Space>
                             <EditOutlined />
-                            {`${L('Modified')}: ${new Date(ticket?.lastModificationTime!).toLocaleString("ro-RO")}`}  
+                            {`${L('Modified')}: ${this.getDateTimeString(ticket?.lastModificationTime!)}`}  
                         </Space>
                     </Row> : <></>
                 } 

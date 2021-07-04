@@ -111,14 +111,14 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                     <Row> 
                         <Space>
                             <CalendarOutlined />
-                            {`${L('Created')}: ${new Date(component?.creationTime!).toLocaleString("ro-RO")}`}  
+                            {`${L('Created')}: ${this.getDateTimeString(component?.creationTime!)}`}  
                         </Space>
                     </Row>
                     {isOk && component?.lastModificationTime ? 
                         <Row> 
                             <Space>
                                 <EditOutlined />
-                                {`${L('Modified')}: ${new Date(component?.lastModificationTime!).toLocaleString("ro-RO")}`}  
+                                {`${L('Modified')}: ${this.getDateTimeString(component?.lastModificationTime!)}`}  
                             </Space>
                         </Row> : <></>
                     } 

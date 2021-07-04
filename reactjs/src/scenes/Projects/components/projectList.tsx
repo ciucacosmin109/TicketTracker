@@ -95,7 +95,7 @@ export default class ProjectList extends AppComponentBase<IProjectListProps, IPr
                                     <Row>
                                         <Col flex="auto"> </Col>
                                         <Col flex="none">
-                                            {new Date(x.creationTime!).toLocaleDateString("ro-RO")} 
+                                            {this.getDateTimeString(x.creationTime!)} 
                                         </Col>
                                     </Row>
                                 </Card>

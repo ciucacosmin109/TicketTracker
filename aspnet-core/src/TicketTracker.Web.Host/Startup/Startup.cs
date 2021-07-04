@@ -24,7 +24,8 @@ using Microsoft.AspNetCore.Mvc;
 using Abp.AspNetCore.Mvc.ExceptionHandling;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using MailKit.Net.Smtp; 
+using MailKit.Net.Smtp;
+using Abp.Timing;
 
 namespace TicketTracker.Web.Host.Startup
 {
@@ -41,8 +42,9 @@ namespace TicketTracker.Web.Host.Startup
             _appConfiguration = env.GetAppConfiguration();
         }
 
-        public IServiceProvider ConfigureServices(IServiceCollection services)
-        {
+        public IServiceProvider ConfigureServices(IServiceCollection services) {
+            Clock.Provider = ClockProviders.Utc;
+
             //MVC
             services.AddControllersWithViews(
                 options =>
