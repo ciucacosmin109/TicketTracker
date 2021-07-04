@@ -7,8 +7,9 @@ import AccountStore from '../../stores/accountStore';
 
 import AppComponentBase from '../../components/AppComponentBase'; 
 import { L } from '../../lib/abpUtility';
-import { Button, Card, Col, Empty, Form, Input, message, Modal, Row, Select, Space, Spin, Switch, Table, Tooltip } from 'antd';
-import { DeleteOutlined, ExclamationCircleOutlined, FileTextOutlined, FundProjectionScreenOutlined, LoadingOutlined, SaveOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'; 
+import { Button, Empty, Form, Input, message, Modal, Select, Space, Switch, Table, Tooltip } from 'antd';
+import { DeleteOutlined, ExclamationCircleOutlined, FileTextOutlined, 
+    FundProjectionScreenOutlined, SaveOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'; 
 
 import rules from './index.validation'
 import { FormInstance } from 'antd/lib/form'; 
@@ -26,6 +27,8 @@ import projectUserService from '../../services/projectUser/projectUserService';
 import { GetAllProjectUsersInput } from '../../services/projectUser/dto/getAllProjectUsersInput'; 
 import { UpdateProjectInput } from '../../services/project/dto/updateProjectInput';
 import { EntityDto } from '../../services/dto/entityDto'; 
+import UiCard from '../../components/UiCard';
+import InfoCard from '../../components/InfoCard';
 
 export interface IEditProjectParams{
     id: string | undefined; 
@@ -41,6 +44,7 @@ export interface IEditProjectState{
 
     searchVisible: boolean;
     loading: boolean;
+    saving: boolean;
 }
  
 @inject(Stores.AccountStore, Stores.ProjectRoleStore)
@@ -54,6 +58,7 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
 
         searchVisible: false,
         loading: true,
+        saving: false,
     }
 
     // User management
@@ -91,14 +96,20 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
         }); 
     }
     onProjectUpdate = async (formValues: any) => {
+        this.setState({saving: true});
+
         const intId = parseInt(this.props.match.params.id!); 
         if(!Number.isNaN(intId)){ // i have an id  
-            this.update(intId, formValues);
+            await this.update(intId, formValues);
         }else{
-            this.create(formValues);
+            await this.create(formValues);
         }
+
+        this.setState({saving: false});
     }
     onProjectDelete = async () => {
+        this.setState({saving: true});
+
         const intId = parseInt(this.props.match.params.id!); 
         if(!Number.isNaN(intId)){ // i have an id 
 
@@ -113,10 +124,14 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
                     this.props.history.replace(myProjectsPath); 
                     
                     message.success(L("SuccessfullyDeleted")); 
+                    this.setState({saving: false});
                 },
-                onCancel() {},
+                onCancel: async () => {  
+                    this.setState({saving: false});
+                },
             }); 
         } 
+        
     }
     create = async (formValues: any) => {
         const project : CreateProjectInput = {
@@ -263,68 +278,73 @@ class EditProject extends AppComponentBase<IEditProjectProps, IEditProjectState>
         } 
 
         // Component content
-        const content = ( 
-            <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}>  
-                <Form ref={this.form} onFinish={this.onProjectUpdate} layout="vertical"> 
-                    <Card className="edit-project"
-                        title={
-                            <Row>
-                                <Col flex="auto"> 
-                                    <Space><FundProjectionScreenOutlined />{L('ProjectDetails')}</Space>
-                                </Col>
-                                <Col flex="none">
-                                    <Space>
-                                        {this.props.match.params.id != null && this.props.accountStore?.account.id === this.state.creatorId
-                                            ? <Button type="primary" danger onClick={this.onProjectDelete} icon={<DeleteOutlined />}>{L('Delete')}</Button> 
-                                            : <></>
-                                        }
-                                        <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
-                                    </Space>
-                                </Col>
-                            </Row> 
-                        }
-                    > 
-                        <Form.Item label={L('Name')} name={'name'} rules={rules.name}>
-                            <Input placeholder={L('Name')} prefix={<FileTextOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
-                        </Form.Item> 
-        
-                        <Form.Item label={L('Description')} name={'description'}>
-                            <Input.TextArea placeholder={L('Description')} />
-                        </Form.Item> 
-                            
-                        <Form.Item label={L('IsPublic')} name={'isPublic'} valuePropName='checked'> 
-                            <Switch /> 
-                        </Form.Item> 
+        return (  
+            <Form ref={this.form} onFinish={this.onProjectUpdate} layout="vertical"> 
+                <InfoCard text={this.L("InfoEditProject")} />
 
-                        <Form.Item label={L('Users')}> 
-                            <Table size='small' 
-                                showHeader={false} 
-                                rowKey={x=>x.id} 
-                                pagination={{
-                                    hideOnSinglePage: true
-                                }}
-                                scroll={{x: true}}
-                                locale={noDataLocale} 
-                                dataSource={this.state.selectedUsers} 
-                                columns={columns} 
-                                footer={() =>
-                                    <Button 
-                                        type='dashed'
-                                        style={{width: '100%'}}
-                                        onClick={()=>this.setModal(true)} 
-                                        icon={<UserAddOutlined />}>
-                                        
-                                        {L('AddUsers')}
-                                    </Button> 
-                                }
-                            /> 
-                        </Form.Item> 
-                    </Card> 
-                </Form> 
+                <UiCard 
+                    loadingBody={this.state.loading}
+                    className="edit-project"
+                    icon={<FundProjectionScreenOutlined />}
+                    title={L('ProjectDetails')}
+                    extra={ 
+                        <Space>
+                            {this.props.match.params.id != null && this.props.accountStore?.account.id === this.state.creatorId
+                                ? <Button 
+                                    loading={this.state.loading || this.state.saving}
+                                    type="primary" 
+                                    danger 
+                                    onClick={this.onProjectDelete} 
+                                    icon={<DeleteOutlined />}>{L('Delete')}</Button> 
+                                : <></>
+                            }
+                            <Button 
+                                loading={this.state.loading || this.state.saving}
+                                type="primary" 
+                                htmlType="submit" 
+                                icon={<SaveOutlined />}>{L('Save')}</Button>
+                        </Space>
+                    } 
+                > 
+                    <Form.Item label={L('Name')} name={'name'} rules={rules.name}>
+                        <Input placeholder={L('Name')} prefix={<FileTextOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
+                    </Form.Item> 
+    
+                    <Form.Item label={L('Description')} name={'description'}>
+                        <Input.TextArea placeholder={L('Description')} />
+                    </Form.Item> 
+                        
+                    <Form.Item label={L('IsPublic')} name={'isPublic'} valuePropName='checked'> 
+                        <Switch /> 
+                    </Form.Item> 
+
+                    <Form.Item label={L('Users')}> 
+                        <Table size='small' 
+                            showHeader={false} 
+                            rowKey={x=>x.id} 
+                            pagination={{
+                                hideOnSinglePage: true
+                            }}
+                            scroll={{x: true}}
+                            locale={noDataLocale} 
+                            dataSource={this.state.selectedUsers} 
+                            columns={columns} 
+                            footer={() =>
+                                <Button 
+                                    type='dashed'
+                                    style={{width: '100%'}}
+                                    onClick={()=>this.setModal(true)} 
+                                    icon={<UserAddOutlined />}>
+                                    
+                                    {L('AddUsers')}
+                                </Button> 
+                            }
+                        /> 
+                    </Form.Item> 
+                </UiCard> 
                 <SearchAccount visible={this.state.searchVisible} onOk={this.onUsersAdded} onCancel={()=>this.setModal(false)}/>  
-            </Spin>  
+            </Form> 
         );
-        return content;
     }
 }
  

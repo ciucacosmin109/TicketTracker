@@ -83,8 +83,7 @@ class FileTable extends AppComponentBase<IFileTableProps, IFileTableState> {
         const ticketId = this.props.fileStore?.files?.ticketId; 
         if(ticketId == null){
             return;
-        }
-        console.log(files); 
+        } 
 
         for(let i = 0; i < files.length;i++){
             const formData = new FormData();  

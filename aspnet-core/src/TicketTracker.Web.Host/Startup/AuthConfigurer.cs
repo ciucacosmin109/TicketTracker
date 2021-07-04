@@ -56,29 +56,37 @@ namespace TicketTracker.Web.Host.Startup
         /* This method is needed to authorize SignalR javascript client and download requests.
          * SignalR can not send authorization header. So, we are getting it from query string as an encrypted text. */
         private static Task CookieOrQueryStringTokenResolver(MessageReceivedContext context) {
-            if (!context.HttpContext.Request.Path.HasValue ||
+            /*if (!context.HttpContext.Request.Path.HasValue ||
                 !context.HttpContext.Request.Path.Value.StartsWith("/signalr") &&
                 !context.HttpContext.Request.Path.Value.Contains("/Files/Download") ) {
 
                 // We are just looking for signalr clients or download requests
                 return Task.CompletedTask;
-            }
+            }*/
 
-            // Download request
-            var tOk = context.HttpContext.Request.Cookies.TryGetValue("Abp.AuthToken", out string token);
-            //var etOk = context.HttpContext.Request.Cookies.TryGetValue("enc_auth_token", out string encToken);
-            if (tOk) {
-                context.Token = token;
+            // If the request contains the token in headers
+            if (context.Token != null) {
+                return Task.CompletedTask;
             }
-
+            
+            // Get the token from request query
             var qsAuthToken = context.HttpContext.Request.Query["enc_auth_token"].FirstOrDefault();
-            if (qsAuthToken == null) {
-                // Cookie value does not matches to querystring value
+            if (qsAuthToken != null) { 
+                context.Token = SimpleStringCipher.Instance.Decrypt(qsAuthToken, AppConsts.DefaultPassPhrase);
                 return Task.CompletedTask;
             }
 
-            // Set auth token from cookie
-            context.Token = SimpleStringCipher.Instance.Decrypt(qsAuthToken, AppConsts.DefaultPassPhrase);
+            // Get the token from cookies
+            var tOk = context.HttpContext.Request.Cookies.TryGetValue("Abp.AuthToken", out string token);
+            var etOk = context.HttpContext.Request.Cookies.TryGetValue("enc_auth_token", out string encToken);
+            if (tOk) {
+                context.Token = token;
+                return Task.CompletedTask;
+            }else if (etOk) {
+                context.Token = SimpleStringCipher.Instance.Decrypt(encToken, AppConsts.DefaultPassPhrase);
+                return Task.CompletedTask;
+            }
+
             return Task.CompletedTask;
         }
     }

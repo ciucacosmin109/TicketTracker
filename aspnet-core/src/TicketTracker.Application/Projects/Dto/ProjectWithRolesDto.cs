@@ -13,6 +13,7 @@ using TicketTracker.Projects.Dto.RoleDto;
 namespace TicketTracker.Projects.Dto {
     [AutoMap(typeof(Project), typeof(ProjectDto))] 
     public class ProjectWithRolesDto : ProjectDto {
-        public List<PRoleDto> Roles { get; set; } 
+        public List<PRoleDto> Roles { get; set; }
+        public bool IsAssigned { get; set; }
     }
 }

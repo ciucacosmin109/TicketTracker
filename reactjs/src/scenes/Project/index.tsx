@@ -6,8 +6,10 @@ import AccountStore from '../../stores/accountStore';
 
 import AppComponentBase from '../../components/AppComponentBase'; 
 import { L } from '../../lib/abpUtility';
-import { Button, Card, Col , Row,   Space, Spin,   } from 'antd';
-import { AppstoreAddOutlined, AppstoreOutlined, AreaChartOutlined, CalendarOutlined, EditOutlined, LoadingOutlined, LockFilled, ProjectFilled, UserOutlined } from '@ant-design/icons'; 
+import { Button, Col, Row, Space } from 'antd';
+import { AppstoreAddOutlined, AppstoreOutlined, AreaChartOutlined, 
+    CalendarOutlined, EditOutlined, LockFilled, ProjectFilled, 
+    UserOutlined } from '@ant-design/icons'; 
    
 import { RouteComponentProps, withRouter } from 'react-router'; 
 import ProjectStore from '../../stores/projectStore';
@@ -21,6 +23,7 @@ import TicketPriorityChart from './chartComponents/ticketPriorityChart';
 import TicketStatusChart from './chartComponents/ticketStatusChart';
 import {StaticProjectPermissionNames} from '../../models/ProjectUser/StaticProjectPermissionNames';
 import InfoCard from '../../components/InfoCard';
+import UiCard from '../../components/UiCard';
 
 export interface IProjectParams{
     id: string | undefined; 
@@ -67,8 +70,11 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
             this.props.history.replace('/exception?type=404');
         }
     }
-    render(){ 
-        const loading = this.props.projectStore?.loading;
+    render(){
+        const projectLoading = this.props.projectStore?.loading; 
+        const myRolesLoading = this.props.projectUserStore?.loading; 
+        
+
         const project = this.props.projectStore?.project;
         const isOk = this.props.projectStore?.project?.id === parseInt(this.props.match.params.id!);
 
@@ -87,31 +93,32 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
 
         // Component content
         return ( 
-            <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}> 
-                <InfoCard text={this.L("InfoProject")} /> 
-                <Card className="project ui-card"
-                    title={
-                        <Row>
-                            <Col flex="auto">  
-                                <Space> 
-                                    {isOk && project?.isPublic
-                                        ? <ProjectFilled style={{color:"#1da57a"}}/> 
-                                        : <LockFilled style={{color:"orange"}}/> }
-                                    {isOk ? `${project?.name} (#${project?.id})` : ""}
-                                </Space> 
-                            </Col>
-                            <Col flex="none">
-                                {isOk && canEdit
-                                    ? <Button type="primary" onClick={() => this.editProject(project?.id ?? 0)} icon={<EditOutlined />}>{L('Edit')}</Button>
-                                    : <></>
-                                }
-                            </Col>
-                        </Row> 
+            <div> 
+                <InfoCard text={this.L("InfoProject")} />
+                
+                <UiCard
+                    loadingTitle={projectLoading || myRolesLoading || !isOk} 
+                    loadingBody={projectLoading || myRolesLoading || !isOk} 
+                    icon={project?.isPublic
+                        ? <ProjectFilled style={{color:"#1da57a"}}/> 
+                        : <LockFilled style={{color:"orange"}}/>
+                    }
+                    title={`${project?.name} (#${project?.id})`}
+                    extra={canEdit ? 
+                        <Button 
+                            type="primary" 
+                            onClick={() => this.editProject(project?.id ?? 0)} 
+                            icon={<EditOutlined />}
+                        >
+                            {L('Edit')}
+                        </Button> : <></>
                     }
                 >
-                    <Row style={{marginBottom: '15px'}}> 
-                        {isOk ? project?.description : ""}  
-                    </Row> 
+                    {project?.description != null && project?.description?.trim() !== "" ? 
+                        <Row style={{marginBottom: '15px'}}> 
+                            {project?.description}  
+                        </Row> : <></>
+                    }
                     <Row>
                         <Col flex="auto">
                             <Row> 
@@ -120,7 +127,7 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                                     {`${L('Created')}: ${new Date(project?.creationTime!).toLocaleString("ro-RO")}`}  
                                 </Space>
                             </Row>
-                            {isOk && project?.lastModificationTime ? 
+                            {project?.lastModificationTime ? 
                                 <Row> 
                                     <Space>
                                         <EditOutlined />
@@ -128,75 +135,56 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                                     </Space>
                                 </Row> : <></>
                             }
-                            {isOk && myRoles != null ?
-                                <Row> 
+                            {project?.isAssigned ?
+                                <Row>  
                                     <Space>
                                         <UserOutlined />
-                                        {myRoles.length === 0
+                                        {myRoles == null || myRoles.length === 0
                                             ? `${L('You')}: ${L("NoRole")}`
                                             : `${L('You')}: ${myRoles?.map(x => L(x)).join(", ")}`
                                         }
-                                    </Space>
-                                </Row>
-                                :<></>
+                                    </Space> 
+                                </Row> : <></>
                             }
                         </Col>
-                        <Col flex="none" style={{paddingTop: '15px'}}> 
-                            {isOk
-                                ? <UserList projectId={project!.id ?? 0} />
-                                : <></>
-                            } 
+                        <Col flex="none"> 
+                            <UserList projectId={project?.id ?? 0} />
                         </Col>
                     </Row>
-                </Card>
-                <Card className="ui-table-card"
-                    title={
-                        <Row>
-                            <Col flex="auto">  
-                                <Space> 
-                                    <AppstoreOutlined style={{color: 'purple'}} />    
-                                    {this.L('Components')}
-                                </Space> 
-                            </Col>
-                            <Col flex="none">
-                                {isOk && canAddComp ?
-                                    <Button type="primary" onClick={() => this.setModal(true)} icon={<AppstoreAddOutlined />}>
-                                        {L('AddComponent')}
-                                    </Button> : <></>
-                                }
-                                
-                            </Col>
-                        </Row> 
+                </UiCard> 
+                
+                <UiCard zeroPadding
+                    loadingBody={!isOk}
+                    icon={<AppstoreOutlined style={{color: 'purple'}} />}
+                    title={this.L('Components')}
+                    extra={canAddComp ?
+                        <Button type="primary" onClick={() => this.setModal(true)} icon={<AppstoreAddOutlined />}>
+                            {L('AddComponent')}
+                        </Button> : <></>
+                    } 
+                > 
+                    {isOk ? <>
+                        <ComponentTable 
+                            key={project!.id} 
+                            projectId={project!.id} 
+                            editEnabled={canManageComp} 
+                        /> 
+                        <EditComponent
+                            visible={this.state.modal}
+                            projectId={project!.id}
+                            onOk={() => this.setModal(false)}
+                            onCancel={() => this.setModal(false)}
+                        /> </> : <></>
                     }
-                >    
-                    <Row>  
-                        {isOk
-                            ? <ComponentTable 
-                                key={project!.id} 
-                                projectId={project!.id} 
-                                editEnabled={canManageComp} />
-                            : <></>
-                        }  
-                    </Row>
-                        {isOk
-                            ? <EditComponent
-                                visible={this.state.modal}
-                                projectId={project!.id}
-                                onOk={() => this.setModal(false)}
-                                onCancel={() => this.setModal(false)}
-                            />
-                            : <></>
-                        }  
-                </Card>
+                </UiCard>
 
-                <Card className="ui-card"
-                    title={<Space> 
-                        <AreaChartOutlined style={{color: 'royalblue'}}/>
-                        {L("Statistics")}
-                    </Space>}
+                <UiCard
+                    icon={<AreaChartOutlined style={{color: 'royalblue'}}/>}
+                    title={L("Statistics")}
                 > 
                     <Row>
                         {/* Baaa, nu stiu de ce, dar fara width: 0, toate cardurile se vad pe cate o linie ... */}
+                        {/* Nvm :)) ... */}
                         <Col flex="1 1 300px" style={{width: 0, margin: 5}}>
                             <TicketTypeChart tickets={tickets?.items ?? []} /> 
                         </Col>
@@ -207,8 +195,8 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
                             <TicketStatusChart tickets={tickets?.items ?? []} /> 
                         </Col> 
                     </Row>
-                </Card>  
-            </Spin>  
+                </UiCard>  
+            </div>  
         ); 
     }
 }

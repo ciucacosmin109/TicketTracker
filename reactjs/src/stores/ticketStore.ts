@@ -9,8 +9,10 @@ import { UpdateTicketInput } from "../services/ticket/dto/updateTicketInput";
 
 export default class TicketStore {
     @observable loading: boolean = false;
+    @observable saving: boolean = false;
 
     @observable ticket!: TicketDto;
+    
     @observable componentTickets!: PagedResultDto<TicketDto>; 
     @observable projectTickets!: PagedResultDto<TicketDto>; 
     @observable userTickets!: PagedResultDto<TicketDto>; 
@@ -61,19 +63,19 @@ export default class TicketStore {
     
     @action
     async create(input : CreateTicketInput) : Promise<TicketDto> {
-        this.loading = true;
+        this.saving = true;
         const tc = await ticketService.create(input); 
         if(this.componentTickets != null && input.componentId === this.componentId){
             this.componentTickets.totalCount++;
             this.componentTickets.items.push(tc); 
             this.componentTickets.items = [...this.componentTickets.items]
         }
-        this.loading = false;
+        this.saving = false;
         return tc;
     }  
     @action
     async update(input : UpdateTicketInput) {
-        this.loading = true;
+        this.saving = true;
         const newTicket = await ticketService.update(input); 
         if(input.id === this.ticket.id){
             this.ticket = newTicket;
@@ -84,11 +86,11 @@ export default class TicketStore {
             this.componentTickets.items.splice(oldIdx, 1, newTicket); 
             this.componentTickets.items = [...this.componentTickets.items]
         } 
-        this.loading = false;
+        this.saving = false;
     }  
     @action
     async delete(input : EntityDto) {
-        this.loading = true;
+        this.saving = true;
         await ticketService.delete(input); 
 
         const oldIdx = this.componentTickets.items.findIndex(x => x.id === input.id);
@@ -97,6 +99,6 @@ export default class TicketStore {
             this.componentTickets.items.splice(oldIdx, 1); 
             this.componentTickets.items = [...this.componentTickets.items]
         }
-        this.loading = false;
+        this.saving = false;
     }  
 }

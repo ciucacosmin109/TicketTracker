@@ -48,16 +48,16 @@ class SideUserInfo extends React.Component<ISideUserInfoProps> {
         {/* <Avatar className={"side-avatar"} shape="circle" src={profilePicture} />  */}
         <ProfileAvatar className={"side-avatar"} firstName={name ?? "?"} lastName={surname} />
         <div className="side-info-2"> 
-          <div>{name}</div> 
+          <div>{name ?? "?"}</div> 
           {MultiTenancyEnabled ? 
             <div>
               <DatabaseOutlined style={{marginRight: '6px'}}/>
-              <span>{tn}</span>
+              <span>{tn ?? "?"}</span>
             </div> 
           :
             <div>
               <UserOutlined style={{marginRight: '6px'}}/>
-              <span>{userName}</span>
+              <span>{userName ?? "?"}</span>
             </div> 
           }
         </div>

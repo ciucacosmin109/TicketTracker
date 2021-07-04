@@ -83,10 +83,15 @@ export default class ProjectList extends AppComponentBase<IProjectListProps, IPr
                                     <Row className="description">{x.description}</Row>
                                     <br />
 
-                                    <Space>
-                                        {x.roles != null && x.roles.length > 0 ? <UserOutlined /> : <></>}
-                                        {x.roles?.map(r => L(r.name)).join(", ")}
-                                    </Space> 
+                                    {x.isAssigned ? 
+                                        <Space>
+                                            <UserOutlined /> 
+                                            {L("You") + ": " + (x.roles.length > 0 
+                                                ? x.roles?.map(r => L(r.name)).join(", ")
+                                                : L("NoRole")
+                                            )}
+                                        </Space> : <></>
+                                    }
                                     <Row>
                                         <Col flex="auto"> </Col>
                                         <Col flex="none">

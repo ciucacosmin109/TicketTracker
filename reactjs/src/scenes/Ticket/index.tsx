@@ -6,15 +6,16 @@ import Stores from '../../stores/storeIdentifier';
 
 import AppComponentBase from '../../components/AppComponentBase'; 
 import { L } from '../../lib/abpUtility';
-import { Button, Card, Col, Row, Space, Spin, Switch } from 'antd';
-import { AppstoreOutlined, BugFilled,  BulbFilled,  
-    CalendarOutlined, CloseOutlined, CommentOutlined, EditOutlined, FileOutlined, FileTextOutlined, 
-    FundOutlined, LoadingOutlined, MailOutlined, } from '@ant-design/icons'; 
+import { Button, Card, Col, Row, Space, Switch } from 'antd';
+import { BugFilled,  BulbFilled, CalendarOutlined, CloseOutlined, 
+    CommentOutlined, EditOutlined, FileOutlined, FileTextOutlined, 
+    MailOutlined, } from '@ant-design/icons'; 
 import { Editor as TinyMce } from '@tinymce/tinymce-react';
    
 import { RouteComponentProps, withRouter } from 'react-router';  
 import TicketStore from '../../stores/ticketStore';  
 import TicketInfo from './components/ticketInfo';
+import TicketMeta from './components/ticketMeta';
 import TicketWork from './components/ticketWork';
 import WorkTable from './components/workTable';
 import CommentList from './components/commentList';
@@ -25,6 +26,7 @@ import { StaticProjectPermissionNames } from '../../models/ProjectUser/StaticPro
 import SubscriptionStore from '../../stores/subscriptionStore';
 import FileTable from './components/fileTable';
 import InfoCard from '../../components/InfoCard';
+import UiCard from '../../components/UiCard';
 
 export interface ITicketParams{
     id: string | undefined; 
@@ -112,7 +114,10 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
     }
 
     render() {
-        const loading = this.props.ticketStore?.loading;
+        const loadingTicket = this.props.ticketStore?.loading;
+        const loadingSubscription = this.props.subscriptionStore?.loading;
+        //const loadingComments = this.props.commentStore?.loading;
+
         const ticket = this.props.ticketStore?.ticket; 
         const isOk = this.props.ticketStore?.ticket?.id === parseInt(this.props.match.params.id!);
   
@@ -139,107 +144,78 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
         
         // Ticket content
         return ( 
-            <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}> 
+            <div> 
                 <InfoCard text={this.L("InfoTicket")} />
-                <Card className="ticket ui-card readonly-editor-card"
-                    title={
-                        <Row>
-                            <Col flex="auto">  
-                                <Space> 
-                                    {   
-                                        ticket?.type === 1 ?
-                                            <BugFilled style={{color: 'red'}} /> :
-                                        ticket?.type === 2 ?
-                                            <BulbFilled style={{color: 'green'}} /> :
-                                        <FileTextOutlined />
-                                    }  
-                                    {isOk ? `${ticket?.title} (#${ticket?.id})` : ""} 
-                                </Space> 
-                            </Col>
-                            <Col flex="none">
-                                <Space>
-                                    <Switch 
-                                        size="default"
-                                        checked={subscribed}
-                                        onChange={this.setSubscribed}
-                                        checkedChildren={<Space><MailOutlined />{L("Subscribed")}</Space>}
-                                        unCheckedChildren={<Space><CloseOutlined />{L("NotSubscribed")}</Space>} 
-                                    />
-                                    {isOk && canEdit ? 
-                                        <Button 
-                                            type="primary" 
-                                            onClick={this.editTicket} 
-                                            icon={<EditOutlined />}>
-                                                
-                                            {L('Edit')}
-                                        </Button> : <></>
-                                    }
-                                </Space>
-                            </Col>
-                        </Row> 
-                    }
-                >   
-                    <Row>  
-                        <TinyMce
-                            apiKey="7atcogyb8kct4rdja6x79f3i8cks6o2uxuggklo3pynla4la"
-                            disabled={true}
-                            init={{ 
-                                width:"100%",
-                                menubar: false,
-                                statusbar: true,
-                                resize: true,
-                                branding: false,
-                                plugins: [ 'wordcount' ],
-                                toolbar: false
-                            }}
-                            value={isOk && ticket?.description != null && ticket?.description !== "" 
-                                ? ticket?.description
-                                : ""
+                
+                <UiCard zeroPadding
+                    className="readonly-editor-card"
+                    loadingTitle={loadingTicket}
+                    loadingBody={loadingTicket}
+                    icon={   
+                        ticket?.type === 1 ?
+                            <BugFilled style={{color: 'red'}} /> :
+                        ticket?.type === 2 ?
+                            <BulbFilled style={{color: 'green'}} /> :
+                        <FileTextOutlined />
+                    } 
+                    title={`${ticket?.title} (#${ticket?.id})`}
+                    extra={
+                        <Space>
+                            <Switch 
+                                size="default"
+                                loading={loadingSubscription}
+                                checked={subscribed}
+                                onChange={this.setSubscribed}
+                                checkedChildren={<Space><MailOutlined />{L("Subscribed")}</Space>}
+                                unCheckedChildren={<Space><CloseOutlined />{L("NotSubscribed")}</Space>} 
+                            />
+                            {canEdit ? 
+                                <Button 
+                                    type="primary"
+                                    onClick={this.editTicket} 
+                                    icon={<EditOutlined />}>
+                                        
+                                    {L('Edit')}
+                                </Button> : <></>
                             }
-                        />
-                    </Row>
-                </Card>  
+                        </Space>
+                    } 
+                >    
+                    <TinyMce
+                        apiKey="7atcogyb8kct4rdja6x79f3i8cks6o2uxuggklo3pynla4la"
+                        disabled={true}
+                        init={{ 
+                            width:"100%",
+                            menubar: false,
+                            statusbar: true,
+                            resize: true,
+                            branding: false,
+                            plugins: [ 'wordcount' ],
+                            toolbar: false
+                        }}
+                        value={isOk && ticket?.description != null && ticket?.description !== "" 
+                            ? ticket?.description
+                            : ""
+                        }
+                    /> 
+                </UiCard>  
 
                 <Row>
                     <Col flex="1 1 300px">
-                        <Card className="ui-card">  
-                            {isOk && ticket
+                        <UiCard loadingBody={loadingTicket}>
+                            {ticket
                                 ? <TicketInfo ticketDto={ticket} /> 
                                 : <></>
                             } 
-                        </Card> 
+                        </UiCard> 
                     </Col>
                     <Col flex="1 1 300px">
-                        <Card className="ui-card">
-                            <div style={{marginBottom: '15px'}}>
-                                <Row> 
-                                    <Space>
-                                        <CalendarOutlined />
-                                        {`${L('Created')}: ${new Date(ticket?.creationTime!).toLocaleString("ro-RO")}`}  
-                                    </Space>
-                                </Row>
-                                {isOk && ticket?.lastModificationTime ? 
-                                    <Row> 
-                                        <Space>
-                                            <EditOutlined />
-                                            {`${L('Modified')}: ${new Date(ticket?.lastModificationTime!).toLocaleString("ro-RO")}`}  
-                                        </Space>
-                                    </Row> : <></>
-                                } 
-                            </div>
-                            <Row> 
-                                <Space> 
-                                    <FundOutlined />  
-                                    {`${L('Project')}: ${ticket?.project.name}`}   
-                                </Space>
-                            </Row> 
-                            <Row> 
-                                <Space> 
-                                    <AppstoreOutlined />  
-                                    {`${L('Component')}: ${ticket?.component.name}`}   
-                                </Space>
-                            </Row> 
-                        </Card> 
+                        <UiCard loadingBody={loadingTicket}> 
+                            {ticket
+                                ? <TicketMeta ticketDto={ticket} /> 
+                                : <></>
+                            } 
+                        </UiCard> 
                     </Col>
                 </Row>
  
@@ -332,7 +308,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
                     }  
                 </Card>
 
-            </Spin>  
+            </div>  
         ); 
     }
 }

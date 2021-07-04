@@ -33,7 +33,8 @@ class EditComponent extends AppComponentBase<IEditComponentProps, IEditComponent
     resetModal = () => {
         this.form.current?.resetFields();
     }
-    onOk = async () => {
+    onOk = async () => { 
+        await this.form.current?.validateFields();  
         const values = this.form.current?.getFieldsValue(); 
 
         if(this.props.componentId){ // edit
@@ -43,7 +44,7 @@ class EditComponent extends AppComponentBase<IEditComponentProps, IEditComponent
         } 
 
         this.props.onOk(); 
-        this.resetModal();
+        this.resetModal(); 
     }
     onCancel = () => {  
         this.props.onCancel();

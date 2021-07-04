@@ -1,6 +1,6 @@
 import * as React from 'react'; 
 
-import { Button, Card,  Col,  Form,  Input, message, Row, Space } from 'antd';
+import { Button, Col, Form, Input, message, Row } from 'antd';
 import { inject, observer } from 'mobx-react';
 
 import AppComponentBase from '../../components/AppComponentBase'; 
@@ -12,23 +12,20 @@ import { KeyOutlined, LockOutlined, MailOutlined, SaveOutlined, UserOutlined } f
 import rules from './index.validation'
 import { FormInstance, Rule } from 'antd/lib/form';
 import { UpdateAccountInput } from '../../services/account/dto/updateAccountInput'; 
-import { GetAccountOutput } from '../../services/account/dto/getAccountOutput';
+import UiCard from '../../components/UiCard';
 
 export interface IAccountProps {
-  accountStore: AccountStore;
-}
-export interface IAccountState {
-  account: GetAccountOutput;
+  accountStore?: AccountStore;
 }
  
 @inject(Stores.AccountStore) 
 @observer
-class Account extends AppComponentBase<IAccountProps, IAccountState> {  
+class Account extends AppComponentBase<IAccountProps> {  
+  updateForm = React.createRef<FormInstance>();
   changePassForm = React.createRef<FormInstance>();
 
-  async componentDidMount() {
-    await this.props.accountStore.getAccount(); 
-    this.setState({account: this.props.accountStore.account})
+  componentDidMount() {
+    this.props.accountStore!.getAccount();
   }  
 
   onAccountUpdate = async (values: any) => {
@@ -42,22 +39,26 @@ class Account extends AppComponentBase<IAccountProps, IAccountState> {
   };
  
   public render() {
-    const { account } = this.props.accountStore || this.state.account; 
+    const { loading, saving, account } = this.props.accountStore!; 
+    this.updateForm.current?.setFieldsValue(account);
 
     return (
       <Row> 
         <Col flex="1 1 400px">
-            <Form initialValues={account} onFinish={this.onAccountUpdate} layout="vertical"> 
-                <Card className="ui-card" title={
-                    <Row>
-                        <Col flex="auto"> 
-                        <Space><UserOutlined />{L('AccountDetails')}</Space>  
-                        </Col>
-                        <Col flex="none">
-                        <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
-                        </Col>
-                    </Row>  
-                }> 
+            <Form ref={this.updateForm} initialValues={account ?? undefined} onFinish={this.onAccountUpdate} layout="vertical"> 
+                <UiCard
+                    loadingBody={loading}
+                    icon={<UserOutlined />}
+                    title={L('AccountDetails')}
+                    extra={
+                        <Button 
+                            type="primary" 
+                            htmlType="submit"
+                            icon={<SaveOutlined />}
+                            loading={saving || loading}
+                        >{L('Save')}</Button>
+                    } 
+                > 
                     <Form.Item label={L('UserName')} name={'userName'} rules={rules.required}>
                         <Input disabled placeholder={L('UserName')} prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
                     </Form.Item> 
@@ -73,29 +74,32 @@ class Account extends AppComponentBase<IAccountProps, IAccountState> {
                         <Input placeholder={L('EmailAddress')} prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
                     </Form.Item> 
                     
-                </Card>
+                </UiCard>
             </Form>  
         </Col>
 
         <Col flex="1 1 400px">
           <Form ref={this.changePassForm} onFinish={this.onPasswordUpdate} layout="vertical">  
-            <Card className="ui-card" title={
-                <Row>
-                    <Col flex="auto"> 
-                        <Space><KeyOutlined />{L('ChangePassword')}</Space>
-                    </Col>
-                    <Col flex="none">
-                        <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>{L('Save')}</Button>
-                    </Col>
-                </Row> 
-            }>  
+            <UiCard 
+                loadingBody={loading}
+                icon={<KeyOutlined />}
+                title={L('ChangePassword')}
+                extra={
+                    <Button 
+                        type="primary" 
+                        htmlType="submit"
+                        icon={<SaveOutlined />}
+                        loading={saving || loading}
+                    >{L('Save')}</Button>
+                }
+            >  
                 <Form.Item label={L('CurrentPassword')} name={'currentPassword'} rules={rules.required}>
                     <Input placeholder={L('CurrentPassword')} prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" size="large" />
                 </Form.Item> 
                 <Form.Item label={L('NewPassword')} name={'newPassword'} rules={rules.password} >
                     <Input placeholder={L('NewPassword')} autoComplete="new-password" prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" size="large" />
                 </Form.Item>  
-            </Card>
+            </UiCard>
           </Form> 
         </Col>
         

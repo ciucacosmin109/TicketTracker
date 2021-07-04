@@ -11,8 +11,7 @@ export interface IProjectState {
 }
  
 export default class Projects extends AppComponentBase<IProjectProps, IProjectState> {
-    render() {
-        console.log(this.L("InfoPublicProjects"))
+    render() { 
         return <div className="projects">
             <InfoCard text={this.L("InfoPublicProjects")} />
             <ProjectList category={ProjectCategory.PUBLIC}/>

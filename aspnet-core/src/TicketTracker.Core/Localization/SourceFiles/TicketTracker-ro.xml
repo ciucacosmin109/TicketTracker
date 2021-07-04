@@ -302,6 +302,9 @@
     <text name="InfoComponent">Aceasta este pagina unei componente din cadrul proiectului. Aceasta contine tichetele care se incadreaza in acea componenta.</text>
     <text name="InfoTicket">Vă aflați in pagina unui tichet. Aici veti gasi descrierea acestuia, caracteristicile lui, proiectul si componenta din care face parte, cine lucreaza sau a lucrat la el (cardul "Munca"), fisierele atasate si comentariile. Daca aveti suficiente drepturi in cadrul proiectului, veti putea edita diverse caracteristici ale tichetului.</text>
     
+    <text name="InfoEditTicket">Descrieti tichetul si completati detaliile acestuia. Munca, fisierele si comentariile vor putea fi adaugate sau editate ulterior.</text>
+    <text name="InfoEditProject">Completati detaliile proiectului, setati vizibilitatea (public sau privat) si atribuiti utilizatori la acesta.</text>
+    
 
 
   </texts>

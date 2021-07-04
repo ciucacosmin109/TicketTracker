@@ -18,7 +18,7 @@ export default class ProjectUserStore {
     async get(userId: number | undefined, projectId: number | undefined) { 
         if(userId == null || projectId == null || Number.isNaN(userId) || Number.isNaN(projectId)){
             return;
-        }
+        } 
         
         this.loading = true;
         let puRes = await projectUserService.get({userId, projectId} as GetProjectUserInput); 
@@ -46,7 +46,7 @@ export default class ProjectUserStore {
         }else if(this.projectUser.user.id === userId && this.projectUser.projectId === projectId){
             projectUser = this.projectUser;
         }else{
-            this.get(userId, projectId);
+            //this.get(userId, projectId);
             return false;
         }
  

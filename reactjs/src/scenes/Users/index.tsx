@@ -82,9 +82,7 @@ class User extends AppComponentBase<IUserProps, IUserState> {
       onOk() {
         self.props.userStore.delete(input);
       },
-      onCancel() {
-        console.log('Cancel');
-      },
+      onCancel() { },
     });
   }
 

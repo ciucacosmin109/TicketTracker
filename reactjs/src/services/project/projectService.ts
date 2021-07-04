@@ -11,7 +11,12 @@ class ProjectService {
     public async get(entityDto: EntityDto) : Promise<ProjectDto> { 
         let result = await http.get('api/services/app/Project/Get', { params: entityDto });
         return result.data.result;
+    }
+    public async getIncludingRoles(entityDto: EntityDto) : Promise<ProjectWithRolesDto> { 
+        let result = await http.get('api/services/app/Project/GetIncludingRoles', { params: entityDto });
+        return result.data.result;
     } 
+
     public async getAll(input: GetAllProjectsInput) : Promise<PagedResultDto<ProjectDto>> { 
         let result = await http.get('api/services/app/Project/GetAll', { params: input });
         return result.data.result;

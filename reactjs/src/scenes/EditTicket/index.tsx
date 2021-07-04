@@ -6,9 +6,9 @@ import rules from './index.validation'
 
 import AppComponentBase from '../../components/AppComponentBase'; 
 import { L } from '../../lib/abpUtility';
-import { Button, Card, Col, Form, Input, message, Modal, Row, Select, Space, Spin } from 'antd';
+import { Button, Form, Input, message, Modal, Select, Space } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined, FileOutlined, 
-    FileTextOutlined, LoadingOutlined, SaveOutlined } from '@ant-design/icons'; 
+    FileTextOutlined, SaveOutlined } from '@ant-design/icons'; 
 import { Editor as TinyMce } from '@tinymce/tinymce-react';
 
 import { RouteComponentProps, withRouter } from 'react-router';  
@@ -22,6 +22,8 @@ import AccountStore from '../../stores/accountStore';
 import TicketInfo from '../Ticket/components/ticketInfo';
 import { CreateTicketInput } from '../../services/ticket/dto/createTicketInput';
 import { UpdateTicketInput } from '../../services/ticket/dto/updateTicketInput';
+import UiCard from '../../components/UiCard';
+import InfoCard from '../../components/InfoCard';
 
 export interface IEditTicketParams{
     id: string | undefined;
@@ -208,6 +210,8 @@ class EditTicket extends AppComponentBase<IEditTicketProps, IEditTicketState> {
     }
 
     render(){
+        const savingTicket = this.props.ticketStore?.saving;
+
         const priorityOptions = EditTicket.getOptionsFromEnum(TicketPriority, TicketInfo.getPriorityIcon);
         const typeOptions = EditTicket.getOptionsFromEnum(TicketType, TicketInfo.getTypeIcon);
         const activityOptions = EditTicket.getOptionsFromEntity(this.props.activityStore?.activities?.items ?? [], TicketInfo.getActivityIcon);
@@ -220,23 +224,30 @@ class EditTicket extends AppComponentBase<IEditTicketProps, IEditTicketState> {
         }
             
         return (
-            <Spin spinning={this.state.loading} size='large' indicator={<LoadingOutlined />}>   
-                <Card className="edit-ticket"
-                    title={
-                        <Row>
-                            <Col flex="auto"> 
-                                <Space><FileOutlined />{L('TicketDetails')}</Space>
-                            </Col>
-                            <Col flex="none">
-                                <Space>
-                                    {this.state.ticket.id !== 0 && this.props.accountStore?.account.id === this.state.creatorId
-                                        ? <Button type="primary" danger onClick={this.onTicketDelete} icon={<DeleteOutlined />}>{L('Delete')}</Button> 
-                                        : <></>
-                                    }
-                                    <Button type="primary" onClick={this.save} icon={<SaveOutlined />}>{L('Save')}</Button>
-                                </Space>
-                            </Col>
-                        </Row> 
+            <div>
+                <InfoCard text={this.L("InfoEditTicket")} />
+
+                <UiCard
+                    loadingBody={this.state.loading}
+                    icon={<FileOutlined />}
+                    title={L('TicketDetails')}
+                    extra={ 
+                        <Space>
+                            {this.state.ticket.id !== 0 && this.props.accountStore?.account.id === this.state.creatorId
+                                ? <Button 
+                                    loading={savingTicket || this.state.loading} 
+                                    type="primary" 
+                                    danger 
+                                    onClick={this.onTicketDelete} 
+                                    icon={<DeleteOutlined />}>{L('Delete')}</Button> 
+                                : <></>
+                            }
+                            <Button 
+                                loading={savingTicket || this.state.loading} 
+                                type="primary" 
+                                onClick={this.save} 
+                                icon={<SaveOutlined />}>{L('Save')}</Button>
+                        </Space>
                     }
                 > 
                     <Form layout="vertical"> 
@@ -278,7 +289,7 @@ class EditTicket extends AppComponentBase<IEditTicketProps, IEditTicketState> {
                                 onEditorChange={text => this.onInputChange("description", text)}
                             />
                         </Form.Item>
- 
+
                         <Form.Item label={L('Type')}>
                             <Select 
                                 options={typeOptions} 
@@ -305,8 +316,8 @@ class EditTicket extends AppComponentBase<IEditTicketProps, IEditTicketState> {
                                 onChange={v => this.onInputChange("statusId", v)}/>
                         </Form.Item> 
                     </Form> 
-                </Card>  
-            </Spin>  
+                </UiCard> 
+            </div>  
         ); 
     }
 }

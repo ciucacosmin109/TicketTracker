@@ -72,11 +72,11 @@ namespace TicketTracker.Projects {
             List<PRole> roles = entity.ProjectUsers
                 .Where(x => x.UserId == session.UserId)
                 .SelectMany(x => x.Roles)
-                .ToList();
+                .ToList(); 
 
             ProjectWithRolesDto p = ObjectMapper.Map<ProjectWithRolesDto>(entity);
             p.Roles = ObjectMapper.Map<List<PRoleDto>>(roles);
-
+            p.IsAssigned = entity.ProjectUsers.Any(x => x.UserId == session.UserId);
             return p;
         }
 
@@ -105,8 +105,8 @@ namespace TicketTracker.Projects {
                     .ToList();
 
                 ProjectWithRolesDto p = ObjectMapper.Map<ProjectWithRolesDto>(proj);
-                p.Roles = ObjectMapper.Map<List<PRoleDto>>(roles); 
-
+                p.Roles = ObjectMapper.Map<List<PRoleDto>>(roles);
+                p.IsAssigned = proj.ProjectUsers.Any(x => x.UserId == session.UserId);
                 result.Add(p);
             }
 

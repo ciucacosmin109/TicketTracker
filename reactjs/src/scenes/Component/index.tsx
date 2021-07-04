@@ -6,8 +6,8 @@ import Stores from '../../stores/storeIdentifier';
 
 import AppComponentBase from '../../components/AppComponentBase'; 
 import { L } from '../../lib/abpUtility';
-import { Button, Card, Col , Row,   Space, Spin,   } from 'antd';
-import { AppstoreFilled,  CalendarOutlined, EditOutlined, FileAddOutlined, FileTextOutlined, FundOutlined, LoadingOutlined } from '@ant-design/icons'; 
+import { Button, Row, Space } from 'antd';
+import { AppstoreFilled,  CalendarOutlined, EditOutlined, FileAddOutlined, FileTextOutlined, LockOutlined, ProjectOutlined } from '@ant-design/icons'; 
    
 import { RouteComponentProps, withRouter } from 'react-router';  
 import ComponentStore from '../../stores/componentStore';
@@ -17,6 +17,7 @@ import ProjectUserStore from '../../stores/projectUserStore';
 import AccountStore from '../../stores/accountStore';
 import { StaticProjectPermissionNames } from '../../models/ProjectUser/StaticProjectPermissionNames';
 import InfoCard from '../../components/InfoCard'; 
+import UiCard from '../../components/UiCard';
 
 export interface IComponentParams{
     id: string | undefined; 
@@ -87,37 +88,26 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
 
         // Component content
         return ( 
-            <Spin spinning={loading} size='large' indicator={<LoadingOutlined />}>
+            <div>
                 <InfoCard text={this.L("InfoComponent")} />
 
-                <Card className="component ui-card"
-                    title={
-                        <Row>
-                            <Col flex="auto">  
-                                <Space> 
-                                    <AppstoreFilled style={{color: 'purple'}} />
-                                    {isOk ? `${component?.name} (#${component?.id})` : ""} 
-                                </Space> 
-                            </Col>
-                            <Col flex="none">
-                                {isOk && canEdit ?
-                                    <Button 
-                                        type="primary" 
-                                        onClick={() => this.setEditModal(true)} 
-                                        icon={<EditOutlined />}>
-                                            
-                                        {L('Edit')}
-                                    </Button> : <></>
-                                }
-                            </Col>
-                        </Row> 
-                    }
-                >   
-                    <Row style={{marginBottom: '15px'}}> 
-                        {isOk ? component?.description : ""}  
-                    </Row>  
-                </Card>    
-                <Card className="ui-card">   
+                <UiCard
+                    loadingTitle={loading || !isOk}
+                    loadingBody={loading || !isOk}
+                    icon={<AppstoreFilled style={{color: 'purple'}} />}
+                    title={`${component?.name} (#${component?.id})`}
+                    extra={canEdit ?
+                        <Button 
+                            type="primary" 
+                            onClick={() => this.setEditModal(true)} 
+                            icon={<EditOutlined />}
+                        > 
+                            {L('Edit')}
+                        </Button> : <></>
+                    } 
+                >{component?.description}</UiCard>
+
+                <UiCard loadingBody={loading || !isOk}>   
                     <Row> 
                         <Space>
                             <CalendarOutlined />
@@ -135,53 +125,44 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
                     {isOk ?
                         <Row> 
                             <Space> 
-                                <FundOutlined />  
+                                {project?.isPublic 
+                                    ? <ProjectOutlined style={{color:"#1da57a"}}/> 
+                                    : <LockOutlined style={{color:"orange"}}/> } 
                                 {`${L('Project')}: ${project?.name}`}   
                             </Space>
                         </Row> : <></>
                     }
-                </Card>    
-                <Card className="ui-table-card"
-                    title={
-                        <Row>
-                            <Col flex="auto">
-                                <Space>
-                                    <FileTextOutlined />
-                                    {this.L('Tickets')}
-                                </Space> 
-                            </Col>
-                            <Col flex="none">
-                                {isOk && canAddTickets ?
-                                    <Button type="primary" onClick={this.addTicket} icon={<FileAddOutlined />}>
-                                        {L('AddTicket')}
-                                    </Button> : <></>
-                                }
-                            </Col>
-                        </Row>
-                    }
-                >
-                    <Row>
-                        {isOk && component
-                            ? <TicketTable 
-                                key={component!.id} 
-                                componentId={component!.id} 
-                                editEnabled={canManageTickets} 
-                            />
-                            : <></>
-                        }  
-                    </Row>
-                    {isOk && component ? 
-                        <EditComponent 
-                            key={component?.id}
-                            visible={this.state.editModal}
-                            projectId={component?.project.id}
-                            componentId={component?.id}
-                            onOk={() => this.setEditModal(false)}
-                            onCancel={() => this.setEditModal(false)}
+                </UiCard>    
+                <UiCard zeroPadding
+                    loadingBody={loading || !isOk}
+                    icon={<FileTextOutlined />}
+                    title={this.L('Tickets')}
+                    extra={canAddTickets ?
+                        <Button type="primary" onClick={this.addTicket} icon={<FileAddOutlined />}>
+                            {L('AddTicket')}
+                        </Button> : <></>
+                    } 
+                > 
+                    {isOk && component ?
+                        <TicketTable 
+                            key={component!.id} 
+                            componentId={component!.id} 
+                            editEnabled={canManageTickets} 
                         /> : <></>
-                    }
-                </Card>
-            </Spin>  
+                    } 
+                </UiCard>
+                
+                {isOk && component ?
+                    <EditComponent 
+                        key={component?.id}
+                        visible={this.state.editModal}
+                        projectId={component?.project?.id}
+                        componentId={component?.id}
+                        onOk={() => this.setEditModal(false)}
+                        onCancel={() => this.setEditModal(false)}
+                    /> : <></>
+                } 
+            </div>  
         ); 
     }
 }

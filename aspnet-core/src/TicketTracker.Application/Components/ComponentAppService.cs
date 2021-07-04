@@ -77,7 +77,12 @@ namespace TicketTracker.Components {
         }
 
         public override async Task<ComponentDto> UpdateAsync(UpdateComponentInput input) {
-            long? creatorId = (await Repository.GetAsync(input.Id)).CreatorUserId;
+            var entity = await Repository.GetAllIncluding(x => x.Project).FirstOrDefaultAsync(x => x.Id == input.Id);
+            if (entity == null) {
+                throw new EntityNotFoundException(typeof(Component), input.Id);
+            }
+
+            long? creatorId = entity.CreatorUserId;
             if (session.UserId != creatorId) {
                 int pId = Repository.Get(input.Id).ProjectId;
                 projectManager.CheckProjectPermission(session.UserId, pId, StaticProjectPermissionNames.Project_ManageComponents);
