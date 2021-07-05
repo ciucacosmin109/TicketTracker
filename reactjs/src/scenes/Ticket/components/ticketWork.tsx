@@ -73,7 +73,7 @@ class TicketWork extends AppComponentBase<ITicketWorkProps, ITicketWorkState> {
             this.props.workStore?.getAll(this.props.ticketId);
             this.props.workStore?.getAssigned(this.props.ticketId);
         }
-        this.props.projectUserStore?.getAllByTicketId(this.props.ticketId);
+        this.props.projectUserStore?.getAllByTicket(this.props.ticketId);
 
         const assignedWork = this.props.workStore?.assignedWork; 
         this.setState({ 

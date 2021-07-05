@@ -48,15 +48,25 @@ http.interceptors.response.use(
         title: L('Error'),
         content: error.response.data.error.message,
       });
-    } else if (!!error.code && error.code === "ECONNABORTED") {
+    } else if (!!error.code && error.code === "ECONNABORTED" && L('RequestTimedOut').includes(" ")) {
       Modal.error({ 
         title: L('NetworkError'),
         content: L('RequestTimedOut'),
       });
-    } else if (!!error.code) {
+    } else if (!!error.code && error.code === "ECONNABORTED") {
+      Modal.error({ 
+        title: "Network error",
+        content: "Connection timed out",
+      });
+    } else if (!!error.code && L('ErrorCode').includes(" ")) {
       Modal.error({ 
         title: L('NetworkError'),
         content: L('ErrorCode') + ": " + error.code,
+      });
+    } else if (!!error.code) {
+      Modal.error({ 
+        title: "Network error",
+        content: "Error code: " + error.code,
       });
     } else if (error.request.status === 0 && L('CanNotConnectToServer').includes(" ")) {
       Modal.error({ 
@@ -66,19 +76,23 @@ http.interceptors.response.use(
     } else if (error.request.status === 0) {
       Modal.error({ 
         title: "Network error",
-        content: "Can't connect to the server",
+        content: "Can't connect to server",
       });
-    } else if (!error.response) {
+    } else if (!error.response&& L('TheServerDidNotReturnAMessage').includes(" ")) {
       Modal.error({ 
         title: L('UnknownError'),
         content: L('TheServerDidNotReturnAMessage'),
       });
+    } else if (!error.response) {
+      Modal.error({ 
+        title: "Unknown error",
+        content: "The server did not return a message",
+      });
     }
 
     console.log({...error})
-
-    setTimeout(() => {}, 1000);
-
+    
+    setTimeout(() => {}, 1000); 
     return Promise.reject(error);
   }
 );

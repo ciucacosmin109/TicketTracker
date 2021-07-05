@@ -19,8 +19,7 @@ import TicketMeta from './components/ticketMeta';
 import TicketWork from './components/ticketWork';
 import WorkTable from './components/workTable';
 import CommentList from './components/commentList';
-import CommentStore from '../../stores/commentStore'; 
-import AccountStore from '../../stores/accountStore'; 
+import CommentStore from '../../stores/commentStore';
 import ProjectUserStore from '../../stores/projectUserStore';
 import { StaticProjectPermissionNames } from '../../models/ProjectUser/StaticProjectPermissionNames';
 import SubscriptionStore from '../../stores/subscriptionStore';
@@ -31,8 +30,7 @@ import UiCard from '../../components/UiCard';
 export interface ITicketParams{
     id: string | undefined; 
 }
-export interface ITicketProps extends RouteComponentProps<ITicketParams> { 
-    accountStore?: AccountStore;
+export interface ITicketProps extends RouteComponentProps<ITicketParams> {
     ticketStore?: TicketStore; 
     commentStore?: CommentStore;
     projectUserStore?: ProjectUserStore;
@@ -43,8 +41,7 @@ export interface ITicketState {
     workTabKey: string; 
 }
  
-@inject(
-    Stores.AccountStore, 
+@inject( 
     Stores.TicketStore,  
     Stores.CommentStore,
     Stores.ProjectUserStore,
@@ -82,7 +79,7 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
     }
 
     setSubscribed = async (val: boolean) => { 
-        const userId = this.props.accountStore?.account?.id;
+        const userId = this.getUserId()!;
         const ticketId = this.props.ticketStore?.ticket?.id;
             
         if(val){
@@ -96,17 +93,11 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
     async componentDidMount() { 
         const intId = parseInt(this.props.match.params.id!); 
         if(!Number.isNaN(intId)){ // i have an id 
+            const myUserId = this.getUserId()!;
 
-            this.props.ticketStore?.get(intId).then(() => {
-                const myUserId = this.props.accountStore?.account?.id;
-
-                const projId = this.props.ticketStore?.ticket?.project?.id;
-                if(projId != null && projId !== this.props.projectUserStore?.projectUser?.projectId){
-                    this.props.projectUserStore?.get(myUserId, projId);
-                }  
-
-                this.props.subscriptionStore?.check(myUserId, intId);
-            });
+            this.props.ticketStore?.get(intId);
+            this.props.projectUserStore?.getByTicket(myUserId, intId); 
+            this.props.subscriptionStore?.check(myUserId, intId);
  
         } else {
             this.props.history.replace('/exception?type=404');
@@ -122,16 +113,16 @@ class Ticket extends AppComponentBase<ITicketProps, ITicketState> {
         const isOk = this.props.ticketStore?.ticket?.id === parseInt(this.props.match.params.id!);
   
         const subscribed = this.props.subscriptionStore?.subscribed ?? false;
-        const myProfile = this.props.accountStore?.account;
+        const userId = this.getUserId()!;
         const comments = this.props.commentStore?.comments;
 
         const isAssignedToProject = this.props.projectUserStore?.projectUser != null;
-        const canEdit = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Component_ManageTickets)
-                        || myProfile?.id === ticket?.creatorUserId;
-        const canAssignWork = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_AssignWork);
-        const canSelfAssignWork = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_SelfAssignWork);  
-        const canAddFiles = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_AddAttachments);
-        const canManageFiles = this.props.projectUserStore?.hasPermission(myProfile?.id, ticket?.project?.id, StaticProjectPermissionNames.Ticket_ManageAttachments);
+        const canEdit = this.props.projectUserStore?.hasPermission(userId, StaticProjectPermissionNames.Component_ManageTickets)
+                        || userId === ticket?.creatorUserId;
+        const canAssignWork = this.props.projectUserStore?.hasPermission(userId, StaticProjectPermissionNames.Ticket_AssignWork);
+        const canSelfAssignWork = this.props.projectUserStore?.hasPermission(userId, StaticProjectPermissionNames.Ticket_SelfAssignWork);  
+        const canAddFiles = this.props.projectUserStore?.hasPermission(userId, StaticProjectPermissionNames.Ticket_AddAttachments);
+        const canManageFiles = this.props.projectUserStore?.hasPermission(userId, StaticProjectPermissionNames.Ticket_ManageAttachments);
         
         const workTabList = [
             {key: "active", tab: L("ActiveWork")},

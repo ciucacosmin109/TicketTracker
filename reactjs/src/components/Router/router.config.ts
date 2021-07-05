@@ -66,6 +66,14 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Account')),
   },
+  {
+    path: '/about',
+    permission: '',
+    title: 'About', 
+    name: 'about',
+    showInMenu: true,
+    component: LoadableComponent(() => import('../../scenes/About')),
+  },
   /*{
     path: '/dashboard',
     permission: '',

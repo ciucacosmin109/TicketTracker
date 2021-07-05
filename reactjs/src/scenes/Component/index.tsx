@@ -13,8 +13,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import ComponentStore from '../../stores/componentStore';
 import EditComponent from '../Project/components/editComponent'; 
 import TicketTable from './components/ticketTable';
-import ProjectUserStore from '../../stores/projectUserStore';
-import AccountStore from '../../stores/accountStore';
+import ProjectUserStore from '../../stores/projectUserStore'; 
 import { StaticProjectPermissionNames } from '../../models/ProjectUser/StaticProjectPermissionNames';
 import InfoCard from '../../components/InfoCard'; 
 import UiCard from '../../components/UiCard';
@@ -24,8 +23,7 @@ export interface IComponentParams{
 }
 export interface IComponentProps extends RouteComponentProps<IComponentParams> { 
     componentStore?: ComponentStore; 
-    projectUserStore?: ProjectUserStore;
-    accountStore?: AccountStore;
+    projectUserStore?: ProjectUserStore; 
 }
 export interface IComponentState {
     editModal: boolean; 
@@ -33,8 +31,7 @@ export interface IComponentState {
  
 @inject(
     Stores.ComponentStore,
-    Stores.ProjectUserStore, 
-    Stores.AccountStore)
+    Stores.ProjectUserStore)
 @observer
 class Component extends AppComponentBase<IComponentProps, IComponentState> {
     state = {
@@ -54,15 +51,10 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
     // Load dada
     async componentDidMount() { 
         const intId = parseInt(this.props.match.params.id!); 
-        if(!Number.isNaN(intId)){ // i have an id 
-
-            this.props.componentStore?.get(intId).then(() => {
-                const compProjId = this.props.componentStore?.component?.project.id; 
-                if(compProjId != null && compProjId !== this.props.projectUserStore?.projectId){
-                    const myUserId = this.props.accountStore?.account?.id;
-                    this.props.projectUserStore?.get(myUserId, compProjId);
-                } 
-            });
+        if(!Number.isNaN(intId)){ // i have an id  
+            
+            this.props.componentStore?.get(intId)  
+            this.props.projectUserStore?.getByComponent(this.getUserId()!, intId);
 
         } else {
             this.props.history.replace('/exception?type=404');
@@ -75,12 +67,12 @@ class Component extends AppComponentBase<IComponentProps, IComponentState> {
         const isOk = this.props.componentStore?.component?.id === parseInt(this.props.match.params.id!);
 
         const project = component?.project;   
-        const myProfile = this.props.accountStore?.account;
+        const userId = this.getUserId()!;
 
-        const canEdit = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_ManageComponents)
-                        || myProfile?.id === component?.creatorUserId;
-        const canAddTickets = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Component_AddTickets);
-        const canManageTickets = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Component_ManageTickets);
+        const canEdit = this.props.projectUserStore?.hasPermission(userId, StaticProjectPermissionNames.Project_ManageComponents)
+                        || userId === component?.creatorUserId;
+        const canAddTickets = this.props.projectUserStore?.hasPermission(userId, StaticProjectPermissionNames.Component_AddTickets);
+        const canManageTickets = this.props.projectUserStore?.hasPermission(userId, StaticProjectPermissionNames.Component_ManageTickets);
         
         if(isOk){
             this.setCustomTitle(component?.name);

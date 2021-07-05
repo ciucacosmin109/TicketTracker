@@ -25,14 +25,11 @@ export interface IUserListState {
 @observer
 class UserList extends AppComponentBase<IUserListProps, IUserListState> {
     // Load data
-    async componentDidMount() {  
-        const id = this.props.projectId;
-        if(id !== this.props.projectUserStore?.projectId){
-            this.props.projectUserStore?.getAll(id);
-        }
+    componentDidMount() { 
+        this.props.projectUserStore?.getAllByProject(this.props.projectId); 
     }
     render(){
-        const loading = this.props.projectUserStore?.loading;
+        const loading = this.props.projectUserStore?.loadingUsers;
         const users = this.props.projectUserStore?.projectUsers;
 
         // Component content

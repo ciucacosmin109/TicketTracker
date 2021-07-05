@@ -6,6 +6,8 @@ import { appRouters } from '../Router/router.config';
 import utils from '../../utils/utils';
 import moment from 'moment-timezone'
 
+declare var abp : any;
+
 class AppComponentBase<P = {}, S = {}, SS = any> extends React.Component<P, S, SS> {
   L_original(key: string, sourceName?: string): string {
     return L(key);
@@ -14,10 +16,13 @@ class AppComponentBase<P = {}, S = {}, SS = any> extends React.Component<P, S, S
     return L(key, ...args);
   }
 
-  isGranted(permissionName: string): boolean {
-    return isGranted(permissionName);
+  getUserId() : number | null {
+    return abp.session.userId;
   }
 
+  isGranted(permissionName: string): boolean {
+    return isGranted(permissionName);
+  } 
   getPath(componentName: string): string {
     return appRouters.find((x : any) => x.name === componentName)?.path ?? "/"; 
   }

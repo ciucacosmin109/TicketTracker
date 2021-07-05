@@ -1,8 +1,7 @@
 import React from 'react'; 
 
 import { inject, observer } from 'mobx-react';
-import Stores from '../../stores/storeIdentifier';
-import AccountStore from '../../stores/accountStore'; 
+import Stores from '../../stores/storeIdentifier'; 
 
 import AppComponentBase from '../../components/AppComponentBase'; 
 import { L } from '../../lib/abpUtility';
@@ -28,8 +27,7 @@ import UiCard from '../../components/UiCard';
 export interface IProjectParams{
     id: string | undefined; 
 }
-export interface IProjectProps extends RouteComponentProps<IProjectParams> {
-    accountStore?: AccountStore;
+export interface IProjectProps extends RouteComponentProps<IProjectParams> { 
     projectStore?: ProjectStore;
     projectUserStore?: ProjectUserStore;
     ticketStore?: TicketStore;
@@ -38,8 +36,7 @@ export interface IProjectState {
     modal: boolean;
 }
  
-@inject(
-    Stores.AccountStore, 
+@inject( 
     Stores.ProjectStore, 
     Stores.ProjectUserStore,
     Stores.TicketStore)
@@ -58,12 +55,12 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
     } 
 
     // Load the project details
-    async componentDidMount() {
+    componentDidMount() {
         const intId = parseInt(this.props.match.params.id!); 
         if(!Number.isNaN(intId)){ // i have an id 
 
             this.props.projectStore?.getProject(intId);
-            this.props.projectUserStore?.getAll(intId);
+            this.props.projectUserStore?.getAllByProject(intId);
             this.props.ticketStore?.getAllByProjectId(intId); 
 
         } else { 
@@ -72,20 +69,19 @@ class Project extends AppComponentBase<IProjectProps, IProjectState> {
     }
     render(){
         const projectLoading = this.props.projectStore?.loading; 
-        const myRolesLoading = this.props.projectUserStore?.loading; 
-        
-
+        const myRolesLoading = this.props.projectUserStore?.loadingUser;
+         
         const project = this.props.projectStore?.project;
         const isOk = this.props.projectStore?.project?.id === parseInt(this.props.match.params.id!);
 
-        const myProfile = this.props.accountStore?.account; 
-        const myRoles = this.props.projectUserStore?.getMyRoles(myProfile?.id);  
+        const userId = this.getUserId()!; 
+        const myRoles = this.props.projectUserStore?.getMyRoles(userId);  
         const tickets = this.props.ticketStore?.projectTickets; 
 
-        const canEdit = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_Edit)
-                        || myProfile?.id === project?.creatorUserId;
-        const canAddComp = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_AddComponents);
-        const canManageComp = this.props.projectUserStore?.hasPermission(myProfile?.id, project?.id, StaticProjectPermissionNames.Project_ManageComponents);
+        const canEdit = this.props.projectUserStore?.hasPermission(userId, StaticProjectPermissionNames.Project_Edit)
+                        || userId === project?.creatorUserId;
+        const canAddComp = this.props.projectUserStore?.hasPermission(userId, StaticProjectPermissionNames.Project_AddComponents);
+        const canManageComp = this.props.projectUserStore?.hasPermission(userId, StaticProjectPermissionNames.Project_ManageComponents);
 
         if(isOk){
             this.setCustomTitle(project?.name);

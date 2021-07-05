@@ -88,7 +88,18 @@ namespace TicketTracker.ProjectUsers {
         }
         
         public async Task<ProjectUserDto> GetAsync(GetProjectUserInput input) {
-            projectManager.CheckVisibility(session.UserId, input.ProjectId);
+            if (input.ProjectId == null && input.ComponentId == null && input.TicketId == null) {
+                throw new UserFriendlyException(l.GetString("Provide{0}{1}{2}", "ProjectId", "ComponentId", "TicketId"));
+            }
+            if (input.ProjectId == null) {
+                if (input.ComponentId == null) {
+                    input.ComponentId = (await repoTickets.GetAsync(input.TicketId.Value)).ComponentId;
+                }
+                input.ProjectId = (await repoComponents.GetAsync(input.ComponentId.Value)).ProjectId;
+            }
+
+            projectManager.CheckVisibility(session.UserId, input.ProjectId.Value);
+
             ProjectUser entity = await repository.GetAllIncludingUserAndRoles()
                 .Where(x => x.UserId == input.UserId && x.ProjectId == input.ProjectId)
                 .FirstOrDefaultAsync();
@@ -101,12 +112,14 @@ namespace TicketTracker.ProjectUsers {
             return result;
         }
         public async Task<PagedResultDto<ProjectUserDto>> GetAllAsync(GetAllProjectUsersInput input) {
-            if (input.ProjectId == null && input.TicketId == null) {
-                throw new UserFriendlyException(l.GetString("Provide{0}{1}", "ProjectId", "TicketId"));
+            if (input.ProjectId == null && input.ComponentId == null && input.TicketId == null) {
+                throw new UserFriendlyException(l.GetString("Provide{0}{1}{2}", "ProjectId", "ComponentId", "TicketId"));
             }
             if (input.ProjectId == null) {
-                int compId = (await repoTickets.GetAsync(input.TicketId.Value)).ComponentId;
-                input.ProjectId = (await repoComponents.GetAsync(compId)).ProjectId;
+                if(input.ComponentId == null) {
+                    input.ComponentId = (await repoTickets.GetAsync(input.TicketId.Value)).ComponentId;
+                }
+                input.ProjectId = (await repoComponents.GetAsync(input.ComponentId.Value)).ProjectId;
             }
              
             projectManager.CheckVisibility(session.UserId, input.ProjectId.Value);

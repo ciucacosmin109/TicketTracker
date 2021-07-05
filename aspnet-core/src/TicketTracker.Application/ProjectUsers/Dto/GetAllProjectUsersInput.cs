@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace TicketTracker.ProjectUsers.Dto {
     public class GetAllProjectUsersInput : PagedResultRequestDto {
         public int? ProjectId { get; set; }
+        public int? ComponentId { get; set; }
         public int? TicketId { get; set; }
     }
 }
