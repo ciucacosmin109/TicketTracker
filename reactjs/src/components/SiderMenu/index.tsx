@@ -1,6 +1,7 @@
 import './index.less';
 
 import * as React from 'react';
+import H from 'history';
 
 import { /*Avatar, Col,*/ Layout, Menu } from 'antd';
 import { L, isGranted } from '../../lib/abpUtility';
@@ -12,10 +13,9 @@ import utils from '../../utils/utils';
 import SideUserInfo from './components/sideUserInfo';
 
 export interface ISiderMenuProps {
-  path: any;
   collapsed: boolean;
   onCollapse: any;
-  history: any;
+  history: H.History;
 }
 
 const SiderMenu = (props: ISiderMenuProps) => {

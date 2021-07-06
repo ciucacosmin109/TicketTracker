@@ -3,12 +3,30 @@ import {
   //HomeOutlined, 
   UserOutlined, TagsOutlined, AppstoreOutlined, 
   FundProjectionScreenOutlined,
-  FileTextOutlined, 
+  FileTextOutlined,
+  ExclamationCircleOutlined,
+  FileOutlined, 
 } from '@ant-design/icons';
 
-export const userRouter: any = [
+export interface IRoute {
+  path: string;
+  name: string;
+  title: string;
+  
+  exact?: boolean;
+  permission?: string;
+
+  icon?: any;
+  component: any;
+
+  isLayout?: boolean;
+  showInMenu?: boolean;
+}
+
+export const userRouter: IRoute[] = [
   {
     path: '/user',
+    exact: true,
     name: 'user',
     title: 'User',
     component: LoadableComponent(() => import('../../components/Layout/UserLayout')),
@@ -17,6 +35,7 @@ export const userRouter: any = [
   },
   {
     path: '/user/login',
+    exact: true,
     name: 'login',
     title: 'LogIn',
     component: LoadableComponent(() => import('../../scenes/Login')),
@@ -24,6 +43,7 @@ export const userRouter: any = [
   },
   {
     path: '/user/register',
+    exact: true,
     name: 'register',
     title: 'Register',
     component: LoadableComponent(() => import('../../scenes/Register')),
@@ -31,7 +51,7 @@ export const userRouter: any = [
   },
 ];
 
-export const appRouters: any = [
+export const appRouters: IRoute[] = [
   {
     path: '/',
     exact: true,
@@ -44,6 +64,7 @@ export const appRouters: any = [
   }, 
   {
     path: '/logout',
+    exact: true,
     permission: '',
     title: 'Logout',
     name: 'logout',
@@ -52,30 +73,27 @@ export const appRouters: any = [
   }, 
   {
     path: '/exception', // ?type
+    exact: true,
     permission: '',
     title: 'Exception',
     name: 'exception',
+    icon: ExclamationCircleOutlined,
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Exception')),
   }, 
   {
     path: '/account',
+    exact: true,
     permission: '',
     title: 'Account', 
     name: 'account',
+    icon: UserOutlined,
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Account')),
-  },
-  {
-    path: '/about',
-    permission: '',
-    title: 'About', 
-    name: 'about',
-    showInMenu: true,
-    component: LoadableComponent(() => import('../../scenes/About')),
-  },
+  }, 
   /*{
     path: '/dashboard',
+    exact: true,
     permission: '',
     title: 'Dashboard',
     name: 'dashboard',
@@ -85,6 +103,7 @@ export const appRouters: any = [
   }, */
   {
     path: '/myprojects',
+    exact: true,
     permission: '',
     title: 'AssignedProjects',
     name: 'myprojects',
@@ -93,16 +112,18 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../scenes/MyProjects')),
   }, 
   {
-    path: '/projects',
+    path: '/publicprojects',
+    exact: true,
     permission: '',
     title: 'PublicProjects',
-    name: 'projects',
+    name: 'publicprojects',
     icon: FundProjectionScreenOutlined,
     showInMenu: true,
     component: LoadableComponent(() => import('../../scenes/Projects')),
   },
   {
     path: '/mytickets',
+    exact: true,
     permission: '',
     title: 'AssignedTickets',
     name: 'mytickets',
@@ -112,6 +133,7 @@ export const appRouters: any = [
   },
   {
     path: '/tenants',
+    exact: true,
     permission: 'Pages.Tenants',
     title: 'Tenants',
     name: 'tenant',
@@ -121,6 +143,7 @@ export const appRouters: any = [
   },
   {
     path: '/users',
+    exact: true,
     permission: 'Pages.Users',
     title: 'Users',
     name: 'user',
@@ -130,6 +153,7 @@ export const appRouters: any = [
   },
   {
     path: '/roles',
+    exact: true,
     permission: 'Pages.Roles',
     title: 'Roles',
     name: 'role',
@@ -139,58 +163,72 @@ export const appRouters: any = [
   },
   {
     path: '/myprojects/new',
+    exact: true,
     permission: '',
     title: 'NewProject',
     name: 'newproject', 
+    icon: FundProjectionScreenOutlined,
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/EditProject')),
   },
   {
     path: '/myprojects/edit/:id',
+    exact: true,
     permission: '',
     title: 'EditProject',
     name: 'editproject', 
+    icon: FundProjectionScreenOutlined,
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/EditProject')),
   }, 
   {
     path: '/project/:id',
+    exact: true,
     permission: '',
     title: 'Project',
     name: 'project', 
+    icon: FundProjectionScreenOutlined,
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Project')),
   }, 
   {
     path: '/component/:id',
+    exact: true,
     permission: '',
     title: 'Component',
     name: 'component', 
+    icon: AppstoreOutlined,
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Component')),
   },
   ///////////////////////// 
   {
     path: '/ticket/:id',
+    exact: true,
     permission: '',
     title: 'Ticket',
     name: 'ticket', 
+    icon: FileOutlined,
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/Ticket')),
   },
   {
     path: '/tickets/edit/:id',
+    exact: true,
     permission: '',
     title: 'EditTicket',
     name: 'editticket', 
+    icon: FileOutlined,
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/EditTicket')),
   }, 
   {
     path: '/tickets/new', // ?componentId
+    exact: true,
     permission: '',
     title: 'NewTicket',
     name: 'newticket', 
+    icon: FileOutlined,
     showInMenu: false,
     component: LoadableComponent(() => import('../../scenes/EditTicket')),
   },

@@ -145,6 +145,7 @@
     <text name="Tester">Tester</text> 
     <text name="TicketSubmitter">Ticket submitter</text>  
     <text name="AssignedProjects">Assigned projects</text>
+    <text name="Projects">Projects</text>
     <text name="PublicProjects">Public projects</text>
     <text name="NewProject">New project</text>
     <text name="EditProject">Edit project</text>

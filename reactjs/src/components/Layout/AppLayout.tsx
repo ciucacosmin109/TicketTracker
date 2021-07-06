@@ -2,7 +2,7 @@ import './Layout.less';
 
 import * as React from 'react';
 
-import { Redirect, Switch, Route } from 'react-router-dom';
+import { Redirect, Switch, Route, RouteComponentProps } from 'react-router-dom';
 
 import DocumentTitle from 'react-document-title';
 import Footer from '../../components/Footer';
@@ -12,10 +12,16 @@ import ProtectedRoute from '../../components/Router/ProtectedRoute';
 import SiderMenu from '../../components/SiderMenu';
 import { appRouters } from '../Router/router.config';
 import utils from '../../utils/utils';
+import Breadcrumb from '../Breadcrumb'; 
+import AppComponentBase from '../AppComponentBase';
 
-const { Content } = Layout;
-
-class AppLayout extends React.Component<any> {
+export interface IAppLayoutProps extends RouteComponentProps { 
+}
+export interface IAppLayoutState {
+  collapsed: boolean;
+}
+ 
+class AppLayout extends AppComponentBase<IAppLayoutProps> { 
   state = {
     collapsed: false,
   };
@@ -24,33 +30,33 @@ class AppLayout extends React.Component<any> {
     this.setState({
       collapsed: !this.state.collapsed,
     });
-  };
-
+  }; 
   onCollapse = (collapsed: any) => {
     this.setState({ collapsed });
   };
-
+ 
   render() {
     const {
       history,
       location: { pathname },
     } = this.props;
-
-    const { path } = this.props.match;
-    const { collapsed } = this.state;
-
+  
     const homePath : string = appRouters.find((x : any) => x.name === "myprojects")?.path ?? "/dashboard";
     const notFoundPath : string = (appRouters.find((x : any) => x.name === "exception")?.path + "?type=404") ?? "/";
-
-    const layout = (
+  
+    return (
       <Layout style={{ minHeight: '100vh' }}>
-        <Header collapsed={this.state.collapsed} toggle={this.toggle} /> 
-        <SiderMenu path={path} onCollapse={this.onCollapse} history={history} collapsed={collapsed} />
- 
-        <div className={"blur-filter " + (collapsed ? "" : "blur-filter-on")} onClick={()=>this.onCollapse(true)}></div>
+        <DocumentTitle title={utils.getPageTitle(pathname)} />
 
-        <Layout className={"header-margin " + (this.state.collapsed ? "sider-margin-m" : "sider-margin")}> 
-          <Content className="content-margin">
+        <Header collapsed={this.state.collapsed} toggle={this.toggle} /> 
+        <SiderMenu onCollapse={this.onCollapse} history={history} collapsed={this.state.collapsed} />
+
+        <div className={"blur-filter " + (this.state.collapsed ? "" : "blur-filter-on")} onClick={()=>this.onCollapse(true)}></div>
+
+        <Layout className={"header-margin " + (this.state.collapsed ? "sider-margin-m" : "sider-margin")}>
+          <Layout.Content className="content-margin">
+            <Breadcrumb history={{...history}}/> 
+            
             <Switch>
               {pathname === '/' && <Redirect from="/" to={homePath} />}
               {appRouters
@@ -60,18 +66,18 @@ class AppLayout extends React.Component<any> {
                     exact
                     key={index}
                     path={route.path}
-                    render={(props) => <ProtectedRoute component={route.component} permission={route.permission} />}
+                    render={(props) => {  
+                      return <ProtectedRoute component={route.component} permission={route.permission} />
+                    }}
                   />
                 ))}
               {pathname !== '/' && <Redirect to={notFoundPath} />}
             </Switch>
-          </Content>
+          </Layout.Content>
           <Footer />
         </Layout>
       </Layout>
     );
-
-    return <DocumentTitle title={utils.getPageTitle(pathname)}>{layout}</DocumentTitle>;
   }
 }
 

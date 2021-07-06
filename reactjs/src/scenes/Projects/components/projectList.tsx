@@ -30,8 +30,8 @@ export default class ProjectList extends AppComponentBase<IProjectListProps, IPr
         this.props.projectStore?.getAll(); 
     }
     render() {
-        const newProjectPath = appRouters.find((x : any) => x.name === 'newproject')?.path;
-        const projectPath : string = appRouters.find((x : any) => x.name === 'project')?.path.replace('/:id', '/'); 
+        const newProjectPath : string = appRouters.find((x : any) => x.name === 'newproject')?.path ?? "";
+        const projectPath : string = appRouters.find((x : any) => x.name === 'project')?.path.replace('/:id', '/') ?? ""; 
 
         const store = this.props.projectStore;
 

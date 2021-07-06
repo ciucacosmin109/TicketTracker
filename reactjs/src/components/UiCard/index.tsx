@@ -1,4 +1,5 @@
 import { Card, Col, Row, Skeleton, Space } from 'antd';
+import { CardSize } from 'antd/lib/card';
 import React from 'react';
 
 import AppComponentBase from '../AppComponentBase';
@@ -7,6 +8,7 @@ export interface UiCardProps {
     className?: string;
     style?: React.CSSProperties;
     zeroPadding?: boolean;
+    size?: CardSize;
 
     loadingTitle?: boolean;
     loadingBody?: boolean;
@@ -23,6 +25,7 @@ export default class UiCard extends AppComponentBase<UiCardProps> {
 
         return (
             <Card 
+                size={this.props.size}
                 className={this.props.className}
                 bodyStyle={hasZeroPadding ? 
                     {

@@ -1,7 +1,8 @@
 import * as abpTypings from '../lib/abp';
 
 import { L } from '../lib/abpUtility';
-import { routers } from '../components/Router/router.config';
+import { IRoute, routers } from '../components/Router/router.config';
+import { matchPath } from 'react-router';
 
 const defaultCultureName = "ro-RO"; //undefined;
 
@@ -76,8 +77,14 @@ class Utils {
     return L(route[0].title) + ' | ' + localizedAppName;
   };
 
-  getRoute = (path: string): any => {
-    return routers.filter(route => route.path === path)[0];
+  getRoute = (path: string): IRoute => {
+    return routers.filter(route => {
+      const isMatch = matchPath(path, route); 
+      return isMatch != null;
+    })[0];
+  }; 
+  getRouteByName = (name: string): IRoute => {
+    return routers.filter(route => route.name === name)[0];
   };
 
   setLocalization() {
