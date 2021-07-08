@@ -26,6 +26,7 @@ namespace TicketTracker.Projects {
         private readonly ProjectRepository repoProjects;
         private readonly ProjectUserRepository repoPUsers;
         private readonly WorkRepository repoWorks;
+        private readonly CommentRepository repoComments;
         private readonly IRepository<PRole> repoPRoles;
         private readonly ProjectManager projectManager;
         private readonly IAbpSession session;
@@ -35,6 +36,7 @@ namespace TicketTracker.Projects {
             ProjectRepository repoProjects,
             ProjectUserRepository repoPUsers,
             WorkRepository repoWorks,
+            CommentRepository repoComments,
             IRepository<PRole> repoPRoles,
             ProjectManager projectManager,
             IAbpSession session) 
@@ -43,6 +45,7 @@ namespace TicketTracker.Projects {
             this.repoProjects = repoProjects;
             this.repoPUsers = repoPUsers;
             this.repoWorks = repoWorks;
+            this.repoComments = repoComments;
             this.repoPRoles = repoPRoles;
             this.projectManager = projectManager;
             this.session = session;
@@ -221,15 +224,10 @@ namespace TicketTracker.Projects {
                 );
 
             // Delete the Works
-            if (proj.Components != null) {
-                foreach (var comp in proj.Components) {
-                    if (comp.Tickets != null) {
-                        foreach (var ticket in comp.Tickets) {
-                            await repoWorks.DeleteAsync(x => x.TicketId == ticket.Id);
-                        }
-                    }
-                }
-            }
+            await repoWorks.DeleteByProjectId(input.Id);
+
+            // Delete comments
+            await repoComments.DeleteByProjectIdAsync(input.Id);
 
             // Delete
             await base.DeleteAsync(input);

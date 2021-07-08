@@ -1590,15 +1590,6 @@ namespace TicketTracker.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2");
 
@@ -1614,8 +1605,6 @@ namespace TicketTracker.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("DeleterUserId");
 
                     b.HasIndex("LastModifierUserId");
 
@@ -1691,7 +1680,7 @@ namespace TicketTracker.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("TicketId")
+                    b.Property<int>("TicketId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1704,7 +1693,7 @@ namespace TicketTracker.Migrations
 
                     b.HasIndex("Name", "TicketId")
                         .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL AND [TicketId] IS NOT NULL");
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Atachments");
                 });
@@ -2308,10 +2297,6 @@ namespace TicketTracker.Migrations
                         .WithMany()
                         .HasForeignKey("CreatorUserId");
 
-                    b.HasOne("TicketTracker.Authorization.Users.User", "DeleterUser")
-                        .WithMany()
-                        .HasForeignKey("DeleterUserId");
-
                     b.HasOne("TicketTracker.Authorization.Users.User", "LastModifierUser")
                         .WithMany()
                         .HasForeignKey("LastModifierUserId");
@@ -2325,8 +2310,6 @@ namespace TicketTracker.Migrations
                         .HasForeignKey("TicketId");
 
                     b.Navigation("CreatorUser");
-
-                    b.Navigation("DeleterUser");
 
                     b.Navigation("LastModifierUser");
 
@@ -2370,7 +2353,9 @@ namespace TicketTracker.Migrations
 
                     b.HasOne("TicketTracker.Entities.Ticket", "Ticket")
                         .WithMany("Attachments")
-                        .HasForeignKey("TicketId");
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CreatorUser");
 

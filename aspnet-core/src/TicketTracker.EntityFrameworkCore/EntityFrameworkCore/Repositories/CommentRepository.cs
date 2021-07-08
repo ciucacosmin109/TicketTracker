@@ -54,5 +54,62 @@ namespace TicketTracker.EntityFrameworkCore.Repositories {
 
             return com;
         }
+
+        private async Task DeleteHierarchyAsync(Comment comment) {
+            if(comment.Children == null || comment.Children.Count == 0) {
+                Context.Comments.Remove(comment);
+                await Context.SaveChangesAsync();
+            } else {
+                foreach(var c in comment.Children.ToList()) {
+                    await this.DeleteHierarchyAsync(c);
+                }
+            }
+        }
+        public override async Task DeleteAsync(Comment comment) {
+            Comment com = Context.Comments
+                .Include(s => s.Children)
+                .ToList()
+                .FirstOrDefault(s => s.Id == comment.Id);
+
+            await this.DeleteHierarchyAsync(com);
+        }
+        public override async Task DeleteAsync(int id) {
+            Comment com = Context.Comments
+                .Include(s => s.Children)
+                .ToList()
+                .FirstOrDefault(s => s.Id == id);
+
+            await this.DeleteHierarchyAsync(com);
+        }
+        public async Task DeleteByTicketIdAsync(int id) {
+            List<Comment> coms = Context.Comments
+                .Include(s => s.Children)
+                .ToList()
+                .FindAll(x => x.TicketId == id);
+
+            foreach (var c in coms) {
+                await this.DeleteHierarchyAsync(c);
+            }
+        }
+        public async Task DeleteByComponentIdAsync(int id) {
+            var tickets = Context.Tickets
+                .Where(x => x.ComponentId == id)
+                .Select(x => x.Id)
+                .ToList();
+
+            foreach (var tid in tickets) {
+                await this.DeleteByTicketIdAsync(tid);
+            }
+        }
+        public async Task DeleteByProjectIdAsync(int id) {
+            var components = Context.Components
+                .Where(x => x.ProjectId == id)
+                .Select(x => x.Id)
+                .ToList();
+
+            foreach (var cid in components) {
+                await this.DeleteByComponentIdAsync(cid);
+            }
+        }
     }
 }

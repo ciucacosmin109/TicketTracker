@@ -20,6 +20,7 @@ namespace TicketTracker.Tickets {
     public class TicketAppService : AsyncCrudAppService<Ticket, TicketDto, int, GetAllTicketsInput, CreateTicketInput, UpdateTicketInput> {
         private readonly TicketRepository repoTickets;
         private readonly WorkRepository repoWorks;
+        private readonly CommentRepository repoComments;
         private readonly IRepository<ProjectUser> repoPUsers;
         private readonly IRepository<Component> repoComponents;
         private readonly IAbpSession session;
@@ -31,6 +32,7 @@ namespace TicketTracker.Tickets {
         public TicketAppService(
             TicketRepository repoTickets,
             WorkRepository repoWorks,
+            CommentRepository repoComments,
             IRepository<ProjectUser> repoPUsers,
             IRepository<Component> repoComponents,
             IAbpSession session,
@@ -41,6 +43,7 @@ namespace TicketTracker.Tickets {
         ) : base(repoTickets) {
             this.repoTickets = repoTickets;
             this.repoWorks = repoWorks;
+            this.repoComments = repoComments;
             this.repoPUsers = repoPUsers;
             this.repoComponents = repoComponents;
             this.session = session;
@@ -145,6 +148,7 @@ namespace TicketTracker.Tickets {
                 ticketManager.CheckTicketPermission(session.UserId, input.Id, StaticProjectPermissionNames.Component_ManageTickets);
 
             await repoWorks.SetTicketNullAsync(input.Id);
+            await repoComments.DeleteByTicketIdAsync(input.Id);
             await base.DeleteAsync(input);
         }
     }

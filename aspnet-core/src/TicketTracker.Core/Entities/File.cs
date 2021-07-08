@@ -16,7 +16,7 @@ namespace TicketTracker.Entities {
         public byte[] FileBytes { get; set; }
 
         public Ticket Ticket { get; set; }
-        public int? TicketId { get; set; }
+        public int TicketId { get; set; }
 
         // IFullAudited
         /*public User CreatorUser { get; set; }

@@ -1149,7 +1149,7 @@ namespace TicketTracker.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     FileBytes = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    TicketId = table.Column<int>(type: "int", nullable: true),
+                    TicketId = table.Column<int>(type: "int", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1175,7 +1175,7 @@ namespace TicketTracker.Migrations
                         column: x => x.TicketId,
                         principalTable: "Tickets",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1190,10 +1190,7 @@ namespace TicketTracker.Migrations
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeleterUserId = table.Column<long>(type: "bigint", nullable: true),
-                    DeletionTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1201,12 +1198,6 @@ namespace TicketTracker.Migrations
                     table.ForeignKey(
                         name: "FK_Comments_AbpUsers_CreatorUserId",
                         column: x => x.CreatorUserId,
-                        principalTable: "AbpUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Comments_AbpUsers_DeleterUserId",
-                        column: x => x.DeleterUserId,
                         principalTable: "AbpUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -1683,7 +1674,7 @@ namespace TicketTracker.Migrations
                 table: "Atachments",
                 columns: new[] { "Name", "TicketId" },
                 unique: true,
-                filter: "[Name] IS NOT NULL AND [TicketId] IS NOT NULL");
+                filter: "[Name] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Atachments_TicketId",
@@ -1694,11 +1685,6 @@ namespace TicketTracker.Migrations
                 name: "IX_Comments_CreatorUserId",
                 table: "Comments",
                 column: "CreatorUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comments_DeleterUserId",
-                table: "Comments",
-                column: "DeleterUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_LastModifierUserId",

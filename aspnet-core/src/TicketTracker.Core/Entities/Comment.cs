@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using TicketTracker.Authorization.Users;
 
 namespace TicketTracker.Entities {
-    public class Comment : FullAuditedEntity<int, User> {
+    public class Comment : AuditedEntity<int, User> {
         [Required]
         public string Content { get; set; }
          

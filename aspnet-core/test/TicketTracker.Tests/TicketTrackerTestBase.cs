@@ -39,7 +39,7 @@ namespace TicketTracker.Tests
             UsingDbContext(context =>
             {
                 NormalizeDbContext(context);
-                new InitialHostDbBuilder(context, config).Create();
+                new InitialHostDbBuilder(context).Create();
                 new DefaultTenantBuilder(context).Create();
             });
 

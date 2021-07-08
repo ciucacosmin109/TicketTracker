@@ -5,18 +5,19 @@ import { inject, observer } from 'mobx-react';
 import Stores from '../../../stores/storeIdentifier'; 
 
 import AppComponentBase from '../../../components/AppComponentBase';  
-import { Table, Empty, Space, Button, Dropdown, Menu,  } from 'antd';
-import { BugFilled, BulbFilled, DownOutlined, FileTextOutlined, LoadingOutlined,   } from '@ant-design/icons'; 
+import { Table, Empty, Space, Button, Dropdown, Menu } from 'antd';
+import { AppstoreOutlined, DownOutlined, LoadingOutlined, LockOutlined, ProjectOutlined } from '@ant-design/icons'; 
    
 import { RouteComponentProps, withRouter } from 'react-router';
 import { SpinProps } from 'antd/lib/spin'; 
 import { L } from '../../../lib/abpUtility';
 import { ColumnsType } from 'antd/lib/table';
 import TicketStore from '../../../stores/ticketStore';
-import { TicketDto } from '../../../services/ticket/dto/ticketDto';
-//import { TicketType } from '../../../services/ticket/dto/ticketType';
+import { TicketDto } from '../../../services/ticket/dto/ticketDto'; 
 import ComponentStore from '../../../stores/componentStore';
 import ProjectStore from '../../../stores/projectStore'; 
+import TicketInfo from '../../Ticket/components/ticketInfo';
+import { TicketPriority } from '../../../services/ticket/dto/ticketPriority';
 
 export interface ITicketTableProps extends RouteComponentProps { 
     ticketStore?: TicketStore; 
@@ -115,36 +116,49 @@ class TicketTable extends AppComponentBase<ITicketTableProps, ITicketTableState>
             { key:'padding', width:'10px', render: (text: any, record: TicketDto, index: number) =>
                 <div onClick={e => this.onRowClick(e, record)}> </div>
             },
-            { title: L('Type'), key:'type', width:'1%', render: (text: any, record: TicketDto, index: number) =>
-                <div onClick={e => this.onRowClick(e, record)}>
+            { title: L('Ticket'), key:'title', dataIndex:"title", render: (text: any, record: TicketDto, index: number) =>
+                <div onClick={e => this.onRowClick(e, record)}> 
                     <Space key={index}>
-                        {   
-                            record.type === 1 ?
-                                <BugFilled style={{color: 'red'}} /> :
-                            record.type === 2 ?
-                                <BulbFilled style={{color: 'green'}} /> :
-                            <FileTextOutlined />
-                        } 
-                        {/*L(TicketType[record.type])*/}
+                        {TicketInfo.getTypeIcon(record.type)} 
+                        {text}
                     </Space>
                 </div>
             },
-            { title: L('Ticket'), key:'title', dataIndex:"title", render: (text: any, record: TicketDto, index: number) =>
+            { title: L('Priority'), key:'priority', dataIndex:"priority", render: (text: any, record: TicketDto, index: number) =>
                 <div onClick={e => this.onRowClick(e, record)}> 
-                    {text}
+                    <Space key={index}>
+                        {TicketInfo.getPriorityIcon(record.priority)} 
+                        {L(TicketPriority[record.priority ?? 0])}
+                    </Space>
+                </div>
+            },
+            { title: L('Status'), key:'status', dataIndex:"status", render: (text: any, record: TicketDto, index: number) =>
+                <div onClick={e => this.onRowClick(e, record)}> 
+                    <Space key={index}>
+                        {TicketInfo.getStatusIcon(record.status)} 
+                        {L(record.status?.name ?? "")}  
+                    </Space>
                 </div>
             },
         ];
         if(this.props.detailed){
             columns.push(
                 { title: L('Project'), key:'project', render: (text: any, record: TicketDto, index: number) =>
-                    <div onClick={e => this.goToProject(e, record)}> 
-                        {record.project.name}
+                    <div onClick={e => this.goToProject(e, record)}>
+                        <Space> 
+                            {record.project.isPublic 
+                                ? <ProjectOutlined style={{color:"#1da57a"}}/> 
+                                : <LockOutlined style={{color:"orange"}}/> } 
+                            {record.project.name}
+                        </Space>
                     </div>
                 },
                 { title: L('Component'), key:'component', render: (text: any, record: TicketDto, index: number) =>
                     <div onClick={e => this.goToComponent(e, record)}> 
-                        {record.component.name}
+                        <Space> 
+                            <AppstoreOutlined style={{color: 'purple'}} />  
+                            {record.component.name}
+                        </Space>
                     </div>
                 },
             );

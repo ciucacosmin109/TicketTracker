@@ -95,7 +95,7 @@ namespace TicketTracker.Comments {
 
         public override async Task DeleteAsync(EntityDto<int> input) {
             commentManager.CheckEditPermission(session.UserId, input.Id);
-            await base.DeleteAsync(input);
+            await repoComments.DeleteAsync(input.Id);
         }
     }
 }

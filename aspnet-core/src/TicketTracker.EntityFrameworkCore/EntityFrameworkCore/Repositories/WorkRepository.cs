@@ -27,6 +27,38 @@ namespace TicketTracker.EntityFrameworkCore.Repositories {
             return await GetAllIncludingInfo().FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task DeleteByProjectId(int projectId) {
+            // Get Works that have projectUserId
+            List<int> puIds = await Context.ProjectUsers
+                .Where(x => x.ProjectId == projectId)
+                .Select(x => x.Id)
+                .ToListAsync();
+
+            // Get Works that have ticketId
+            List<int> tIds = await Context.Components
+                .Include(x => x.Tickets)
+                .Where(x => x.ProjectId == projectId)
+                .SelectMany(x => x.Tickets)
+                .Select(x => x.Id)
+                .ToListAsync();
+
+            // Delete :D
+            List<Work> toDelete = await Context.Works
+                .Where(x => 
+                    puIds.Contains(x.ProjectUserId ?? 0) || 
+                    tIds.Contains(x.TicketId ?? 0))
+                .ToListAsync();
+
+            if (toDelete != null) {
+                Context.Works.RemoveRange(toDelete);
+                await Context.SaveChangesAsync();
+            }
+
+            // Delete Works that does not have projectUserId or ticketId
+            await Context.Database.ExecuteSqlRawAsync("DELETE FROM Works WHERE ProjectUserId=NULL AND TicketId=NULL");
+            await Context.SaveChangesAsync();
+        }
+
         public async Task SetIsWorkingFalseAsync(int ticketId) {
             await Context.Database.ExecuteSqlRawAsync("UPDATE Works SET IsWorking='false' WHERE TicketId={0}", ticketId);
             await Context.SaveChangesAsync();

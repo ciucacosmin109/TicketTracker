@@ -20,6 +20,7 @@ namespace TicketTracker.Components {
     [AbpAuthorize]
     public class ComponentAppService : AsyncCrudAppService<Component, ComponentDto, int, GetAllComponentsInput, CreateComponentInput, UpdateComponentInput> {
         private readonly WorkRepository repoWorks;
+        private readonly CommentRepository repoComments;
         private readonly ProjectManager projectManager;
         private readonly IAbpSession session;
         private readonly IObjectMapper mapper;
@@ -27,11 +28,13 @@ namespace TicketTracker.Components {
         public ComponentAppService(
             IRepository<Component> repository,
             WorkRepository repoWorks,
+            CommentRepository repoComments,
             ProjectManager projectManager,
             IAbpSession session,
             IObjectMapper mapper
         ) : base(repository) {
             this.repoWorks = repoWorks;
+            this.repoComments = repoComments;
             this.projectManager = projectManager;
             this.session = session;
             this.mapper = mapper;
@@ -111,6 +114,9 @@ namespace TicketTracker.Components {
                     await repoWorks.SetTicketNullAsync(ticket.Id);
                 }
             }
+
+            // Delete comments 
+            await repoComments.DeleteByComponentIdAsync(input.Id);
 
             // Delete
             await base.DeleteAsync(input);

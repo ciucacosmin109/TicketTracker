@@ -22,13 +22,17 @@ namespace TicketTracker.EntityFrameworkCore.Seed
             WithDbContext<TicketTrackerDbContext>(iocResolver, SeedHostDb);
         }
 
-        public static void SeedHostDb(TicketTrackerDbContext context, IConfiguration config = null) // used by the migrator + at startup
+        public static void SeedHostDb(TicketTrackerDbContext context) // used by the migrator
+        {
+            SeedHostDb(context, null);
+        }
+        public static void SeedHostDb(TicketTrackerDbContext context, IConfiguration config = null) // used at startup
         {
             context.SuppressAutoSetTenantId = true;
 
             // Host seed
             new InitialHostDbBuilder(context).Create();
-            if(config != null) {
+            if (config != null) {
                 new DefaultSettingsCreator(context, config).Create(); // will not be called by the migrator
             }
 
@@ -37,7 +41,7 @@ namespace TicketTracker.EntityFrameworkCore.Seed
             new TenantRoleAndUserBuilder(context, 1).Create();
 
             // Initial data
-            new InitialDataBuilder(context, 1).Create(); 
+            new InitialDataBuilder(context, 1).Create();
         }
 
         private static void WithDbContext<TDbContext>(IIocResolver iocResolver, Action<TDbContext, IConfiguration> contextAction)
