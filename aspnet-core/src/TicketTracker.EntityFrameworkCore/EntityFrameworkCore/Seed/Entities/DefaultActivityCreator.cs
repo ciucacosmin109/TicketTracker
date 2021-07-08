@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TicketTracker.Entities;
+using TicketTracker.Entities.Static;
 
 namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
     public class DefaultActivityCreator {
@@ -18,11 +19,11 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
 
         public void Create() {
             if (_context.Activities.IgnoreQueryFilters().Count() == 0) {
-                _context.Activities.Add(new Activity { Name = "Design", IsStatic = true });
-                _context.Activities.Add(new Activity { Name = "Development", IsStatic = true });
-                _context.Activities.Add(new Activity { Name = "Testing", IsStatic = true });
-                _context.Activities.Add(new Activity { Name = "Documentation", IsStatic = true });
-                _context.Activities.Add(new Activity { Name = "Deployment", IsStatic = true });
+                _context.Activities.Add(new Activity { Name = StaticActivityNames.Design, IsStatic = true });
+                _context.Activities.Add(new Activity { Name = StaticActivityNames.Development, IsStatic = true });
+                _context.Activities.Add(new Activity { Name = StaticActivityNames.Testing, IsStatic = true });
+                _context.Activities.Add(new Activity { Name = StaticActivityNames.Documentation, IsStatic = true });
+                _context.Activities.Add(new Activity { Name = StaticActivityNames.Deployment, IsStatic = true });
 
                 _context.SaveChanges();
             } 

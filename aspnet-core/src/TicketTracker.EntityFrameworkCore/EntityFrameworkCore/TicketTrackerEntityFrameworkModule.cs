@@ -14,11 +14,7 @@ namespace TicketTracker.EntityFrameworkCore
     [DependsOn(
         typeof(TicketTrackerCoreModule), 
         typeof(AbpZeroCoreEntityFrameworkCoreModule))]
-    public class TicketTrackerEntityFrameworkModule : AbpModule { 
-        private readonly IConfigurationRoot _appConfiguration; 
-        public TicketTrackerEntityFrameworkModule(IWebHostEnvironment env) { 
-            _appConfiguration = AppConfigurations.Get(env.ContentRootPath, env.EnvironmentName, env.IsDevelopment());
-        }
+    public class TicketTrackerEntityFrameworkModule : AbpModule {  
 
         /* Used it tests to skip dbcontext registration, in order to use in-memory database of EF Core */
         public bool SkipDbContextRegistration { get; set; } 

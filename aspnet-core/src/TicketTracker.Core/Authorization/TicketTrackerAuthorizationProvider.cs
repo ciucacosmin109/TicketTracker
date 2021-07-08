@@ -13,7 +13,8 @@ namespace TicketTracker.Authorization
             context.CreatePermission(PermissionNames.Pages_Roles, L("Roles"));
             context.CreatePermission(PermissionNames.Pages_Tenants, L("Tenants"), multiTenancySides: MultiTenancySides.Host);
 
-            context.CreatePermission(PermissionNames.Pages_Activities, L("Activities"), multiTenancySides: MultiTenancySides.Tenant);
+            context.CreatePermission(PermissionNames.Pages_Activities, L("Activities"));
+            context.CreatePermission(PermissionNames.Pages_AdminTools, L("AdminTools"));
         }
 
         private static ILocalizableString L(string name)

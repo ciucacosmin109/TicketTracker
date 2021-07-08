@@ -5,6 +5,7 @@
         public const string Pages_Users = "Pages.Users";
         public const string Pages_Roles = "Pages.Roles";
 
+        public const string Pages_AdminTools = "Pages.AdminTools";
         public const string Pages_Activities = "Pages.Activities";
         public const string Pages_Statuses = "Pages.Statuses";
         //public const string Pages_PRoles = "Pages.PRoles";

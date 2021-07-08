@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TicketTracker.Entities;
+using TicketTracker.Entities.Static;
 
 namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
     public class DefaultStatusCreator {
@@ -18,11 +19,11 @@ namespace TicketTracker.EntityFrameworkCore.Seed.Entities {
 
         public void Create() { 
             if (_context.Statuses.IgnoreQueryFilters().Count() == 0) {
-                _context.Statuses.Add(new Status { Name = "New", IsStatic = true });
-                _context.Statuses.Add(new Status { Name = "In development", IsStatic = true });
-                _context.Statuses.Add(new Status { Name = "In development (reopened)", IsStatic = true });
-                _context.Statuses.Add(new Status { Name = "Solved", IsStatic = true });
-                _context.Statuses.Add(new Status { Name = "Closed", IsStatic = true });
+                _context.Statuses.Add(new Status { Name = StaticStatusNames.New, IsStatic = true });
+                _context.Statuses.Add(new Status { Name = StaticStatusNames.InDevelopment, IsStatic = true });
+                _context.Statuses.Add(new Status { Name = StaticStatusNames.InDevelopmentReopened, IsStatic = true });
+                _context.Statuses.Add(new Status { Name = StaticStatusNames.Solved, IsStatic = true });
+                _context.Statuses.Add(new Status { Name = StaticStatusNames.Closed, IsStatic = true });
 
                 _context.SaveChanges();
             }
