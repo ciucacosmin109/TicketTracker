@@ -10,7 +10,7 @@ import { L, isGranted } from '../../lib/abpUtility';
 import { appRouters } from '../../components/Router/router.config';
 import utils from '../../utils/utils';
 
-import SideUserInfo from './components/sideUserInfo';
+import SideUserInfo from './components/SideUserInfo';
 
 export interface ISiderMenuProps {
   collapsed: boolean;

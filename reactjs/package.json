@@ -32,8 +32,8 @@
     "extends": "react-app"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
+    "start": "craco --openssl-legacy-provider start",
+    "build": "craco --openssl-legacy-provider build",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "craco test",
     "eject": "react-scripts eject"

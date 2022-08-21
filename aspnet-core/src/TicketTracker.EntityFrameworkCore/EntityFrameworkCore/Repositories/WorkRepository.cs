@@ -55,20 +55,20 @@ namespace TicketTracker.EntityFrameworkCore.Repositories {
             }
 
             // Delete Works that does not have projectUserId or ticketId
-            await Context.Database.ExecuteSqlRawAsync("DELETE FROM Works WHERE ProjectUserId=NULL AND TicketId=NULL");
+            await Context.Database.ExecuteSqlRawAsync("DELETE FROM \"Works\" WHERE \"ProjectUserId\"=NULL AND \"TicketId\"=NULL");
             await Context.SaveChangesAsync();
         }
 
         public async Task SetIsWorkingFalseAsync(int ticketId) {
-            await Context.Database.ExecuteSqlRawAsync("UPDATE Works SET IsWorking='false' WHERE TicketId={0}", ticketId);
+            await Context.Database.ExecuteSqlRawAsync("UPDATE \"Works\" SET \"IsWorking\"='false' WHERE \"TicketId\"={0}", ticketId);
             await Context.SaveChangesAsync();
         }
         public async Task SetProjectUserNullAsync(int projectUserId) {
-            await Context.Database.ExecuteSqlRawAsync("UPDATE Works SET ProjectUserId=NULL, IsWorking=0 WHERE ProjectUserId={0}", projectUserId);
+            await Context.Database.ExecuteSqlRawAsync("UPDATE \"Works\" SET ProjectUserId=NULL, IsWorking=0 WHERE ProjectUserId={0}", projectUserId);
             await Context.SaveChangesAsync();
         }
         public async Task SetTicketNullAsync(int ticketId) {
-            await Context.Database.ExecuteSqlRawAsync("UPDATE Works SET TicketId=NULL, IsWorking=0 WHERE TicketId={0}", ticketId);
+            await Context.Database.ExecuteSqlRawAsync("UPDATE \"Works\" SET TicketId=NULL, IsWorking=0 WHERE TicketId={0}", ticketId);
             await Context.SaveChangesAsync();
         }
 

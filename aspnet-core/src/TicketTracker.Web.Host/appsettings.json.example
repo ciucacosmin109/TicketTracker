@@ -16,9 +16,9 @@
     "DefaultOracle": "User Id=user;Password=pass;Data Source=dbname_high;"
   },
   "App": {
-    "ServerRootAddress": "http://localhost:21021/",
-    "ClientRootAddress": "http://localhost:3000/",
-    "CorsOrigins": "http://localhost:4200,http://localhost:8080,http://localhost:8081,http://localhost:3000"
+    "ServerRootAddress": "https://api.tt.mariuscosminciuca.tk/", // "http://localhost:21021/",
+    "ClientRootAddress": "https://tt.mariuscosminciuca.tk/", // "http://localhost:3000/",
+    "CorsOrigins": "http://localhost:4200,http://localhost:8080,http://localhost:8081,http://localhost:3000,https://tt.mariuscosminciuca.tk,https://tickettracker.netlify.app"
   },
   "Authentication": {
     "JwtBearer": {
@@ -31,7 +31,7 @@
   "Kestrel": {
     "Endpoints": {
       "Http": {
-        "Url": "http://localhost:21021/"
+        "Url": "http://0.0.0.0:21021/"
       }
     }
   },

@@ -4,7 +4,7 @@
     {
         public const string LocalizationSourceName = "TicketTracker";
 
-        public const string ConnectionStringName = "Default";
+        public const string ConnectionStringName = "DefaultOracle";
 
         public const bool MultiTenancyEnabled = false;
     }

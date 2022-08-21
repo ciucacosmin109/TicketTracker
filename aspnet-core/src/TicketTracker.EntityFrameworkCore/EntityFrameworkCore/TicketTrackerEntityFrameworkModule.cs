@@ -22,7 +22,7 @@ namespace TicketTracker.EntityFrameworkCore
 
         public override void PreInitialize(){
             // Oracle database
-            //Configuration.UnitOfWork.IsolationLevel = IsolationLevel.ReadCommitted;
+            Configuration.UnitOfWork.IsolationLevel = IsolationLevel.ReadCommitted;
 
             if (!SkipDbContextRegistration)
             {

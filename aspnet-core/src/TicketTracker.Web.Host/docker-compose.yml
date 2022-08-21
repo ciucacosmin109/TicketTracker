@@ -1,0 +1,17 @@
+﻿version: '3'
+services:
+  tickertracker:
+    container_name: tickertracker
+    image: mcr.microsoft.com/dotnet/aspnet:5.0
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "9903:80"
+      - "9904:443"
+    volumes:
+      - .:/app
+    cpus: 0.25
+    mem_limit: 500m
+    working_dir: /app
+    command: "dotnet TicketTracker.Web.Host.dll"

@@ -38,12 +38,14 @@ namespace TicketTracker.EntityFrameworkCore{
 
             builder.UseOracle(con);
             */
-            builder.UseSqlServer(connectionString);  
+            
+            builder.UseOracle(connectionString);
+            //builder.UseSqlServer(connectionString);  
         }
 
         public static void Configure(DbContextOptionsBuilder<TicketTrackerDbContext> builder, DbConnection connection) { 
-            //builder.UseOracle(connection); 
-            builder.UseSqlServer(connection); 
+            builder.UseOracle(connection); 
+            //builder.UseSqlServer(connection); 
         }
     }
 }

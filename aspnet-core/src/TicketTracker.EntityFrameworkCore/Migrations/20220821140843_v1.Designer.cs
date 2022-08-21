@@ -2,16 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Oracle.EntityFrameworkCore.Metadata;
 using TicketTracker.EntityFrameworkCore;
 
 namespace TicketTracker.Migrations
 {
     [DbContext(typeof(TicketTrackerDbContext))]
-    partial class TicketTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220821140843_v1")]
+    partial class v1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

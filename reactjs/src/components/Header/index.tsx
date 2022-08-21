@@ -39,7 +39,7 @@ export class Header extends React.Component<IHeaderProps> {
           </Col>
           
           <Col style={{ padding: '0px 5px 0px 5px', textAlign: 'right' }} span={12}>
-            <LanguageSelect noUser={this.props.noUser} hidden /> 
+            <LanguageSelect noUser={this.props.noUser} /> 
             <InfoToggle />
             
             {!this.props.noUser ?  
